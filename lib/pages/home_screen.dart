@@ -58,51 +58,36 @@ class HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  void _onLongPressed() async {
-    final longResponse = await http.post(
-      Uri.parse('https://example.com/api/long'),
-      headers: {'Content-Type': 'application/json', 'token': token},
-      body: json.encode({'symbol': dropdownValue, 'quantity': _volumeController.text, 'type': 'long'}),
+  Future<void> _openPosition(String type) async {
+    final direction = type;
+    final lot = num.parse(_volumeController.text);
+    final data = json.encode({'symbol': dropdownValue, 'lot': lot, 'direction': direction});
+    final openResponse = await http.post(
+      Uri.parse('http://192.168.1.60:8001/trade/open'),
+      headers: {'Content-Type': 'application/json', 'auth-token': token},
+      body: data,
     );
     try {
-      if (longResponse.statusCode == 200) {
-        print('Long button pressed');
+      if (openResponse.statusCode == 200) {
+        print(openResponse.body);
       } else {
-        print('Long button pressed');
+        print(openResponse.statusCode);
       }
     } catch (_) {
       print('Network Error');
     }
   }
 
-  void _onShortPressed() async {
-    final shortResponse = await http.post(
-      Uri.parse('https://example.com/api/short'),
-      headers: {'Content-Type': 'application/json', 'token': token},
-      body: json.encode({'symbol': dropdownValue, 'quantity': _volumeController.text, 'type': 'short'}),
-    );
-    try {
-      if (shortResponse.statusCode == 200) {
-        print('Short button pressed');
-      } else {
-        print('Short button pressed');
-      }
-    } catch (_) {
-      print('Network Error');
-    }
-  }
-
-  Future<void> _onClosePressed() async {
+  Future<void> _onClosePosition() async {
     final closeResponse = await http.post(
-      Uri.parse('https://example.com/api/close'),
-      headers: {'Content-Type': 'application/json', 'token': token},
-      body: json.encode({'symbol': dropdownValue, 'quantity': _volumeController.text, 'type': 'close'}),
+      Uri.parse('http://192.168.1.60:8001/trade/close'),
+      headers: {'Content-Type': 'application/json', 'auth-token': token},
     );
     try {
       if (closeResponse.statusCode == 200) {
-        print('Close button pressed');
+        print(closeResponse.body);
       } else {
-        print('Close button pressed');
+        print(closeResponse.statusCode);
       }
     } catch (_) {
       print('Network Error');
@@ -121,11 +106,11 @@ class HomeScreenState extends State<HomeScreen> {
         _longButtonFocusNode.requestFocus();
       } else if (key == (LogicalKeyboardKey.control) && _longButtonFocusNode.hasFocus) {
         _volumeFocusNode.requestFocus();
-      } else if (key == LogicalKeyboardKey.arrowDown && _volumeFocusNode.hasFocus) {
-        _longButtonFocusNode.requestFocus();
       } else if (key == LogicalKeyboardKey.arrowDown &&
           (_longButtonFocusNode.hasFocus || _shortButtonFocusNode.hasFocus)) {
         _closeButtonFocusNode.requestFocus();
+      } else if (key == LogicalKeyboardKey.arrowDown && _volumeFocusNode.hasFocus) {
+        _longButtonFocusNode.requestFocus();
       }
     }
 
@@ -149,19 +134,19 @@ class HomeScreenState extends State<HomeScreen> {
             actions: {
               LongIntent: CallbackAction<LongIntent>(
                 onInvoke: (intent) {
-                  _onLongPressed();
+                  _openPosition('buy');
                   return null;
                 },
               ),
               ShortIntent: CallbackAction<ShortIntent>(
                 onInvoke: (intent) {
-                  _onShortPressed();
+                  _openPosition('sell');
                   return null;
                 },
               ),
               CloseIntent: CallbackAction<CloseIntent>(
                 onInvoke: (intent) {
-                  _onClosePressed();
+                  _onClosePosition();
                   return null;
                 },
               ),
@@ -285,7 +270,7 @@ class HomeScreenState extends State<HomeScreen> {
                               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                             ),
                             onPressed: () {
-                              Actions.invoke(context, ShortIntent());
+                              Actions.invoke(context, CloseIntent());
                             },
                             child: Text('Close'),
                           ),

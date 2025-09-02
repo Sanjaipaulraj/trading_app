@@ -59,7 +59,7 @@ class LoginPageState extends State<LoginPage> {
       }
     } catch (error) {
       if (mounted) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(token: '10')));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(token: '1234')));
         setState(() {
           _isLoading = false;
           _errorMessage = 'Failed to authenticate. Please try again later.';
