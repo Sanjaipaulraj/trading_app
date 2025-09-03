@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+
 import 'dart:convert';
 
 import 'package:trading_app/pages/home_screen.dart';
@@ -25,6 +26,7 @@ class LoginPageState extends State<LoginPage> {
 
     final username = _usernameController.text;
     final password = _passwordController.text;
+    Dio dio = Dio();
 
     if (username.isEmpty || password.isEmpty) {
       setState(() {
@@ -35,17 +37,13 @@ class LoginPageState extends State<LoginPage> {
     }
 
     try {
-      final response = await http.post(
-        Uri.parse('https://example.com/api/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({'username': username, 'password': password}),
+      final data = json.encode({'username': username, 'password': password});
+      final response = await dio.post(
+        'https://example.com/api/login',
+        options: Options(headers: {'Content-Type': 'application/json'}),
+        data: data,
       );
-
       if (response.statusCode == 200) {
-        // final responseData = json.decode(response.body);
-        // final token = responseData['token'];
-        // final id = responseData['id'];
-
         if (mounted) {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(token: '1')));
         }

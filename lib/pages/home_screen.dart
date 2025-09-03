@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 
 const List<String> list = <String>['One', 'Two', 'Three', 'Four'];
 
@@ -59,17 +59,18 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _openPosition(String type) async {
+    Dio dio = Dio();
     final direction = type;
     final lot = num.parse(_volumeController.text);
     final data = json.encode({'symbol': dropdownValue, 'lot': lot, 'direction': direction});
-    final openResponse = await http.post(
-      Uri.parse('http://192.168.1.60:8001/trade/open'),
-      headers: {'Content-Type': 'application/json', 'auth-token': token},
-      body: data,
+    final openResponse = await dio.post(
+      'http://192.168.1.60:8001/trade/open',
+      options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
+      data: data,
     );
     try {
       if (openResponse.statusCode == 200) {
-        print(openResponse.body);
+        print(openResponse.data);
       } else {
         print(openResponse.statusCode);
       }
@@ -79,13 +80,14 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _onClosePosition() async {
-    final closeResponse = await http.post(
-      Uri.parse('http://192.168.1.60:8001/trade/close'),
-      headers: {'Content-Type': 'application/json', 'auth-token': token},
+    Dio dio = Dio();
+    final closeResponse = await dio.post(
+      'http://192.168.1.60:8001/trade/close',
+      options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );
     try {
       if (closeResponse.statusCode == 200) {
-        print(closeResponse.body);
+        print(closeResponse.data);
       } else {
         print(closeResponse.statusCode);
       }
