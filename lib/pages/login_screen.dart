@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 
 import 'dart:convert';
 
@@ -12,9 +13,12 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => LoginPageState();
 }
 
+class LoginIntent extends Intent {
+  const LoginIntent();
+}
+
 class LoginPageState extends State<LoginPage> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _passKeyController = TextEditingController();
   bool _isLoading = false;
   String _errorMessage = '';
 
@@ -24,20 +28,19 @@ class LoginPageState extends State<LoginPage> {
       _errorMessage = '';
     });
 
-    final username = _usernameController.text;
-    final password = _passwordController.text;
+    final password = _passKeyController.text;
     Dio dio = Dio();
 
-    if (username.isEmpty || password.isEmpty) {
+    if (password.isEmpty) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Please enter both username and password';
+        _errorMessage = 'Please enter token';
       });
       return;
     }
 
     try {
-      final data = json.encode({'username': username, 'password': password});
+      final data = json.encode({'password': password});
       final response = await dio.post(
         'https://example.com/api/login',
         options: Options(headers: {'Content-Type': 'application/json'}),
@@ -45,19 +48,19 @@ class LoginPageState extends State<LoginPage> {
       );
       if (response.statusCode == 200) {
         if (mounted) {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(token: '1')));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
         }
       } else {
         if (mounted) {
           setState(() {
             _isLoading = false;
-            _errorMessage = 'Invalid username or password';
+            _errorMessage = 'Invalid password';
           });
         }
       }
     } catch (error) {
       if (mounted) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(token: '1234')));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
         setState(() {
           _isLoading = false;
           _errorMessage = 'Failed to authenticate. Please try again later.';
@@ -70,8 +73,8 @@ class LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: CallbackShortcuts(
+        bindings: {const SingleActivator(LogicalKeyboardKey.enter): () => _login()},
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -80,22 +83,12 @@ class LoginPageState extends State<LoginPage> {
                 width: 150,
                 child: TextField(
                   autofocus: true,
-                  controller: _usernameController,
+                  controller: _passKeyController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Username',
+                    labelText: 'Password',
                     errorText: _errorMessage.isNotEmpty ? _errorMessage : null,
                   ),
-                ),
-              ),
-              SizedBox(height: 10),
-              SizedBox(
-                width: 150,
-                child: TextField(
-                  autofocus: true,
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Password'),
                 ),
               ),
               SizedBox(height: 20),
