@@ -28,7 +28,7 @@ class CloseIntent extends Intent {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  late String token = '';
+  String token = '';
   late TextEditingController _volumeController;
   late TextEditingController _symbolController;
   late TextEditingController _tokenController;
@@ -43,17 +43,22 @@ class HomeScreenState extends State<HomeScreen> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', tok);
-    print('Token saved successfully');
-
     setState(() {
       token = tok; // Update the state and rebuild the widget
     });
+    toastification.show(
+      backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+      title: const Text('Success!'),
+      description: const Text('Token Changed successfully'),
+      type: ToastificationType.success, // Optional: success, info, warning, error
+      alignment: Alignment.center, // Optional: customize position
+      autoCloseDuration: const Duration(seconds: 2), // Optional: duration
+    );
   }
 
   Future<void> _getToken() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     token = pref.getString('token') ?? '';
-    print('Token get successfully');
   }
 
   @override
@@ -75,6 +80,12 @@ class HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  void reset() {
+    _symbolController.clear();
+    _volumeController.clear();
+    setState(() {});
+  }
+
   Future<void> _openPosition(String type) async {
     Dio dio = Dio();
     final direction = type;
@@ -88,12 +99,33 @@ class HomeScreenState extends State<HomeScreen> {
     );
     try {
       if (openResponse.statusCode == 200) {
-        print(openResponse.data);
+        toastification.show(
+          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+          title: const Text('Success!'),
+          description: const Text('Send successfuly'),
+          type: ToastificationType.success,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 2),
+        );
       } else {
-        print(openResponse.statusCode);
+        toastification.show(
+          backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+          title: const Text('Error!'),
+          description: Text('Status code : ${openResponse.statusCode}'),
+          type: ToastificationType.error,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 2),
+        );
       }
-    } catch (_) {
-      print('Network Error');
+    } catch (e) {
+      toastification.show(
+        backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+        title: const Text('Error!'),
+        description: Text('Error occurs : $e'),
+        type: ToastificationType.error,
+        alignment: Alignment.center,
+        autoCloseDuration: const Duration(seconds: 2),
+      );
     }
   }
 
@@ -105,12 +137,33 @@ class HomeScreenState extends State<HomeScreen> {
     );
     try {
       if (closeResponse.statusCode == 200) {
-        print(closeResponse.data);
+        toastification.show(
+          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+          title: const Text('Success!'),
+          description: const Text('Send successfully'),
+          type: ToastificationType.success,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 2),
+        );
       } else {
-        print(closeResponse.statusCode);
+        toastification.show(
+          backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+          title: const Text('Error!'),
+          description: Text('Status code : ${closeResponse.statusCode}'),
+          type: ToastificationType.error,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 2),
+        );
       }
-    } catch (_) {
-      print('Network Error');
+    } catch (e) {
+      toastification.show(
+        backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+        title: const Text('Error!'),
+        description: Text('Error occurs : $e'),
+        type: ToastificationType.error,
+        alignment: Alignment.center,
+        autoCloseDuration: const Duration(seconds: 2),
+      );
     }
   }
 
@@ -184,7 +237,7 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      fixedSize: Size(160, 50),
+                      fixedSize: Size(160, 55),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                         side: BorderSide(color: Colors.deepPurpleAccent, width: 2),
@@ -196,9 +249,10 @@ class HomeScreenState extends State<HomeScreen> {
                     ),
                     child: Text("Change token"),
                   ),
+                  SizedBox(width: 10),
                 ],
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -208,6 +262,7 @@ class HomeScreenState extends State<HomeScreen> {
                       SizedBox(width: 15),
                       SizedBox(
                         width: 100,
+                        height: 50,
                         child: Focus(
                           focusNode: _symbolFocusNode,
                           child: TextField(
@@ -227,6 +282,7 @@ class HomeScreenState extends State<HomeScreen> {
                       SizedBox(width: 15),
                       SizedBox(
                         width: 85,
+                        height: 50,
                         child: Focus(
                           focusNode: _volumeFocusNode,
                           child: TextField(
@@ -242,7 +298,7 @@ class HomeScreenState extends State<HomeScreen> {
                 ],
               ),
 
-              SizedBox(height: 40),
+              SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 20,
@@ -253,7 +309,7 @@ class HomeScreenState extends State<HomeScreen> {
                       builder: (context) => ElevatedButton(
                         focusNode: _longButtonFocusNode,
                         style: ElevatedButton.styleFrom(
-                          fixedSize: Size(100, 60),
+                          fixedSize: Size(100, 55),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                             side: BorderSide(color: Colors.lightGreen, width: 2),
@@ -265,18 +321,26 @@ class HomeScreenState extends State<HomeScreen> {
                         ),
                         onPressed: () {
                           if (token.isNotEmpty) {
-                            print("long:token exist");
                             Actions.invoke(context, const LongIntent());
+                            toastification.show(
+                              backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+                              context: context,
+                              title: const Text('Success!'),
+                              description: const Text('Your value submited successfully'),
+                              type: ToastificationType.success,
+                              alignment: Alignment.center,
+                              autoCloseDuration: const Duration(seconds: 2),
+                            );
+                            reset();
                           } else {
-                            print("long:token empty");
                             toastification.show(
                               backgroundColor: Color.fromRGBO(242, 186, 185, 1),
                               context: context,
                               title: const Text('Error!'),
                               description: const Text('Your token is empty'),
-                              type: ToastificationType.error, // Optional: success, info, warning, error
-                              alignment: Alignment.center, // Optional: customize position
-                              autoCloseDuration: const Duration(seconds: 3), // Optional: duration
+                              type: ToastificationType.error,
+                              alignment: Alignment.center,
+                              autoCloseDuration: const Duration(seconds: 2),
                             );
                           }
                         },
@@ -290,7 +354,7 @@ class HomeScreenState extends State<HomeScreen> {
                       builder: (context) => ElevatedButton(
                         focusNode: _shortButtonFocusNode,
                         style: ElevatedButton.styleFrom(
-                          fixedSize: Size(100, 60),
+                          fixedSize: Size(100, 55),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                             side: BorderSide(color: Colors.red, width: 2),
@@ -302,18 +366,26 @@ class HomeScreenState extends State<HomeScreen> {
                         ),
                         onPressed: () {
                           if (token.isNotEmpty) {
-                            print("short:token exist");
                             Actions.invoke(context, const ShortIntent());
+                            toastification.show(
+                              backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+                              context: context,
+                              title: const Text('Success!'),
+                              description: const Text('Your value submited successfully'),
+                              type: ToastificationType.success,
+                              alignment: Alignment.center,
+                              autoCloseDuration: const Duration(seconds: 2),
+                            );
+                            reset();
                           } else {
-                            print("short:token empty");
                             toastification.show(
                               backgroundColor: Color.fromRGBO(242, 186, 185, 1),
                               context: context,
                               title: const Text('Error!'),
                               description: const Text('Your token is empty'),
-                              type: ToastificationType.error, // Optional: success, info, warning, error
-                              alignment: Alignment.center, // Optional: customize position
-                              autoCloseDuration: const Duration(seconds: 3), // Optional: duration
+                              type: ToastificationType.error,
+                              alignment: Alignment.center,
+                              autoCloseDuration: const Duration(seconds: 2),
                             );
                           }
                         },
@@ -334,7 +406,7 @@ class HomeScreenState extends State<HomeScreen> {
                         builder: (context) => ElevatedButton(
                           focusNode: _closeButtonFocusNode,
                           style: ElevatedButton.styleFrom(
-                            fixedSize: Size(90, 50),
+                            fixedSize: Size(220, 50),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadiusGeometry.circular(30),
                               side: BorderSide(color: Colors.black, width: 2),
@@ -346,10 +418,10 @@ class HomeScreenState extends State<HomeScreen> {
                           ),
                           onPressed: () {
                             if (token.isNotEmpty) {
-                              print("close:token exist");
                               Actions.invoke(context, CloseIntent());
+                              reset();
                             } else {
-                              print("close:token empty");
+                              reset();
                             }
                           },
                           child: Text('Close'),
