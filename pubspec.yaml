@@ -12,6 +12,7 @@ dependencies:
   dio: ^5.9.0
   toastification: ^3.0.3
   shared_preferences: ^2.5.3
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -19,3 +20,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  deferred-components:
+    - name: login_screen
+      libraries:
+        - package:trading_app/login_screen.dart
+    - name: home_screen
+      libraries:
+        - package:trading_app/home_screen.dart

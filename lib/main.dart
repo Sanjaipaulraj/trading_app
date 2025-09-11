@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trading_app/pages/login_screen.dart';
+import 'package:trading_app/pages/login_screen.dart' deferred as login_screen;
 
 void main() {
   runApp(const MainApp());
@@ -10,6 +10,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(debugShowCheckedModeBanner: false, home: Scaffold(body: LoginPage()));
+    login_screen.loadLibrary();
+    return MaterialApp(debugShowCheckedModeBanner: false, home: Scaffold(body: login_screen.LoginPage()));
   }
 }

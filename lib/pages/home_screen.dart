@@ -170,7 +170,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Demo app')),
+      appBar: AppBar(title: Text('Trading app')),
       body: Shortcuts(
         shortcuts: {
           LogicalKeySet(LogicalKeyboardKey.keyL, LogicalKeyboardKey.control): const LongIntent(),

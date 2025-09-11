@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 
 import 'dart:convert';
 
-import 'package:trading_app/pages/home_screen.dart';
+import 'package:trading_app/pages/home_screen.dart' deferred as home_screen;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -38,7 +38,7 @@ class LoginPageState extends State<LoginPage> {
       });
       return;
     }
-
+    await home_screen.loadLibrary();
     try {
       final data = json.encode({'password': password});
       final response = await dio.post(
@@ -48,7 +48,7 @@ class LoginPageState extends State<LoginPage> {
       );
       if (response.statusCode == 200) {
         if (mounted) {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => home_screen.HomeScreen()));
         }
       } else {
         if (mounted) {
@@ -60,7 +60,7 @@ class LoginPageState extends State<LoginPage> {
       }
     } catch (error) {
       if (mounted) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => home_screen.HomeScreen()));
         setState(() {
           _isLoading = false;
           _errorMessage = 'Failed to authenticate. Please try again later.';
