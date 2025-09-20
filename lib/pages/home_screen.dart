@@ -3,8 +3,14 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
+import 'package:trading_app/intent.dart';
+import 'package:trading_app/sections/automatic_closing_section.dart';
+import 'package:trading_app/sections/long_button_section.dart';
+import 'package:trading_app/sections/short_button_section.dart';
+import 'package:trading_app/sections/status_section.dart';
+import 'package:trading_app/token_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,73 +22,58 @@ class HomeScreen extends StatefulWidget {
 const List<String> list = <String>['AAPL', 'GOOGL', 'MSFT', 'DJIA', 'SPX'];
 typedef MenuEntry = DropdownMenuEntry<String>;
 
-class LongIntent extends Intent {
-  const LongIntent();
-}
-
-class ShortIntent extends Intent {
-  const ShortIntent();
-}
-
-class CloseIntent extends Intent {
-  const CloseIntent();
-}
-
 class HomeScreenState extends State<HomeScreen> {
   String token = '';
   static final List<MenuEntry> menuEntries = List.unmodifiable(
     list.map<MenuEntry>((String name) => MenuEntry(value: name, label: name)),
   );
   String dropdownValue = list.first;
-  late TextEditingController _volumeController;
   late TextEditingController _tokenController;
-  final FocusNode _volumeFocusNode = FocusNode();
+  final FocusNode _symbolFocusNode = FocusNode();
   final FocusNode _longButtonFocusNode = FocusNode();
   final FocusNode _shortButtonFocusNode = FocusNode();
   final FocusNode _closeButtonFocusNode = FocusNode();
 
-  Future<void> _changeToken(String tok) async {
-    if (tok.isEmpty) return;
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', tok);
-    setState(() {
-      token = tok; // Update the state and rebuild the widget
-    });
-    toastification.show(
-      backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-      title: const Text('Success!'),
-      description: const Text('Token Changed successfully'),
-      type: ToastificationType.success, // Optional: success, info, warning, error
-      alignment: Alignment.center, // Optional: customize position
-      autoCloseDuration: const Duration(seconds: 2), // Optional: duration
-    );
-  }
-
-  Future<void> _getToken() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    token = pref.getString('token') ?? '';
-  }
-
   @override
   void initState() {
     super.initState();
-    _volumeController = TextEditingController();
     _tokenController = TextEditingController();
-    _getToken();
+    // Initialize token from Provider after the first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      String? fetchedToken = await Provider.of<Mytoken>(context, listen: false).getToken();
+      setState(() {
+        token = fetchedToken ?? ''; // Safely handle null token
+      });
+    });
   }
 
-  void reset() {
-    _volumeController.clear();
-    setState(() {});
+  @override
+  void dispose() {
+    _symbolFocusNode.dispose();
+    _longButtonFocusNode.dispose();
+    _shortButtonFocusNode.dispose();
+    _closeButtonFocusNode.dispose();
+    super.dispose();
   }
 
   Future<void> _openPosition(String type) async {
+    final token = Provider.of<Mytoken>(context, listen: false).token;
+    if (token == null) {
+      toastification.show(
+        backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+        title: const Text('Error!'),
+        description: const Text('Token is empty!'),
+        type: ToastificationType.error,
+        alignment: Alignment.center,
+        autoCloseDuration: const Duration(seconds: 2),
+      );
+      return;
+    }
+
     Dio dio = Dio();
     final direction = type;
     final symbol = dropdownValue;
-    final lot = num.parse(_volumeController.text);
-    final data = json.encode({'symbol': symbol, 'lot': lot, 'direction': direction});
+    final data = json.encode({'symbol': symbol, 'direction': direction});
     final openResponse = await dio.post(
       'http://192.168.1.60:8001/trade/open',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
@@ -121,6 +112,19 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _onClosePosition() async {
+    final token = Provider.of<Mytoken>(context, listen: false).token;
+    if (token == null) {
+      toastification.show(
+        backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+        title: const Text('Error!'),
+        description: const Text('Token is empty!'),
+        type: ToastificationType.error,
+        alignment: Alignment.center,
+        autoCloseDuration: const Duration(seconds: 2),
+      );
+      return;
+    }
+
     Dio dio = Dio();
     final closeResponse = await dio.post(
       'http://192.168.1.60:8001/trade/close',
@@ -161,7 +165,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Trading app')),
+      appBar: AppBar(title: Text('Auditplus')),
       body: Shortcuts(
         shortcuts: {
           LogicalKeySet(LogicalKeyboardKey.keyL, LogicalKeyboardKey.control): const LongIntent(),
@@ -189,241 +193,157 @@ class HomeScreenState extends State<HomeScreen> {
               },
             ),
           },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () => showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) => Dialog(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          const Text('Enter the token'),
-                          const SizedBox(height: 15),
-                          TextField(
-                            keyboardType: TextInputType.text,
-                            autofocus: true,
-                            controller: _tokenController,
-                            decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Token'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              _changeToken(_tokenController.text);
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Submit'),
-                          ),
-                        ],
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () => showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => Dialog(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const Text('Enter the token'),
+                            const SizedBox(height: 15),
+                            TextField(
+                              keyboardType: TextInputType.text,
+                              autofocus: true,
+                              controller: _tokenController,
+                              decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Token'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                String enteredToken = _tokenController.text;
+                                Provider.of<Mytoken>(context, listen: false).setToken(enteredToken);
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Submit'),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
+                  child: Row(
+                    spacing: 10,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        "Change token",
+                        style: TextStyle(fontWeight: FontWeight.w900, color: Colors.black, fontSize: 16),
+                      ),
+                      Icon(Icons.settings),
+                      SizedBox(width: 10),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  spacing: 10,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      "Change token",
-                      style: TextStyle(fontWeight: FontWeight.w900, color: Colors.black, fontSize: 16),
-                    ),
-                    Icon(Icons.settings),
-                    SizedBox(width: 10),
-                  ],
-                ),
-              ),
-              SizedBox(height: 25),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  children: [
-                    Text(
-                      'Symbol',
-                      style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w900),
-                    ),
-                    SizedBox(width: 30),
-                    SizedBox(
-                      child: DropdownMenu<String>(
-                        width: 250,
-                        initialSelection: list.first,
-                        onSelected: (String? value) {
-                          setState(() {
-                            dropdownValue = value!;
-                          });
+                SizedBox(height: 15),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Text(
+                          //   'Symbol',
+                          //   style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w900),
+                          // ),
+                          SizedBox(
+                            child: DropdownMenu<String>(
+                              width: 130,
+                              initialSelection: list.first,
+                              onSelected: (String? value) {
+                                setState(() {
+                                  dropdownValue = value!;
+                                });
+                              },
+                              dropdownMenuEntries: menuEntries,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        height: 55,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          border: Border.all(
+                            color: Color.fromRGBO(128, 128, 128, 1),
+                            width: 2.0,
+                            style: BorderStyle.solid,
+                          ),
+                        ),
+                      ),
+                      Consumer<Mytoken>(
+                        builder: (context, myToken, child) {
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(100, 55),
+                              backgroundColor: Colors.lightBlueAccent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: BorderSide(color: Colors.black, width: 2),
+                              ),
+                              elevation: 8.0,
+                              foregroundColor: Colors.black,
+                              textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                            ),
+                            onPressed: () {
+                              final token = Provider.of<Mytoken>(listen: false, context).token;
+                              if (token != null) {
+                                Actions.invoke(context, CloseIntent());
+                                toastification.show(
+                                  backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+                                  context: context,
+                                  title: const Text('Closed!'),
+                                  description: const Text('Closed successfully'),
+                                  type: ToastificationType.success,
+                                  alignment: Alignment.center,
+                                  autoCloseDuration: const Duration(seconds: 2),
+                                );
+                                print(5);
+                                toastification.show(
+                                  backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+                                  context: context,
+                                  title: const Text('Error!'),
+                                  description: const Text('Your token is empty'),
+                                  type: ToastificationType.error,
+                                  alignment: Alignment.center,
+                                  autoCloseDuration: const Duration(seconds: 2),
+                                );
+                              }
+                            },
+                            child: Text('Close'),
+                          );
                         },
-                        dropdownMenuEntries: menuEntries,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  children: [
-                    Text(
-                      "Volume",
-                      style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w900),
-                    ),
-                    SizedBox(width: 30),
-                    SizedBox(
-                      width: 250,
-                      height: 50,
-                      child: Focus(
-                        focusNode: _volumeFocusNode,
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          autofocus: true,
-                          controller: _volumeController,
-                          decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Qty'),
-                        ),
-                      ),
-                    ),
-                  ],
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      LongButtonSection(),
+                      ShortButtonSection(token: token),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, left: 20.0, bottom: 8.0),
-                child: Row(
-                  spacing: 20,
-                  children: [
-                    Focus(
-                      autofocus: true,
-                      child: Builder(
-                        builder: (context) => ElevatedButton(
-                          focusNode: _longButtonFocusNode,
-                          style: ElevatedButton.styleFrom(
-                            fixedSize: Size(170, 60),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: BorderSide(color: Colors.black, width: 2),
-                            ),
-                            elevation: 8.0,
-                            foregroundColor: Colors.black,
-                            backgroundColor: Colors.lightGreen,
-                            textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                          ),
-                          onPressed: () {
-                            if (token.isNotEmpty) {
-                              Actions.invoke(context, const LongIntent());
-                              toastification.show(
-                                backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-                                context: context,
-                                title: const Text('Success!'),
-                                description: const Text('Your value submited successfully'),
-                                type: ToastificationType.success,
-                                alignment: Alignment.center,
-                                autoCloseDuration: const Duration(seconds: 2),
-                              );
-                              reset();
-                            } else {
-                              toastification.show(
-                                backgroundColor: Color.fromRGBO(242, 186, 185, 1),
-                                context: context,
-                                title: const Text('Error!'),
-                                description: const Text('Your token is empty'),
-                                type: ToastificationType.error,
-                                alignment: Alignment.center,
-                                autoCloseDuration: const Duration(seconds: 2),
-                              );
-                            }
-                          },
-                          child: Text('Long'),
-                        ),
-                      ),
-                    ),
-                    Focus(
-                      autofocus: true,
-                      child: Builder(
-                        builder: (context) => ElevatedButton(
-                          focusNode: _shortButtonFocusNode,
-                          style: ElevatedButton.styleFrom(
-                            fixedSize: Size(170, 60),
-                            backgroundColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: BorderSide(color: Colors.black, width: 2),
-                            ),
-                            elevation: 8.0,
-                            foregroundColor: Colors.black,
-                            textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                          ),
-                          onPressed: () {
-                            if (token.isNotEmpty) {
-                              Actions.invoke(context, const ShortIntent());
-                              toastification.show(
-                                backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-                                context: context,
-                                title: const Text('Success!'),
-                                description: const Text('Your value submited successfully'),
-                                type: ToastificationType.success,
-                                alignment: Alignment.center,
-                                autoCloseDuration: const Duration(seconds: 2),
-                              );
-                              reset();
-                            } else {
-                              toastification.show(
-                                backgroundColor: Color.fromRGBO(242, 186, 185, 1),
-                                context: context,
-                                title: const Text('Error!'),
-                                description: const Text('Your token is empty'),
-                                type: ToastificationType.error,
-                                alignment: Alignment.center,
-                                autoCloseDuration: const Duration(seconds: 2),
-                              );
-                            }
-                          },
-                          child: Text('Short'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, left: 40),
-                child: Row(
-                  children: [
-                    Focus(
-                      autofocus: true,
-                      child: Builder(
-                        builder: (context) => ElevatedButton(
-                          focusNode: _closeButtonFocusNode,
-                          style: ElevatedButton.styleFrom(
-                            fixedSize: Size(300, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(30),
-                              side: BorderSide(color: Colors.black, width: 2),
-                            ),
-                            elevation: 0,
-                            foregroundColor: Colors.black,
-                            backgroundColor: Color.fromRGBO(167, 205, 248, 1),
-                            textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                          ),
-                          onPressed: () {
-                            if (token.isNotEmpty) {
-                              Actions.invoke(context, CloseIntent());
-                              reset();
-                            } else {
-                              reset();
-                            }
-                          },
-                          child: Text('Close'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                Divider(),
+                StatusScreen(),
+                Divider(),
+                AutomaticClosingSection(),
+              ],
+            ),
           ),
         ),
       ),
