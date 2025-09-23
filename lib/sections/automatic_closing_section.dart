@@ -9,7 +9,7 @@ class AutomaticClosingSection extends StatefulWidget {
 
 class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
   bool _isRevChecked = false;
-  bool _isSigChecked = false;
+  bool _isSignalChecked = false;
   bool _isTcChecked = false;
 
   @override
@@ -59,10 +59,10 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                 height: 40,
                 width: 40,
                 child: Checkbox(
-                  value: _isSigChecked,
+                  value: _isSignalChecked,
                   onChanged: (bool? newValue) {
                     setState(() {
-                      _isSigChecked = newValue!;
+                      _isSignalChecked = newValue!;
                     });
                   },
                   activeColor: Colors.green,

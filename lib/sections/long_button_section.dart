@@ -12,6 +12,11 @@ class LongButtonSection extends StatefulWidget {
 }
 
 class _LongButtonSectionState extends State<LongButtonSection> {
+  bool _isTcChecked = false;
+  bool _isTtChecked = false;
+  bool _isNeoChecked = false;
+  bool _isHwoChecked = false;
+
   @override
   void initState() {
     super.initState();
@@ -23,6 +28,7 @@ class _LongButtonSectionState extends State<LongButtonSection> {
       builder: (context, myToken, child) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -67,6 +73,67 @@ class _LongButtonSectionState extends State<LongButtonSection> {
                 }
               },
               child: Text('Long'),
+            ),
+            SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Checkbox(
+                  value: _isTcChecked,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      _isTcChecked = newValue!;
+                    });
+                  },
+                  activeColor: Colors.green,
+                  checkColor: Colors.white,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Checkbox(
+                  value: _isTtChecked,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      _isTtChecked = newValue!;
+                    });
+                  },
+                  activeColor: Colors.green,
+                  checkColor: Colors.white,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Checkbox(
+                  value: _isNeoChecked,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      _isNeoChecked = newValue!;
+                    });
+                  },
+                  activeColor: Colors.green,
+                  checkColor: Colors.white,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Checkbox(
+                  value: _isHwoChecked,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      _isHwoChecked = newValue!;
+                    });
+                  },
+                  activeColor: Colors.green,
+                  checkColor: Colors.white,
+                ),
+              ],
             ),
           ],
         );

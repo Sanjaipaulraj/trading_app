@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:trading_app/intent.dart';
 import 'package:trading_app/sections/automatic_closing_section.dart';
+import 'package:trading_app/sections/conditon_title_section.dart';
 import 'package:trading_app/sections/long_button_section.dart';
 import 'package:trading_app/sections/short_button_section.dart';
 import 'package:trading_app/sections/status_section.dart';
@@ -250,10 +251,6 @@ class HomeScreenState extends State<HomeScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Text(
-                          //   'Symbol',
-                          //   style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w900),
-                          // ),
                           SizedBox(
                             child: DropdownMenu<String>(
                               width: 130,
@@ -308,7 +305,6 @@ class HomeScreenState extends State<HomeScreen> {
                                   alignment: Alignment.center,
                                   autoCloseDuration: const Duration(seconds: 2),
                                 );
-                                print(5);
                                 toastification.show(
                                   backgroundColor: Color.fromRGBO(242, 186, 185, 1),
                                   context: context,
@@ -332,10 +328,7 @@ class HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      LongButtonSection(),
-                      ShortButtonSection(token: token),
-                    ],
+                    children: [ConditonTitleSection(), LongButtonSection(), ShortButtonSection()],
                   ),
                 ),
                 Divider(),

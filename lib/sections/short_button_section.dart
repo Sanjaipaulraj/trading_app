@@ -5,19 +5,20 @@ import 'package:trading_app/intent.dart';
 import 'package:trading_app/token_provider.dart';
 
 class ShortButtonSection extends StatefulWidget {
-  final String token;
-  const ShortButtonSection({super.key, required this.token});
+  const ShortButtonSection({super.key});
 
   @override
   State<ShortButtonSection> createState() => _ShortButtonSectionState();
 }
 
 class _ShortButtonSectionState extends State<ShortButtonSection> {
-  late String tok;
+  bool _isTcChecked = false;
+  bool _isTtChecked = false;
+  bool _isNeoChecked = false;
+  bool _isHwoChecked = false;
 
   @override
   void initState() {
-    tok = widget.token;
     super.initState();
   }
 
@@ -27,6 +28,7 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
       builder: (context, myToken, child) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -67,6 +69,67 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
                 }
               },
               child: Text('Short'),
+            ),
+            SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Checkbox(
+                  value: _isTcChecked,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      _isTcChecked = newValue!;
+                    });
+                  },
+                  activeColor: Colors.green,
+                  checkColor: Colors.white,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Checkbox(
+                  value: _isTtChecked,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      _isTtChecked = newValue!;
+                    });
+                  },
+                  activeColor: Colors.green,
+                  checkColor: Colors.white,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Checkbox(
+                  value: _isNeoChecked,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      _isNeoChecked = newValue!;
+                    });
+                  },
+                  activeColor: Colors.green,
+                  checkColor: Colors.white,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Checkbox(
+                  value: _isHwoChecked,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      _isHwoChecked = newValue!;
+                    });
+                  },
+                  activeColor: Colors.green,
+                  checkColor: Colors.white,
+                ),
+              ],
             ),
           ],
         );
