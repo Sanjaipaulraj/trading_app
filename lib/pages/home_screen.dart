@@ -166,7 +166,45 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Auditplus')),
+      appBar: AppBar(
+        actions: <Widget>[
+          GestureDetector(
+            onTap: () => showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => Dialog(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const Text('Enter the token'),
+                      const SizedBox(height: 15),
+                      TextField(
+                        keyboardType: TextInputType.text,
+                        autofocus: true,
+                        controller: _tokenController,
+                        decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Token'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          String enteredToken = _tokenController.text;
+                          Provider.of<Mytoken>(context, listen: false).setToken(enteredToken);
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Submit'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            child: Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.settings)),
+          ),
+        ],
+        leading: Icon(Icons.menu),
+        title: Text('Auditplus'),
+      ),
       body: Shortcuts(
         shortcuts: {
           LogicalKeySet(LogicalKeyboardKey.keyL, LogicalKeyboardKey.control): const LongIntent(),
@@ -198,50 +236,6 @@ class HomeScreenState extends State<HomeScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                GestureDetector(
-                  onTap: () => showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) => Dialog(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            const Text('Enter the token'),
-                            const SizedBox(height: 15),
-                            TextField(
-                              keyboardType: TextInputType.text,
-                              autofocus: true,
-                              controller: _tokenController,
-                              decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Token'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                String enteredToken = _tokenController.text;
-                                Provider.of<Mytoken>(context, listen: false).setToken(enteredToken);
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Submit'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  child: Row(
-                    spacing: 10,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        "Change token",
-                        style: TextStyle(fontWeight: FontWeight.w900, color: Colors.black, fontSize: 16),
-                      ),
-                      Icon(Icons.settings),
-                      SizedBox(width: 10),
-                    ],
-                  ),
-                ),
                 SizedBox(height: 15),
                 Padding(
                   padding: const EdgeInsets.all(12.0),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
+import 'package:trading_app/checked_box_provider.dart';
 import 'package:trading_app/intent.dart';
 import 'package:trading_app/token_provider.dart';
 
@@ -12,11 +13,6 @@ class ShortButtonSection extends StatefulWidget {
 }
 
 class _ShortButtonSectionState extends State<ShortButtonSection> {
-  bool _isTcChecked = false;
-  bool _isTtChecked = false;
-  bool _isNeoChecked = false;
-  bool _isHwoChecked = false;
-
   @override
   void initState() {
     super.initState();
@@ -24,8 +20,8 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Mytoken>(
-      builder: (context, myToken, child) {
+    return Consumer2<Mytoken, CheckedBox>(
+      builder: (context, myToken, checkedBox, child) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -33,7 +29,7 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(100, 55),
-                backgroundColor: Colors.red,
+                backgroundColor: checkedBox.isShortAllChecked ? Colors.red : Colors.grey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                   side: BorderSide(color: Colors.black, width: 2),
@@ -43,97 +39,76 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
                 textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               ),
-              onPressed: () {
-                final token = Provider.of<Mytoken>(context, listen: false).token;
-                if (token != null) {
-                  Actions.invoke(context, const ShortIntent());
-                  toastification.show(
-                    backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-                    context: context,
-                    title: const Text('Success!'),
-                    description: const Text('Your value submited successfully'),
-                    type: ToastificationType.success,
-                    alignment: Alignment.center,
-                    autoCloseDuration: const Duration(seconds: 2),
-                  );
-                } else {
-                  toastification.show(
-                    backgroundColor: Color.fromRGBO(242, 186, 185, 1),
-                    context: context,
-                    title: const Text('Error!'),
-                    description: const Text('Your token is empty'),
-                    type: ToastificationType.error,
-                    alignment: Alignment.center,
-                    autoCloseDuration: const Duration(seconds: 2),
-                  );
-                }
-              },
+              onPressed: checkedBox.isShortAllChecked
+                  ? () {
+                      final token = Provider.of<Mytoken>(context, listen: false).token;
+                      if (token != null) {
+                        Actions.invoke(context, const ShortIntent());
+                        toastification.show(
+                          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+                          context: context,
+                          title: const Text('Success!'),
+                          description: const Text('Your value submited successfully'),
+                          type: ToastificationType.success,
+                          alignment: Alignment.center,
+                          autoCloseDuration: const Duration(seconds: 2),
+                        );
+                      } else {
+                        toastification.show(
+                          backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+                          context: context,
+                          title: const Text('Error!'),
+                          description: const Text('Your token is empty'),
+                          type: ToastificationType.error,
+                          alignment: Alignment.center,
+                          autoCloseDuration: const Duration(seconds: 2),
+                        );
+                      }
+                    }
+                  : null,
               child: Text('Short'),
             ),
             SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Checkbox(
-                  value: _isTcChecked,
-                  onChanged: (bool? newValue) {
-                    setState(() {
-                      _isTcChecked = newValue!;
-                    });
-                  },
-                  activeColor: Colors.green,
-                  checkColor: Colors.white,
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Checkbox(
-                  value: _isTtChecked,
-                  onChanged: (bool? newValue) {
-                    setState(() {
-                      _isTtChecked = newValue!;
-                    });
-                  },
-                  activeColor: Colors.green,
-                  checkColor: Colors.white,
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Checkbox(
-                  value: _isNeoChecked,
-                  onChanged: (bool? newValue) {
-                    setState(() {
-                      _isNeoChecked = newValue!;
-                    });
-                  },
-                  activeColor: Colors.green,
-                  checkColor: Colors.white,
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Checkbox(
-                  value: _isHwoChecked,
-                  onChanged: (bool? newValue) {
-                    setState(() {
-                      _isHwoChecked = newValue!;
-                    });
-                  },
-                  activeColor: Colors.green,
-                  checkColor: Colors.white,
-                ),
-              ],
-            ),
+            _buildCheckboxRow('ShortTcChecked', checkedBox),
+            _buildCheckboxRow('ShortTtChecked', checkedBox),
+            _buildCheckboxRow('ShortNeoChecked', checkedBox),
+            _buildCheckboxRow('ShortHwoChecked', checkedBox),
           ],
         );
       },
     );
+  }
+
+  Widget _buildCheckboxRow(String checkboxField, CheckedBox checkedBox) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Checkbox(
+          value: _getCheckboxValue(checkboxField, checkedBox),
+          onChanged: (bool? newValue) {
+            setState(() {
+              checkedBox.changeValue(checkboxField);
+            });
+          },
+          activeColor: Colors.green,
+          checkColor: Colors.white,
+        ),
+      ],
+    );
+  }
+
+  bool _getCheckboxValue(String checkboxField, CheckedBox checkedBox) {
+    switch (checkboxField) {
+      case 'ShortTcChecked':
+        return checkedBox.isShortTcChecked;
+      case 'ShortTtChecked':
+        return checkedBox.isShortTtChecked;
+      case 'ShortNeoChecked':
+        return checkedBox.isShortNeoChecked;
+      case 'ShortHwoChecked':
+        return checkedBox.isShortHwoChecked;
+      default:
+        return false;
+    }
   }
 }

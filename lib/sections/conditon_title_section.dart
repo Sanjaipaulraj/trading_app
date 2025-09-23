@@ -14,7 +14,7 @@ class ConditonTitleSection extends StatelessWidget {
           child: Text(
             'TC UP',
             textAlign: TextAlign.end,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
         ),
         Padding(
@@ -22,7 +22,7 @@ class ConditonTitleSection extends StatelessWidget {
           child: Text(
             'TT UP',
             textAlign: TextAlign.end,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
         ),
         Padding(
@@ -30,7 +30,7 @@ class ConditonTitleSection extends StatelessWidget {
           child: Text(
             'NEO UP',
             textAlign: TextAlign.end,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
         ),
         Padding(
@@ -38,7 +38,7 @@ class ConditonTitleSection extends StatelessWidget {
           child: Text(
             'HWO UP',
             textAlign: TextAlign.end,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
         ),
       ],
