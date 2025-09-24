@@ -202,7 +202,34 @@ class HomeScreenState extends State<HomeScreen> {
             child: Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.settings)),
           ),
         ],
-        leading: Icon(Icons.menu),
+        leading: GestureDetector(
+          onTap: () => showDialog<String>(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) => Dialog(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 10,
+                  children: [
+                    Text(
+                      textAlign: TextAlign.center,
+                      'Menu Dialog',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('Close', style: TextStyle(fontSize: 16)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          child: Icon(Icons.menu),
+        ),
         title: Text('Auditplus'),
       ),
       body: Shortcuts(
@@ -299,6 +326,7 @@ class HomeScreenState extends State<HomeScreen> {
                                   alignment: Alignment.center,
                                   autoCloseDuration: const Duration(seconds: 2),
                                 );
+                              } else {
                                 toastification.show(
                                   backgroundColor: Color.fromRGBO(242, 186, 185, 1),
                                   context: context,
