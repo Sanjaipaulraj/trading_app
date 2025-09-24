@@ -68,6 +68,7 @@ class _LongButtonSectionState extends State<LongButtonSection> {
             _buildCheckboxRow('LongTtChecked', checkedBox),
             _buildCheckboxRow('LongNeoChecked', checkedBox),
             _buildCheckboxRow('LongHwoChecked', checkedBox),
+            _buildCheckboxRow('LongConfChecked', checkedBox),
           ],
         );
       },
@@ -102,6 +103,8 @@ class _LongButtonSectionState extends State<LongButtonSection> {
         return checkedBox.isLongNeoChecked;
       case 'LongHwoChecked':
         return checkedBox.isLongHwoChecked;
+      case 'LongConfChecked':
+        return checkedBox.isLongConfChecked;
       default:
         return false;
     }

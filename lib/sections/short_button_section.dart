@@ -73,6 +73,7 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
             _buildCheckboxRow('ShortTtChecked', checkedBox),
             _buildCheckboxRow('ShortNeoChecked', checkedBox),
             _buildCheckboxRow('ShortHwoChecked', checkedBox),
+            _buildCheckboxRow('ShortConfChecked', checkedBox),
           ],
         );
       },
@@ -107,6 +108,8 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
         return checkedBox.isShortNeoChecked;
       case 'ShortHwoChecked':
         return checkedBox.isShortHwoChecked;
+      case 'ShortConfChecked':
+        return checkedBox.isShortConfChecked;
       default:
         return false;
     }

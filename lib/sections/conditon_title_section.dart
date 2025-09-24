@@ -7,10 +7,11 @@ class ConditonTitleSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 60, width: 100),
         Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(12),
           child: Text(
             'TC UP',
             textAlign: TextAlign.end,
@@ -18,7 +19,7 @@ class ConditonTitleSection extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(12),
           child: Text(
             'TT UP',
             textAlign: TextAlign.end,
@@ -26,7 +27,7 @@ class ConditonTitleSection extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(12),
           child: Text(
             'NEO UP',
             textAlign: TextAlign.end,
@@ -34,9 +35,17 @@ class ConditonTitleSection extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(12),
           child: Text(
             'HWO UP',
+            textAlign: TextAlign.end,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(12),
+          child: Text(
+            'CONF.',
             textAlign: TextAlign.end,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
