@@ -13,7 +13,7 @@ class ConditonTitleSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(12),
           child: Text(
-            'TC UP',
+            'Catcher',
             textAlign: TextAlign.end,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
@@ -21,7 +21,7 @@ class ConditonTitleSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(12),
           child: Text(
-            'TT UP',
+            'Tracer',
             textAlign: TextAlign.end,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
@@ -29,7 +29,7 @@ class ConditonTitleSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(12),
           child: Text(
-            'NEO UP',
+            'NEO Cloud',
             textAlign: TextAlign.end,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
@@ -37,7 +37,7 @@ class ConditonTitleSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(12),
           child: Text(
-            'HWO UP',
+            'Confirmation',
             textAlign: TextAlign.end,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
@@ -45,7 +45,7 @@ class ConditonTitleSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(12),
           child: Text(
-            'CONF.',
+            'HyperWave',
             textAlign: TextAlign.end,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),

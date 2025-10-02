@@ -24,12 +24,12 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
             style: TextStyle(color: Colors.purpleAccent, fontSize: 20, fontWeight: FontWeight.bold),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             spacing: 5,
             children: [
               SizedBox(
                 width: 100,
-                child: Text('Reversal plus', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                child: Text('Reversal Plus', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               ),
               SizedBox(
                 height: 40,
@@ -48,12 +48,12 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
             ],
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             spacing: 5,
             children: [
               SizedBox(
                 width: 100,
-                child: Text('Signal East', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                child: Text('Signal Exit', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               ),
               SizedBox(
                 height: 40,
@@ -72,12 +72,12 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
             ],
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             spacing: 5,
             children: [
               SizedBox(
                 width: 100,
-                child: Text('Tc change', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                child: Text('TC Change', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               ),
               SizedBox(
                 height: 40,

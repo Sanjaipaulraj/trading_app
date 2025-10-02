@@ -20,7 +20,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => HomeScreenState();
 }
 
-const List<String> list = <String>['AAPL', 'GOOGL', 'MSFT', 'DJIA', 'SPX'];
+const List<String> list = <String>['AAPLJU', 'GOOGLPO', 'MSFT', 'DJIA', 'SPX'];
 typedef MenuEntry = DropdownMenuEntry<String>;
 
 class HomeScreenState extends State<HomeScreen> {
@@ -202,35 +202,53 @@ class HomeScreenState extends State<HomeScreen> {
             child: Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.settings)),
           ),
         ],
-        leading: GestureDetector(
-          onTap: () => showDialog<String>(
-            barrierDismissible: false,
-            context: context,
-            builder: (BuildContext context) => Dialog(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 10,
-                  children: [
-                    Text(
-                      textAlign: TextAlign.center,
-                      'Menu Dialog',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text('Close', style: TextStyle(fontSize: 16)),
-                    ),
-                  ],
+        leading: MenuBar(
+          children: [
+            SubmenuButton(
+              style: ButtonStyle(alignment: Alignment.center),
+              menuChildren: [
+                MenuItemButton(
+                  onPressed: () => {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item 1 !'))),
+                  },
+                  child: MenuAcceleratorLabel('Item&1'),
                 ),
-              ),
+                MenuItemButton(
+                  onPressed: () => {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item 2 !'))),
+                  },
+                  child: MenuAcceleratorLabel('Item&2'),
+                ),
+                MenuItemButton(
+                  onPressed: () => {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item 3 !'))),
+                  },
+                  child: MenuAcceleratorLabel('Item&3'),
+                ),
+                MenuItemButton(
+                  onPressed: () => {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item 4 !'))),
+                  },
+                  child: MenuAcceleratorLabel('Item&4'),
+                ),
+                MenuItemButton(
+                  onPressed: () => {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item 5 !'))),
+                  },
+                  child: MenuAcceleratorLabel('Item&5'),
+                ),
+                MenuItemButton(
+                  onPressed: () => {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item 6 !'))),
+                  },
+                  child: MenuAcceleratorLabel('Item&6'),
+                ),
+              ],
+              child: Icon(Icons.menu),
             ),
-          ),
-          child: Icon(Icons.menu),
+          ],
         ),
-        title: Text('Auditplus'),
+        title: Text('Auditplus Fx'),
       ),
       body: Shortcuts(
         shortcuts: {
@@ -274,7 +292,7 @@ class HomeScreenState extends State<HomeScreen> {
                         children: [
                           SizedBox(
                             child: DropdownMenu<String>(
-                              width: 130,
+                              width: 150,
                               initialSelection: list.first,
                               onSelected: (String? value) {
                                 setState(() {
@@ -288,7 +306,7 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                       Container(
                         height: 55,
-                        width: 60,
+                        width: 90,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8.0),
                           border: Border.all(
@@ -296,6 +314,11 @@ class HomeScreenState extends State<HomeScreen> {
                             width: 2.0,
                             style: BorderStyle.solid,
                           ),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '125894',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
                         ),
                       ),
                       Consumer<Mytoken>(
@@ -318,11 +341,11 @@ class HomeScreenState extends State<HomeScreen> {
                               if (token != null) {
                                 Actions.invoke(context, CloseIntent());
                                 toastification.show(
-                                  backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+                                  backgroundColor: Color.fromRGBO(180, 231, 240, 1),
                                   context: context,
                                   title: const Text('Closed!'),
                                   description: const Text('Closed successfully'),
-                                  type: ToastificationType.success,
+                                  type: ToastificationType.info,
                                   alignment: Alignment.center,
                                   autoCloseDuration: const Duration(seconds: 2),
                                 );

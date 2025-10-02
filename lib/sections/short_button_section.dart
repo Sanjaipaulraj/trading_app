@@ -72,8 +72,8 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
             _buildCheckboxRow('ShortTcChecked', checkedBox),
             _buildCheckboxRow('ShortTtChecked', checkedBox),
             _buildCheckboxRow('ShortNeoChecked', checkedBox),
-            _buildCheckboxRow('ShortHwoChecked', checkedBox),
             _buildCheckboxRow('ShortConfChecked', checkedBox),
+            _buildCheckboxRow('ShortHwoChecked', checkedBox),
           ],
         );
       },
@@ -84,6 +84,7 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        Icon(Icons.arrow_downward_rounded, color: Colors.red, size: 22.0),
         Checkbox(
           value: _getCheckboxValue(checkboxField, checkedBox),
           onChanged: (bool? newValue) {
