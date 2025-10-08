@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,11 +38,10 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _tokenController = TextEditingController();
-    // Initialize token from Provider after the first frame
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       String? fetchedToken = await Provider.of<Mytoken>(context, listen: false).getToken();
       setState(() {
-        token = fetchedToken ?? ''; // Safely handle null token
+        token = fetchedToken ?? '';
       });
     });
   }
@@ -166,7 +164,60 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(230, 230, 250, 1),
+      drawer: Drawer(
+        backgroundColor: Color.fromRGBO(230, 230, 250, 1),
+        width: MediaQuery.of(context).size.width * 0.6,
+        child: Column(
+          children: [
+            const SizedBox(height: 40),
+            Container(
+              alignment: Alignment.bottomLeft,
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 8),
+              child: const Text('Symbol Status', style: TextStyle(color: Colors.black, fontSize: 22)),
+            ),
+            Divider(color: Color.fromRGBO(79, 79, 79, 1)),
+            const SizedBox(height: 6),
+            ListTile(
+              title: const Text('AAPLJU'),
+              trailing: Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('AAPLJU clicked')));
+              },
+            ),
+            ListTile(
+              title: const Text('GOOGLPO'),
+              trailing: const Text('busy', style: TextStyle(fontSize: 16, color: Colors.grey)),
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('GOOGLPO clicked')));
+              },
+            ),
+            ListTile(
+              title: const Text('MSFT'),
+              trailing: const Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('MSFT clicked')));
+              },
+            ),
+            ListTile(
+              title: const Text('DJIA'),
+              trailing: const Text('busy', style: TextStyle(fontSize: 16, color: Colors.grey)),
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('DJIA clicked')));
+              },
+            ),
+            ListTile(
+              title: const Text('SPX'),
+              trailing: const Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('SPX clicked')));
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(101, 101, 255, 1),
         actions: <Widget>[
           GestureDetector(
             onTap: () => showDialog<String>(
@@ -202,52 +253,6 @@ class HomeScreenState extends State<HomeScreen> {
             child: Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.settings)),
           ),
         ],
-        leading: MenuBar(
-          children: [
-            SubmenuButton(
-              style: ButtonStyle(alignment: Alignment.center),
-              menuChildren: [
-                MenuItemButton(
-                  onPressed: () => {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item 1 !'))),
-                  },
-                  child: MenuAcceleratorLabel('Item&1'),
-                ),
-                MenuItemButton(
-                  onPressed: () => {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item 2 !'))),
-                  },
-                  child: MenuAcceleratorLabel('Item&2'),
-                ),
-                MenuItemButton(
-                  onPressed: () => {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item 3 !'))),
-                  },
-                  child: MenuAcceleratorLabel('Item&3'),
-                ),
-                MenuItemButton(
-                  onPressed: () => {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item 4 !'))),
-                  },
-                  child: MenuAcceleratorLabel('Item&4'),
-                ),
-                MenuItemButton(
-                  onPressed: () => {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item 5 !'))),
-                  },
-                  child: MenuAcceleratorLabel('Item&5'),
-                ),
-                MenuItemButton(
-                  onPressed: () => {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item 6 !'))),
-                  },
-                  child: MenuAcceleratorLabel('Item&6'),
-                ),
-              ],
-              child: Icon(Icons.menu),
-            ),
-          ],
-        ),
         title: Text('Auditplus Fx'),
       ),
       body: Shortcuts(
@@ -326,10 +331,10 @@ class HomeScreenState extends State<HomeScreen> {
                           return ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               fixedSize: Size(100, 55),
-                              backgroundColor: Colors.lightBlueAccent,
+                              backgroundColor: Color.fromRGBO(101, 101, 255, 1),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                side: BorderSide(color: Colors.black, width: 2),
+                                side: BorderSide(color: Color.fromRGBO(27, 29, 29, 1), width: 2),
                               ),
                               elevation: 8.0,
                               foregroundColor: Colors.black,
