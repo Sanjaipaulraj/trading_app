@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:trading_app/intent.dart';
+import 'package:trading_app/response_model.dart';
 import 'package:trading_app/sections/automatic_closing_section.dart';
 import 'package:trading_app/sections/conditon_title_section.dart';
 import 'package:trading_app/sections/long_button_section.dart';
@@ -19,15 +20,15 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => HomeScreenState();
 }
 
-const List<String> list = <String>['AAPLJU', 'GOOGLPO', 'MSFT', 'DJIA', 'SPX'];
+late List<ResponseModel> list;
 typedef MenuEntry = DropdownMenuEntry<String>;
 
 class HomeScreenState extends State<HomeScreen> {
   String token = '';
-  static final List<MenuEntry> menuEntries = List.unmodifiable(
-    list.map<MenuEntry>((String name) => MenuEntry(value: name, label: name)),
-  );
-  String dropdownValue = list.first;
+  List<ResponseModel> list = [];
+  String dropdownValue = "";
+  bool isLoading = true;
+
   late TextEditingController _tokenController;
   final FocusNode _symbolFocusNode = FocusNode();
   final FocusNode _longButtonFocusNode = FocusNode();
@@ -40,8 +41,12 @@ class HomeScreenState extends State<HomeScreen> {
     _tokenController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       String? fetchedToken = await Provider.of<Mytoken>(context, listen: false).getToken();
+      var resList = await _getList();
       setState(() {
         token = fetchedToken ?? '';
+        list = resList;
+        dropdownValue = resList.isNotEmpty ? resList.first.name ?? '' : '';
+        isLoading = false;
       });
     });
   }
@@ -72,9 +77,9 @@ class HomeScreenState extends State<HomeScreen> {
     Dio dio = Dio();
     final direction = type;
     final symbol = dropdownValue;
-    final data = json.encode({'symbol': symbol, 'direction': direction});
+    final data = json.encode({'symbol': symbol, 'lot': 1, 'direction': direction});
     final openResponse = await dio.post(
-      'http://192.168.1.60:8001/trade/open',
+      'http://192.168.1.42:3001/trade/open',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       data: data,
     );
@@ -110,6 +115,49 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<List<ResponseModel>> _getList() async {
+    Dio dio = Dio();
+    final response = await dio.get(
+      'http://192.168.1.42:3001/trade/list',
+      options: Options(headers: {'Content-Type': 'application/json'}, receiveTimeout: const Duration(seconds: 10)),
+    );
+    try {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        final parsedList = data.map((e) => ResponseModel.fromJson(e)).toList();
+        toastification.show(
+          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+          title: const Text('Success!'),
+          description: const Text('List Fetchedsuccessfuly'),
+          type: ToastificationType.success,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 2),
+        );
+        return parsedList;
+      } else {
+        toastification.show(
+          backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+          title: const Text('Error!'),
+          description: Text('Status code : ${response.statusCode}'),
+          type: ToastificationType.error,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 2),
+        );
+        return [];
+      }
+    } catch (e) {
+      toastification.show(
+        backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+        title: const Text('Error!'),
+        description: Text('Error occurs : $e'),
+        type: ToastificationType.error,
+        alignment: Alignment.center,
+        autoCloseDuration: const Duration(seconds: 2),
+      );
+      return [];
+    }
+  }
+
   Future<void> _onClosePosition() async {
     final token = Provider.of<Mytoken>(context, listen: false).token;
     if (token == null) {
@@ -126,7 +174,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     Dio dio = Dio();
     final closeResponse = await dio.post(
-      'http://192.168.1.60:8001/trade/close',
+      'http://192.168.1.42:3001/trade/close',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );
     try {
@@ -163,6 +211,19 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 🧩 Show loader until list is fetched
+    if (isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    // 🧩 Handle case when API returns empty list
+    if (list.isEmpty) {
+      return const Scaffold(body: Center(child: Text('No trade data available')));
+    }
+
+    final List<MenuEntry> menuEntries = list
+        .map<MenuEntry>((ResponseModel item) => MenuEntry(value: item.name ?? "", label: item.name ?? ""))
+        .toList();
     return Scaffold(
       backgroundColor: Color.fromRGBO(230, 230, 250, 1),
       drawer: Drawer(
@@ -178,41 +239,55 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             Divider(color: Color.fromRGBO(79, 79, 79, 1)),
             const SizedBox(height: 6),
-            ListTile(
-              title: const Text('AAPLJU'),
-              trailing: Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('AAPLJU clicked')));
-              },
-            ),
-            ListTile(
-              title: const Text('GOOGLPO'),
-              trailing: const Text('busy', style: TextStyle(fontSize: 16, color: Colors.grey)),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('GOOGLPO clicked')));
-              },
-            ),
-            ListTile(
-              title: const Text('MSFT'),
-              trailing: const Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('MSFT clicked')));
-              },
-            ),
-            ListTile(
-              title: const Text('DJIA'),
-              trailing: const Text('busy', style: TextStyle(fontSize: 16, color: Colors.grey)),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('DJIA clicked')));
-              },
-            ),
-            ListTile(
-              title: const Text('SPX'),
-              trailing: const Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('SPX clicked')));
-              },
-            ),
+            // trial start
+            for (var l in list)
+              ListTile(
+                title: Text(l.name ?? 'Data Not found'),
+                trailing: Text(
+                  l.status ?? 'Data Not found',
+                  style: TextStyle(fontSize: 16, color: l.status == 'live' ? Colors.green : Colors.grey.shade400),
+                ),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.name} clicked')));
+                },
+              ),
+
+            // trial end
+            // ListTile(
+            //   title: const Text('AAPLJU'),
+            //   trailing: Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
+            //   onTap: () {
+            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('AAPLJU clicked')));
+            //   },
+            // ),
+            // ListTile(
+            //   title: const Text('GOOGLPO'),
+            //   trailing: const Text('busy', style: TextStyle(fontSize: 16, color: Colors.grey)),
+            //   onTap: () {
+            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('GOOGLPO clicked')));
+            //   },
+            // ),
+            // ListTile(
+            //   title: const Text('MSFT'),
+            //   trailing: const Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
+            //   onTap: () {
+            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('MSFT clicked')));
+            //   },
+            // ),
+            // ListTile(
+            //   title: const Text('DJIA'),
+            //   trailing: const Text('busy', style: TextStyle(fontSize: 16, color: Colors.grey)),
+            //   onTap: () {
+            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('DJIA clicked')));
+            //   },
+            // ),
+            // ListTile(
+            //   title: const Text('SPX'),
+            //   trailing: const Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
+            //   onTap: () {
+            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('SPX clicked')));
+            //   },
+            // ),
           ],
         ),
       ),
@@ -298,13 +373,13 @@ class HomeScreenState extends State<HomeScreen> {
                           SizedBox(
                             child: DropdownMenu<String>(
                               width: 150,
-                              initialSelection: list.first,
+                              initialSelection: dropdownValue,
+                              dropdownMenuEntries: menuEntries,
                               onSelected: (String? value) {
                                 setState(() {
-                                  dropdownValue = value!;
+                                  dropdownValue = value ?? '';
                                 });
                               },
-                              dropdownMenuEntries: menuEntries,
                             ),
                           ),
                         ],

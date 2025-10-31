@@ -13,11 +13,14 @@ dependencies:
   toastification: ^3.0.3
   shared_preferences: ^2.5.3
   provider: ^6.1.5+1
+  json_annotation: ^4.9.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.13.1
+  build_runner: ^2.10.1
+  json_serializable: ^6.11.1
 
 flutter:
   uses-material-design: true
@@ -25,4 +28,5 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icon/app_icon.png"
+  image_path: "assets/logo.png"
+  
