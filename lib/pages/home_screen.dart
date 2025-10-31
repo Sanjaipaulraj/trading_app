@@ -77,7 +77,7 @@ class HomeScreenState extends State<HomeScreen> {
     Dio dio = Dio();
     final direction = type;
     final symbol = dropdownValue;
-    final data = json.encode({'symbol': symbol, 'lot': 1, 'direction': direction});
+    final data = json.encode({'actionType': direction, 'symbol': symbol, 'volume': 1.03, 'takeProfit': 0.23});
     final openResponse = await dio.post(
       'http://192.168.1.42:3001/trade/open',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
@@ -85,6 +85,7 @@ class HomeScreenState extends State<HomeScreen> {
     );
     try {
       if (openResponse.statusCode == 200) {
+        print(openResponse.data);
         toastification.show(
           backgroundColor: Color.fromRGBO(199, 226, 201, 1),
           title: const Text('Success!'),
@@ -340,13 +341,13 @@ class HomeScreenState extends State<HomeScreen> {
           actions: {
             LongIntent: CallbackAction<LongIntent>(
               onInvoke: (intent) {
-                _openPosition('buy');
+                _openPosition('ORDER_TYPE_BUY');
                 return null;
               },
             ),
             ShortIntent: CallbackAction<ShortIntent>(
               onInvoke: (intent) {
-                _openPosition('sell');
+                _openPosition('ORDER_TYPE_SELL');
                 return null;
               },
             ),
