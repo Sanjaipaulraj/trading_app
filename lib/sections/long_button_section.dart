@@ -67,6 +67,7 @@ class _LongButtonSectionState extends State<LongButtonSection> {
             _buildCheckboxRow('LongTcChecked', checkedBox),
             _buildCheckboxRow('LongTtChecked', checkedBox),
             _buildCheckboxRow('LongNeoChecked', checkedBox),
+            _buildCheckboxRow('LongConfChecked', checkedBox),
             _buildCheckboxRow('LongHwoChecked', checkedBox),
           ],
         );
@@ -78,6 +79,7 @@ class _LongButtonSectionState extends State<LongButtonSection> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        Icon(Icons.arrow_upward_rounded, color: Colors.green, size: 22.0),
         Checkbox(
           value: _getCheckboxValue(checkboxField, checkedBox),
           onChanged: (bool? newValue) {
@@ -102,6 +104,8 @@ class _LongButtonSectionState extends State<LongButtonSection> {
         return checkedBox.isLongNeoChecked;
       case 'LongHwoChecked':
         return checkedBox.isLongHwoChecked;
+      case 'LongConfChecked':
+        return checkedBox.isLongConfChecked;
       default:
         return false;
     }

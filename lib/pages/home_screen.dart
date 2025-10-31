@@ -1,11 +1,11 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:trading_app/intent.dart';
+import 'package:trading_app/response_model.dart';
 import 'package:trading_app/sections/automatic_closing_section.dart';
 import 'package:trading_app/sections/conditon_title_section.dart';
 import 'package:trading_app/sections/long_button_section.dart';
@@ -20,15 +20,15 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => HomeScreenState();
 }
 
-const List<String> list = <String>['AAPL', 'GOOGL', 'MSFT', 'DJIA', 'SPX'];
+late List<ResponseModel> list;
 typedef MenuEntry = DropdownMenuEntry<String>;
 
 class HomeScreenState extends State<HomeScreen> {
   String token = '';
-  static final List<MenuEntry> menuEntries = List.unmodifiable(
-    list.map<MenuEntry>((String name) => MenuEntry(value: name, label: name)),
-  );
-  String dropdownValue = list.first;
+  List<ResponseModel> list = [];
+  String dropdownValue = "";
+  bool isLoading = true;
+
   late TextEditingController _tokenController;
   final FocusNode _symbolFocusNode = FocusNode();
   final FocusNode _longButtonFocusNode = FocusNode();
@@ -39,11 +39,14 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _tokenController = TextEditingController();
-    // Initialize token from Provider after the first frame
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       String? fetchedToken = await Provider.of<Mytoken>(context, listen: false).getToken();
+      var resList = await _getList();
       setState(() {
-        token = fetchedToken ?? ''; // Safely handle null token
+        token = fetchedToken ?? '';
+        list = resList;
+        dropdownValue = resList.isNotEmpty ? resList.first.name ?? '' : '';
+        isLoading = false;
       });
     });
   }
@@ -74,9 +77,9 @@ class HomeScreenState extends State<HomeScreen> {
     Dio dio = Dio();
     final direction = type;
     final symbol = dropdownValue;
-    final data = json.encode({'symbol': symbol, 'direction': direction});
+    final data = json.encode({'symbol': symbol, 'lot': 1, 'direction': direction});
     final openResponse = await dio.post(
-      'http://192.168.1.60:8001/trade/open',
+      'http://192.168.1.42:3001/trade/open',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       data: data,
     );
@@ -112,6 +115,49 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<List<ResponseModel>> _getList() async {
+    Dio dio = Dio();
+    final response = await dio.get(
+      'http://192.168.1.42:3001/trade/list',
+      options: Options(headers: {'Content-Type': 'application/json'}, receiveTimeout: const Duration(seconds: 10)),
+    );
+    try {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        final parsedList = data.map((e) => ResponseModel.fromJson(e)).toList();
+        toastification.show(
+          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+          title: const Text('Success!'),
+          description: const Text('List Fetchedsuccessfuly'),
+          type: ToastificationType.success,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 2),
+        );
+        return parsedList;
+      } else {
+        toastification.show(
+          backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+          title: const Text('Error!'),
+          description: Text('Status code : ${response.statusCode}'),
+          type: ToastificationType.error,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 2),
+        );
+        return [];
+      }
+    } catch (e) {
+      toastification.show(
+        backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+        title: const Text('Error!'),
+        description: Text('Error occurs : $e'),
+        type: ToastificationType.error,
+        alignment: Alignment.center,
+        autoCloseDuration: const Duration(seconds: 2),
+      );
+      return [];
+    }
+  }
+
   Future<void> _onClosePosition() async {
     final token = Provider.of<Mytoken>(context, listen: false).token;
     if (token == null) {
@@ -128,7 +174,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     Dio dio = Dio();
     final closeResponse = await dio.post(
-      'http://192.168.1.60:8001/trade/close',
+      'http://192.168.1.42:3001/trade/close',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );
     try {
@@ -165,8 +211,88 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 🧩 Show loader until list is fetched
+    if (isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    // 🧩 Handle case when API returns empty list
+    if (list.isEmpty) {
+      return const Scaffold(body: Center(child: Text('No trade data available')));
+    }
+
+    final List<MenuEntry> menuEntries = list
+        .map<MenuEntry>((ResponseModel item) => MenuEntry(value: item.name ?? "", label: item.name ?? ""))
+        .toList();
     return Scaffold(
+      backgroundColor: Color.fromRGBO(230, 230, 250, 1),
+      drawer: Drawer(
+        backgroundColor: Color.fromRGBO(230, 230, 250, 1),
+        width: MediaQuery.of(context).size.width * 0.6,
+        child: Column(
+          children: [
+            const SizedBox(height: 40),
+            Container(
+              alignment: Alignment.bottomLeft,
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 8),
+              child: const Text('Symbol Status', style: TextStyle(color: Colors.black, fontSize: 22)),
+            ),
+            Divider(color: Color.fromRGBO(79, 79, 79, 1)),
+            const SizedBox(height: 6),
+            // trial start
+            for (var l in list)
+              ListTile(
+                title: Text(l.name ?? 'Data Not found'),
+                trailing: Text(
+                  l.status ?? 'Data Not found',
+                  style: TextStyle(fontSize: 16, color: l.status == 'live' ? Colors.green : Colors.grey.shade400),
+                ),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.name} clicked')));
+                },
+              ),
+
+            // trial end
+            // ListTile(
+            //   title: const Text('AAPLJU'),
+            //   trailing: Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
+            //   onTap: () {
+            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('AAPLJU clicked')));
+            //   },
+            // ),
+            // ListTile(
+            //   title: const Text('GOOGLPO'),
+            //   trailing: const Text('busy', style: TextStyle(fontSize: 16, color: Colors.grey)),
+            //   onTap: () {
+            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('GOOGLPO clicked')));
+            //   },
+            // ),
+            // ListTile(
+            //   title: const Text('MSFT'),
+            //   trailing: const Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
+            //   onTap: () {
+            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('MSFT clicked')));
+            //   },
+            // ),
+            // ListTile(
+            //   title: const Text('DJIA'),
+            //   trailing: const Text('busy', style: TextStyle(fontSize: 16, color: Colors.grey)),
+            //   onTap: () {
+            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('DJIA clicked')));
+            //   },
+            // ),
+            // ListTile(
+            //   title: const Text('SPX'),
+            //   trailing: const Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
+            //   onTap: () {
+            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('SPX clicked')));
+            //   },
+            // ),
+          ],
+        ),
+      ),
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(101, 101, 255, 1),
         actions: <Widget>[
           GestureDetector(
             onTap: () => showDialog<String>(
@@ -202,35 +328,7 @@ class HomeScreenState extends State<HomeScreen> {
             child: Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.settings)),
           ),
         ],
-        leading: GestureDetector(
-          onTap: () => showDialog<String>(
-            barrierDismissible: false,
-            context: context,
-            builder: (BuildContext context) => Dialog(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 10,
-                  children: [
-                    Text(
-                      textAlign: TextAlign.center,
-                      'Menu Dialog',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text('Close', style: TextStyle(fontSize: 16)),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          child: Icon(Icons.menu),
-        ),
-        title: Text('Auditplus'),
+        title: Text('Auditplus Fx'),
       ),
       body: Shortcuts(
         shortcuts: {
@@ -274,21 +372,21 @@ class HomeScreenState extends State<HomeScreen> {
                         children: [
                           SizedBox(
                             child: DropdownMenu<String>(
-                              width: 130,
-                              initialSelection: list.first,
+                              width: 150,
+                              initialSelection: dropdownValue,
+                              dropdownMenuEntries: menuEntries,
                               onSelected: (String? value) {
                                 setState(() {
-                                  dropdownValue = value!;
+                                  dropdownValue = value ?? '';
                                 });
                               },
-                              dropdownMenuEntries: menuEntries,
                             ),
                           ),
                         ],
                       ),
                       Container(
                         height: 55,
-                        width: 60,
+                        width: 90,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8.0),
                           border: Border.all(
@@ -297,16 +395,21 @@ class HomeScreenState extends State<HomeScreen> {
                             style: BorderStyle.solid,
                           ),
                         ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '125894',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                        ),
                       ),
                       Consumer<Mytoken>(
                         builder: (context, myToken, child) {
                           return ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               fixedSize: Size(100, 55),
-                              backgroundColor: Colors.lightBlueAccent,
+                              backgroundColor: Color.fromRGBO(101, 101, 255, 1),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                side: BorderSide(color: Colors.black, width: 2),
+                                side: BorderSide(color: Color.fromRGBO(27, 29, 29, 1), width: 2),
                               ),
                               elevation: 8.0,
                               foregroundColor: Colors.black,
@@ -318,11 +421,11 @@ class HomeScreenState extends State<HomeScreen> {
                               if (token != null) {
                                 Actions.invoke(context, CloseIntent());
                                 toastification.show(
-                                  backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+                                  backgroundColor: Color.fromRGBO(180, 231, 240, 1),
                                   context: context,
                                   title: const Text('Closed!'),
                                   description: const Text('Closed successfully'),
-                                  type: ToastificationType.success,
+                                  type: ToastificationType.info,
                                   alignment: Alignment.center,
                                   autoCloseDuration: const Duration(seconds: 2),
                                 );

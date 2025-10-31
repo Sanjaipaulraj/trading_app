@@ -22,41 +22,7 @@ class StatusScreenState extends State<StatusScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: 5.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: 100,
-                  child: Text('Catcher', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                ),
-                Container(
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: Colors.lightGreen),
-                  height: 40,
-                  width: 40,
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: 100,
-                  child: Text('HWO', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                ),
-                Container(
-                  decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.circular(8.0)),
-                  height: 40,
-                  width: 40,
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(
                   width: 100,
@@ -64,23 +30,6 @@ class StatusScreenState extends State<StatusScreen> {
                 ),
                 Container(
                   decoration: BoxDecoration(color: Colors.lightGreen, borderRadius: BorderRadius.circular(8.0)),
-                  height: 40,
-                  width: 40,
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: 100,
-                  child: Text('Reversal plus', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                ),
-                Container(
-                  decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.circular(8.0)),
                   height: 40,
                   width: 40,
                 ),
