@@ -9,5 +9,7 @@ class ShortIntent extends Intent {
 }
 
 class CloseIntent extends Intent {
-  const CloseIntent();
+  final String actionType;
+  final String symbol;
+  const CloseIntent({required this.actionType, required this.symbol});
 }

@@ -117,19 +117,24 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<ResponseModel>> _getList() async {
-    Dio dio = Dio();
-    final response = await dio.get(
-      'http://192.168.1.42:3001/trade/list',
-      options: Options(headers: {'Content-Type': 'application/json'}, receiveTimeout: const Duration(seconds: 10)),
+    Dio dio = Dio(
+      BaseOptions(connectTimeout: const Duration(seconds: 120), receiveTimeout: const Duration(seconds: 120)),
     );
+
     try {
+      final response = await dio.get(
+        'http://localhost:3001/trade/list',
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
         final parsedList = data.map((e) => ResponseModel.fromJson(e)).toList();
+
         toastification.show(
-          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+          backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
           title: const Text('Success!'),
-          description: const Text('List Fetchedsuccessfuly'),
+          description: const Text('List fetched successfully.'),
           type: ToastificationType.success,
           alignment: Alignment.center,
           autoCloseDuration: const Duration(seconds: 2),
@@ -137,20 +142,45 @@ class HomeScreenState extends State<HomeScreen> {
         return parsedList;
       } else {
         toastification.show(
-          backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+          backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
           title: const Text('Error!'),
-          description: Text('Status code : ${response.statusCode}'),
+          description: Text('Status code: ${response.statusCode}'),
           type: ToastificationType.error,
           alignment: Alignment.center,
           autoCloseDuration: const Duration(seconds: 2),
         );
         return [];
       }
+    } on DioException catch (e) {
+      // ✅ Handle Dio-specific timeout cases
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        toastification.show(
+          backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
+          title: const Text('Timeout!'),
+          description: const Text('Request timed out. Please try again later.'),
+          type: ToastificationType.error,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 2),
+        );
+      } else {
+        toastification.show(
+          backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
+          title: const Text('Network Error!'),
+          description: Text('Error: ${e.message}'),
+          type: ToastificationType.error,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 2),
+        );
+      }
+      return [];
     } catch (e) {
+      // ✅ Catch unexpected errors
       toastification.show(
-        backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+        backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
         title: const Text('Error!'),
-        description: Text('Error occurs : $e'),
+        description: Text('Unexpected error: $e'),
         type: ToastificationType.error,
         alignment: Alignment.center,
         autoCloseDuration: const Duration(seconds: 2),
@@ -159,7 +189,7 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _onClosePosition() async {
+  Future<void> _onClosePosition(String actionType, String symbol) async {
     final token = Provider.of<Mytoken>(context, listen: false).token;
     if (token == null) {
       toastification.show(
@@ -174,12 +204,15 @@ class HomeScreenState extends State<HomeScreen> {
     }
 
     Dio dio = Dio();
+    final data = json.encode({'actionType': actionType, 'symbol': symbol});
     final closeResponse = await dio.post(
-      'http://192.168.1.42:3001/trade/close',
+      'http://localhost:3001/trade/close',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
+      data: data,
     );
     try {
       if (closeResponse.statusCode == 200) {
+        print(closeResponse.data);
         toastification.show(
           backgroundColor: Color.fromRGBO(199, 226, 201, 1),
           title: const Text('Success!'),
@@ -228,7 +261,7 @@ class HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(230, 230, 250, 1),
       drawer: Drawer(
-        backgroundColor: Color.fromRGBO(230, 230, 250, 1),
+        backgroundColor: const Color.fromRGBO(230, 230, 250, 1),
         width: MediaQuery.of(context).size.width * 0.6,
         child: Column(
           children: [
@@ -238,57 +271,28 @@ class HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 8),
               child: const Text('Symbol Status', style: TextStyle(color: Colors.black, fontSize: 22)),
             ),
-            Divider(color: Color.fromRGBO(79, 79, 79, 1)),
+            const Divider(color: Color.fromRGBO(79, 79, 79, 1)),
             const SizedBox(height: 6),
-            // trial start
-            for (var l in list)
-              ListTile(
-                title: Text(l.name ?? 'Data Not found'),
-                trailing: Text(
-                  l.status ?? 'Data Not found',
-                  style: TextStyle(fontSize: 16, color: l.status == 'live' ? Colors.green : Colors.grey.shade400),
-                ),
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.name} clicked')));
-                },
-              ),
 
-            // trial end
-            // ListTile(
-            //   title: const Text('AAPLJU'),
-            //   trailing: Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
-            //   onTap: () {
-            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('AAPLJU clicked')));
-            //   },
-            // ),
-            // ListTile(
-            //   title: const Text('GOOGLPO'),
-            //   trailing: const Text('busy', style: TextStyle(fontSize: 16, color: Colors.grey)),
-            //   onTap: () {
-            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('GOOGLPO clicked')));
-            //   },
-            // ),
-            // ListTile(
-            //   title: const Text('MSFT'),
-            //   trailing: const Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
-            //   onTap: () {
-            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('MSFT clicked')));
-            //   },
-            // ),
-            // ListTile(
-            //   title: const Text('DJIA'),
-            //   trailing: const Text('busy', style: TextStyle(fontSize: 16, color: Colors.grey)),
-            //   onTap: () {
-            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('DJIA clicked')));
-            //   },
-            // ),
-            // ListTile(
-            //   title: const Text('SPX'),
-            //   trailing: const Text('live', style: TextStyle(fontSize: 16, color: Colors.green)),
-            //   onTap: () {
-            //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('SPX clicked')));
-            //   },
-            // ),
+            /// 👇 This makes ListView take only the remaining space
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  for (var l in list)
+                    ListTile(
+                      title: Text(l.name ?? 'Data Not found'),
+                      trailing: Text(
+                        l.status ?? 'Data Not found',
+                        style: TextStyle(fontSize: 16, color: l.status == 'live' ? Colors.green : Colors.grey.shade400),
+                      ),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.name} clicked')));
+                      },
+                    ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -335,7 +339,10 @@ class HomeScreenState extends State<HomeScreen> {
         shortcuts: {
           LogicalKeySet(LogicalKeyboardKey.keyL, LogicalKeyboardKey.control): const LongIntent(),
           LogicalKeySet(LogicalKeyboardKey.keyS, LogicalKeyboardKey.control): const ShortIntent(),
-          LogicalKeySet(LogicalKeyboardKey.keyC, LogicalKeyboardKey.control): const CloseIntent(),
+          LogicalKeySet(LogicalKeyboardKey.keyC, LogicalKeyboardKey.control): CloseIntent(
+            actionType: "POSITIONS_CLOSE_SYMBOL",
+            symbol: dropdownValue,
+          ),
         },
         child: Actions(
           actions: {
@@ -353,7 +360,7 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             CloseIntent: CallbackAction<CloseIntent>(
               onInvoke: (intent) {
-                _onClosePosition();
+                _onClosePosition(intent.actionType, intent.symbol);
                 return null;
               },
             ),
@@ -420,7 +427,10 @@ class HomeScreenState extends State<HomeScreen> {
                             onPressed: () {
                               final token = Provider.of<Mytoken>(listen: false, context).token;
                               if (token != null) {
-                                Actions.invoke(context, CloseIntent());
+                                Actions.invoke(
+                                  context,
+                                  CloseIntent(actionType: "POSITIONS_CLOSE_SYMBOL", symbol: dropdownValue),
+                                );
                                 toastification.show(
                                   backgroundColor: Color.fromRGBO(180, 231, 240, 1),
                                   context: context,
