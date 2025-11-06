@@ -10,8 +10,8 @@ void main() {
     ToastificationWrapper(
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => Mytoken()),
-          ChangeNotifierProvider(create: (context) => CheckedBox()),
+          ChangeNotifierProvider(create: (context) => MytokenProvider()),
+          ChangeNotifierProvider(create: (context) => CheckedBoxProvider()),
         ],
         child: MainApp(),
       ),

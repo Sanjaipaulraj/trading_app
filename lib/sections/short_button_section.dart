@@ -20,7 +20,7 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<Mytoken, CheckedBox>(
+    return Consumer2<MytokenProvider, CheckedBoxProvider>(
       builder: (context, myToken, checkedBox, child) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -41,7 +41,7 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
               ),
               onPressed: checkedBox.isShortAllChecked
                   ? () {
-                      final token = Provider.of<Mytoken>(context, listen: false).token;
+                      final token = Provider.of<MytokenProvider>(context, listen: false).token;
                       if (token != null) {
                         Actions.invoke(context, const ShortIntent());
                         toastification.show(
@@ -80,7 +80,7 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
     );
   }
 
-  Widget _buildCheckboxRow(String checkboxField, CheckedBox checkedBox) {
+  Widget _buildCheckboxRow(String checkboxField, CheckedBoxProvider checkedBox) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -99,7 +99,7 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
     );
   }
 
-  bool _getCheckboxValue(String checkboxField, CheckedBox checkedBox) {
+  bool _getCheckboxValue(String checkboxField, CheckedBoxProvider checkedBox) {
     switch (checkboxField) {
       case 'ShortTcChecked':
         return checkedBox.isShortTcChecked;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CheckedBox extends ChangeNotifier {
+class CheckedBoxProvider extends ChangeNotifier {
   bool isLongTcChecked = false;
   bool isLongTtChecked = false;
   bool isLongNeoChecked = false;
