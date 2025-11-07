@@ -318,18 +318,6 @@ class HomeScreenState extends State<HomeScreen> {
           );
         }
 
-        //  Case 4: Token exists but no data
-        if (list.isEmpty) {
-          return Scaffold(
-            body: Column(
-              children: [
-                Center(child: Text("No Trade Data Available...!")),
-                ElevatedButton(onPressed: () => Navigator.pop(context), child: Text("Back")),
-              ],
-            ),
-          );
-        }
-
         final List<MenuEntry> menuEntries = list
             .map<MenuEntry>((ResponseModel item) => MenuEntry(value: item.name ?? "", label: item.name ?? ""))
             .toList();
