@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 import 'package:provider/provider.dart';
-import 'package:trading_app/checked_box_provider.dart';
+import 'package:trading_app/Providers/checked_box_provider.dart';
 import 'package:trading_app/intent.dart';
-import 'package:trading_app/token_provider.dart';
+import 'package:trading_app/Providers/token_provider.dart';
 
 class LongButtonSection extends StatefulWidget {
   const LongButtonSection({super.key});

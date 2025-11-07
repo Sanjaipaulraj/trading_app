@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
+import 'package:trading_app/Providers/dropdown_provider.dart';
 import 'package:trading_app/intent.dart';
 import 'package:trading_app/response_model.dart';
 import 'package:trading_app/sections/automatic_closing_section.dart';
@@ -11,7 +12,7 @@ import 'package:trading_app/sections/conditon_title_section.dart';
 import 'package:trading_app/sections/long_button_section.dart';
 import 'package:trading_app/sections/short_button_section.dart';
 import 'package:trading_app/sections/status_section.dart';
-import 'package:trading_app/token_provider.dart';
+import 'package:trading_app/Providers/token_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,9 +34,7 @@ late List<ResponseModel> list;
 typedef MenuEntry = DropdownMenuEntry<String>;
 
 class HomeScreenState extends State<HomeScreen> {
-  // String token = '';
   List<ResponseModel> list = [];
-  String dropdownValue = "";
   bool isLoading = true;
 
   late TextEditingController _tokenController;
@@ -44,41 +43,25 @@ class HomeScreenState extends State<HomeScreen> {
   final FocusNode _shortButtonFocusNode = FocusNode();
   final FocusNode _closeButtonFocusNode = FocusNode();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _tokenController = TextEditingController();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) async {
-  //     String? fetchedToken = await Provider.of<MytokenProvider>(context, listen: false).getToken();
-  //     var resList = await _getList();
-  //     setState(() {
-  //       token = fetchedToken ?? '';
-  //       list = resList;
-  //       dropdownValue = resList.isNotEmpty ? resList.first.name ?? '' : '';
-  //       isLoading = false;
-  //     });
-  //   });
-  // }
-
-  @override
-  void initState() {
-    super.initState();
+  Future<void> _initializeApp(BuildContext context) async {
     _tokenController = TextEditingController();
+    final provider = Provider.of<MytokenProvider>(context, listen: false);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider = Provider.of<MytokenProvider>(context, listen: false);
+    while (provider.isLoading) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
 
-      provider.addListener(() async {
-        if (provider.token != null && provider.token!.isNotEmpty) {
-          var resList = await _getList();
-          setState(() {
-            list = resList;
-            dropdownValue = resList.isNotEmpty ? resList.first.name ?? '' : '';
-            isLoading = false;
-          });
-        }
-      });
-    });
+    final token = provider.token;
+
+    if (token == null || token.isEmpty) {
+      return;
+    }
+
+    list = await _getList();
+
+    if (list.isNotEmpty) {
+      Provider.of<DropdownProvider>(context, listen: false).setDropdown(list.first.name ?? '');
+    }
   }
 
   @override
@@ -106,7 +89,8 @@ class HomeScreenState extends State<HomeScreen> {
 
     Dio dio = Dio();
     final direction = type;
-    final symbol = dropdownValue;
+    // final symbol = dropdownValue;
+    final symbol = Provider.of<DropdownProvider>(context, listen: false).dropdown;
     var sData = OpenPositionModel(actionType: direction, symbol: symbol, volume: volume, takeProfit: takeProfit);
     // final data = json.encode({'actionType': direction, 'symbol': symbol, 'volume': 1.03});
     final data = json.encode(sData);
@@ -160,7 +144,6 @@ class HomeScreenState extends State<HomeScreen> {
         'http://localhost:3001/trade/list',
         options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       );
-
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
         final parsedList = data.map((e) => ResponseModel.fromJson(e)).toList();
@@ -175,6 +158,7 @@ class HomeScreenState extends State<HomeScreen> {
         );
         return parsedList;
       } else {
+        Provider.of<MytokenProvider>(context, listen: false).clearToken();
         toastification.show(
           backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
           title: const Text('Error!'),
@@ -186,7 +170,7 @@ class HomeScreenState extends State<HomeScreen> {
         return [];
       }
     } on DioException catch (e) {
-      // ✅ Handle Dio-specific timeout cases
+      //  Handle Dio-specific timeout cases
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout ||
           e.type == DioExceptionType.sendTimeout) {
@@ -199,18 +183,19 @@ class HomeScreenState extends State<HomeScreen> {
           autoCloseDuration: const Duration(seconds: 2),
         );
       } else {
+        Provider.of<MytokenProvider>(context, listen: false).clearToken();
         toastification.show(
           backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
-          title: const Text('Network Error!'),
-          // description: Text('Error: ${e.message}'),
+          title: const Text('Error!'),
+          description: Text('Error: ${e.message}'),
           type: ToastificationType.error,
           alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
+          autoCloseDuration: const Duration(seconds: 5),
         );
       }
       return [];
     } catch (e) {
-      // ✅ Catch unexpected errors
+      //  Catch unexpected errors
       toastification.show(
         backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
         title: const Text('Error!'),
@@ -279,16 +264,40 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MytokenProvider>(
-      builder: (context, myTokenProvider, child) {
-        final token = myTokenProvider.token;
+    return FutureBuilder(
+      future: _initializeApp(context),
+      builder: (context, snapshot) {
+        final myTokenProvider = Provider.of<MytokenProvider>(context);
 
+        //  Case 1: Still waiting (either token or list)
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 15,
+              children: [
+                Center(child: Text("Token getting...")),
+                CircularProgressIndicator(),
+              ],
+            ),
+          );
+        }
+
+        //  Case 2: Error (optional)
+        if (snapshot.hasError) {
+          return Scaffold(body: Center(child: Text("Error: ${snapshot.error}")));
+        }
+
+        //  Case 3: Token missing — show input screen
+        final token = myTokenProvider.token;
         if (token == null || token.isEmpty) {
-          // Show token input screen
           return Scaffold(
-            body: Center(
+            body: Container(
+              color: const Color.fromRGBO(206, 194, 235, 1),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 15,
                 children: [
                   const Text('Enter the token'),
                   const SizedBox(height: 10),
@@ -299,6 +308,7 @@ class HomeScreenState extends State<HomeScreen> {
                   TextButton(
                     onPressed: () {
                       myTokenProvider.setToken(_tokenController.text);
+                      setState(() {});
                     },
                     child: const Text('Submit'),
                   ),
@@ -307,58 +317,24 @@ class HomeScreenState extends State<HomeScreen> {
             ),
           );
         }
-        // 🧩 Show loader until list is fetched
-        if (isLoading) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
-        }
 
-        // 🧩 Handle case when API returns empty list
-        // if (list.isEmpty) {
-        //   return Scaffold(
-        //     body: Column(
-        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //       crossAxisAlignment: CrossAxisAlignment.center,
-        //       children: [
-        //         Text(
-        //           'No Trade Data Available...!',
-        //           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
-        //         ),
-        //         Container(
-        //           padding: const EdgeInsets.all(10),
-        //           child: Column(
-        //             mainAxisSize: MainAxisSize.min,
-        //             mainAxisAlignment: MainAxisAlignment.center,
-        //             children: <Widget>[
-        //               Text('Enter the token'),
-        //               SizedBox(height: 15),
-        //               TextField(
-        //                 keyboardType: TextInputType.text,
-        //                 autofocus: true,
-        //                 controller: _tokenController,
-        //                 decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Token'),
-        //               ),
-        //               TextButton(
-        //                 onPressed: () {
-        //                   String enteredToken = _tokenController.text;
-        //                   Provider.of<MytokenProvider>(context, listen: false).setToken(enteredToken);
-        //                   Navigator.pop(context);
-        //                 },
-        //                 child: const Text('Submit'),
-        //               ),
-        //             ],
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   );
-        // }
+        //  Case 4: Token exists but no data
         if (list.isEmpty) {
-          return Scaffold(body: Center(child: Text('No Trade Data Available...!')));
+          return Scaffold(
+            body: Column(
+              children: [
+                Center(child: Text("No Trade Data Available...!")),
+                ElevatedButton(onPressed: () => Navigator.pop(context), child: Text("Back")),
+              ],
+            ),
+          );
         }
 
         final List<MenuEntry> menuEntries = list
             .map<MenuEntry>((ResponseModel item) => MenuEntry(value: item.name ?? "", label: item.name ?? ""))
             .toList();
+
+        //  Case 5: Everything ready → show your main UI
         return Scaffold(
           backgroundColor: Color.fromRGBO(230, 230, 250, 1),
           drawer: Drawer(
@@ -375,7 +351,6 @@ class HomeScreenState extends State<HomeScreen> {
                 const Divider(color: Color.fromRGBO(79, 79, 79, 1)),
                 const SizedBox(height: 6),
 
-                /// 👇 This makes ListView take only the remaining space
                 Expanded(
                   child: ListView(
                     padding: EdgeInsets.zero,
@@ -391,7 +366,9 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           onTap: () {
+                            Provider.of<DropdownProvider>(context, listen: false).setDropdown(l.name as String);
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.name} clicked')));
+                            Navigator.pop(context);
                           },
                         ),
                     ],
@@ -445,7 +422,7 @@ class HomeScreenState extends State<HomeScreen> {
               LogicalKeySet(LogicalKeyboardKey.keyS, LogicalKeyboardKey.control): const ShortIntent(),
               LogicalKeySet(LogicalKeyboardKey.keyC, LogicalKeyboardKey.control): CloseIntent(
                 actionType: "POSITIONS_CLOSE_SYMBOL",
-                symbol: dropdownValue,
+                symbol: Provider.of<DropdownProvider>(context, listen: false).dropdown,
               ),
             },
             child: Actions(
@@ -482,17 +459,24 @@ class HomeScreenState extends State<HomeScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
-                                child: DropdownMenu<String>(
-                                  width: 150,
-                                  initialSelection: dropdownValue,
-                                  dropdownMenuEntries: menuEntries,
-                                  onSelected: (String? value) {
-                                    setState(() {
-                                      dropdownValue = value ?? '';
-                                    });
-                                  },
-                                ),
+                              Consumer<DropdownProvider>(
+                                builder: (context, drop, child) {
+                                  return SizedBox(
+                                    child: DropdownMenu<String>(
+                                      width: 150,
+                                      initialSelection: drop.dropdown,
+                                      dropdownMenuEntries: menuEntries,
+                                      onSelected: (String? value) {
+                                        setState(() {
+                                          Provider.of<DropdownProvider>(
+                                            context,
+                                            listen: false,
+                                          ).setDropdown(value ?? '');
+                                        });
+                                      },
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -533,7 +517,11 @@ class HomeScreenState extends State<HomeScreen> {
                                   if (token != null) {
                                     Actions.invoke(
                                       context,
-                                      CloseIntent(actionType: "POSITIONS_CLOSE_SYMBOL", symbol: dropdownValue),
+                                      CloseIntent(
+                                        actionType: "POSITIONS_CLOSE_SYMBOL",
+                                        //  symbol: dropdownValue
+                                        symbol: Provider.of<DropdownProvider>(listen: false, context).dropdown,
+                                      ),
                                     );
                                     toastification.show(
                                       backgroundColor: Color.fromRGBO(180, 231, 240, 1),
