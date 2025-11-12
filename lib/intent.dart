@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
 class LongIntent extends Intent {
-  const LongIntent();
+  final String actionType;
+  const LongIntent({required this.actionType});
 }
 
 class ShortIntent extends Intent {
-  const ShortIntent();
+  final String actionType;
+  const ShortIntent({required this.actionType});
 }
 
 class CloseIntent extends Intent {
   final String actionType;
-  final String symbol;
-  const CloseIntent({required this.actionType, required this.symbol});
+  const CloseIntent({required this.actionType});
 }

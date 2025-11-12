@@ -38,7 +38,7 @@ class _LongButtonSectionState extends State<LongButtonSection> {
                   ? () {
                       final token = Provider.of<MytokenProvider>(context, listen: false).token;
                       if (token != null) {
-                        Actions.invoke(context, const LongIntent());
+                        Actions.invoke(context, const LongIntent(actionType: "ORDER_TYPE_BUY"));
                         toastification.show(
                           backgroundColor: Color.fromRGBO(199, 226, 201, 1),
                           context: context,

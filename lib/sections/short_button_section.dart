@@ -43,7 +43,7 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
                   ? () {
                       final token = Provider.of<MytokenProvider>(context, listen: false).token;
                       if (token != null) {
-                        Actions.invoke(context, const ShortIntent());
+                        Actions.invoke(context, const ShortIntent(actionType: "ORDER_TYPE_SELL"));
                         toastification.show(
                           backgroundColor: Color.fromRGBO(199, 226, 201, 1),
                           context: context,

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
-import 'package:trading_app/Providers/dropdown_provider.dart';
+import 'package:trading_app/Providers/value_provider.dart';
 import 'package:trading_app/intent.dart';
-import 'package:trading_app/response_model.dart';
+import 'package:trading_app/models/close_response_model.dart';
+import 'package:trading_app/models/open_response_model.dart';
+import 'package:trading_app/models/response_model.dart';
 import 'package:trading_app/sections/automatic_closing_section.dart';
 import 'package:trading_app/sections/conditon_title_section.dart';
 import 'package:trading_app/sections/long_button_section.dart';
@@ -19,15 +21,6 @@ class HomeScreen extends StatefulWidget {
 
   @override
   State<HomeScreen> createState() => HomeScreenState();
-}
-
-class OpenPositionModel {
-  String actionType;
-  String symbol;
-  num volume;
-  num? takeProfit;
-
-  OpenPositionModel({required this.actionType, required this.symbol, required this.volume, this.takeProfit});
 }
 
 late List<ResponseModel> list;
@@ -60,7 +53,7 @@ class HomeScreenState extends State<HomeScreen> {
     list = await _getList();
 
     if (list.isNotEmpty) {
-      Provider.of<DropdownProvider>(context, listen: false).setDropdown(list.first.name ?? '');
+      Provider.of<ValueProvider>(context, listen: false).setDropdown(list.first.name ?? '');
     }
   }
 
@@ -73,7 +66,7 @@ class HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  Future<void> _openPosition(String type, num volume, num? takeProfit) async {
+  Future<void> _openPosition(String actionType, num? takeProfit) async {
     final token = Provider.of<MytokenProvider>(context, listen: false).token;
     if (token == null) {
       toastification.show(
@@ -88,21 +81,16 @@ class HomeScreenState extends State<HomeScreen> {
     }
 
     Dio dio = Dio();
-    final direction = type;
-    // final symbol = dropdownValue;
-    final symbol = Provider.of<DropdownProvider>(context, listen: false).dropdown;
-    var sData = OpenPositionModel(actionType: direction, symbol: symbol, volume: volume, takeProfit: takeProfit);
-    // final data = json.encode({'actionType': direction, 'symbol': symbol, 'volume': 1.03});
-    final data = json.encode(sData);
-    print(data);
+    final symbol = Provider.of<ValueProvider>(context, listen: false).dropdown;
+    final volume = Provider.of<ValueProvider>(context, listen: false).volume;
+    var data = OpenPositionModel(actionType: actionType, symbol: symbol, volume: volume as num, takeProfit: takeProfit);
     final openResponse = await dio.post(
       'http://localhost: 3001/trade/open',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
-      data: data,
+      data: jsonEncode(data),
     );
     try {
       if (openResponse.statusCode == 200) {
-        print(openResponse.data);
         toastification.show(
           backgroundColor: Color.fromRGBO(199, 226, 201, 1),
           title: const Text('Success!'),
@@ -208,7 +196,7 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _onClosePosition(String actionType, String symbol) async {
+  Future<void> _onClosePosition(String actionType) async {
     final token = Provider.of<MytokenProvider>(context, listen: false).token;
     if (token == null) {
       toastification.show(
@@ -223,11 +211,12 @@ class HomeScreenState extends State<HomeScreen> {
     }
 
     Dio dio = Dio();
-    final data = json.encode({'actionType': actionType, 'symbol': symbol});
+    final symbol = Provider.of<ValueProvider>(context, listen: false).dropdown;
+    final data = ClosePositionModel(actionType: actionType, symbol: symbol);
     final closeResponse = await dio.post(
       'http://localhost:3001/trade/close',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
-      data: data,
+      data: jsonEncode(data),
     );
     try {
       if (closeResponse.statusCode == 200) {
@@ -354,7 +343,7 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           onTap: () {
-                            Provider.of<DropdownProvider>(context, listen: false).setDropdown(l.name as String);
+                            Provider.of<ValueProvider>(context, listen: false).setDropdown(l.name as String);
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.name} clicked')));
                             Navigator.pop(context);
                           },
@@ -406,30 +395,33 @@ class HomeScreenState extends State<HomeScreen> {
           ),
           body: Shortcuts(
             shortcuts: {
-              LogicalKeySet(LogicalKeyboardKey.keyL, LogicalKeyboardKey.control): const LongIntent(),
-              LogicalKeySet(LogicalKeyboardKey.keyS, LogicalKeyboardKey.control): const ShortIntent(),
+              LogicalKeySet(LogicalKeyboardKey.keyL, LogicalKeyboardKey.control): const LongIntent(
+                actionType: "ORDER_TYPE_BUY",
+              ),
+              LogicalKeySet(LogicalKeyboardKey.keyS, LogicalKeyboardKey.control): const ShortIntent(
+                actionType: "ORDER_TYPE_SELL",
+              ),
               LogicalKeySet(LogicalKeyboardKey.keyC, LogicalKeyboardKey.control): CloseIntent(
                 actionType: "POSITIONS_CLOSE_SYMBOL",
-                symbol: Provider.of<DropdownProvider>(context, listen: false).dropdown,
               ),
             },
             child: Actions(
               actions: {
                 LongIntent: CallbackAction<LongIntent>(
                   onInvoke: (intent) {
-                    _openPosition('ORDER_TYPE_BUY', 1.03, null);
+                    _openPosition('ORDER_TYPE_BUY', null);
                     return null;
                   },
                 ),
                 ShortIntent: CallbackAction<ShortIntent>(
                   onInvoke: (intent) {
-                    _openPosition('ORDER_TYPE_SELL', 1.03, null);
+                    _openPosition('ORDER_TYPE_SELL', null);
                     return null;
                   },
                 ),
                 CloseIntent: CallbackAction<CloseIntent>(
                   onInvoke: (intent) {
-                    _onClosePosition(intent.actionType, intent.symbol);
+                    _onClosePosition(intent.actionType);
                     return null;
                   },
                 ),
@@ -447,7 +439,7 @@ class HomeScreenState extends State<HomeScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Consumer<DropdownProvider>(
+                              Consumer<ValueProvider>(
                                 builder: (context, drop, child) {
                                   return SizedBox(
                                     child: DropdownMenu<String>(
@@ -456,10 +448,7 @@ class HomeScreenState extends State<HomeScreen> {
                                       dropdownMenuEntries: menuEntries,
                                       onSelected: (String? value) {
                                         setState(() {
-                                          Provider.of<DropdownProvider>(
-                                            context,
-                                            listen: false,
-                                          ).setDropdown(value ?? '');
+                                          Provider.of<ValueProvider>(context, listen: false).setDropdown(value ?? '');
                                         });
                                       },
                                     ),
@@ -480,8 +469,16 @@ class HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             alignment: Alignment.center,
-                            child: Text(
-                              '125894',
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              initialValue: Provider.of<ValueProvider>(context, listen: false).volume.toString(),
+                              onChanged: (newValue) {
+                                final parsedValue = double.tryParse(newValue);
+                                if (parsedValue != null) {
+                                  Provider.of<ValueProvider>(context, listen: false).setVolume(parsedValue);
+                                }
+                              },
+                              decoration: InputDecoration(border: OutlineInputBorder()),
                               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
                             ),
                           ),
@@ -503,14 +500,7 @@ class HomeScreenState extends State<HomeScreen> {
                                 onPressed: () {
                                   final token = Provider.of<MytokenProvider>(listen: false, context).token;
                                   if (token != null) {
-                                    Actions.invoke(
-                                      context,
-                                      CloseIntent(
-                                        actionType: "POSITIONS_CLOSE_SYMBOL",
-                                        //  symbol: dropdownValue
-                                        symbol: Provider.of<DropdownProvider>(listen: false, context).dropdown,
-                                      ),
-                                    );
+                                    Actions.invoke(context, CloseIntent(actionType: "POSITIONS_CLOSE_SYMBOL"));
                                     toastification.show(
                                       backgroundColor: Color.fromRGBO(180, 231, 240, 1),
                                       context: context,
