@@ -5,7 +5,7 @@ part 'close_response_model.g.dart';
 @JsonSerializable()
 class ClosePositionModel {
   String actionType;
-  String symbol;
+  String? symbol;
 
   ClosePositionModel({required this.actionType, required this.symbol});
 

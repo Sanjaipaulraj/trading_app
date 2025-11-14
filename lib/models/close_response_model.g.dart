@@ -9,7 +9,7 @@ part of 'close_response_model.dart';
 ClosePositionModel _$ClosePositionModelFromJson(Map<String, dynamic> json) =>
     ClosePositionModel(
       actionType: json['actionType'] as String,
-      symbol: json['symbol'] as String,
+      symbol: json['symbol'] as String?,
     );
 
 Map<String, dynamic> _$ClosePositionModelToJson(ClosePositionModel instance) =>

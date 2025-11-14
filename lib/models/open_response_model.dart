@@ -5,7 +5,7 @@ part 'open_response_model.g.dart';
 @JsonSerializable()
 class OpenPositionModel {
   String actionType;
-  String symbol;
+  String? symbol;
   num volume;
   num? takeProfit;
 

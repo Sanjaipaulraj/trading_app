@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:searchfield/searchfield.dart';
 import 'package:toastification/toastification.dart';
 import 'package:trading_app/Providers/value_provider.dart';
 import 'package:trading_app/intent.dart';
@@ -25,6 +26,9 @@ class HomeScreen extends StatefulWidget {
 
 late List<ResponseModel> list;
 typedef MenuEntry = DropdownMenuEntry<String>;
+// Trail
+late List<SearchFieldListItem<String>> symbols;
+// SearchFieldListItem<String>? selectedValue;
 
 class HomeScreenState extends State<HomeScreen> {
   List<ResponseModel> list = [];
@@ -52,8 +56,18 @@ class HomeScreenState extends State<HomeScreen> {
 
     list = await _getList();
 
+    symbols = list.map((ResponseModel el) {
+      return SearchFieldListItem<String>(
+        //  search will be performed on this value
+        el.name ?? "",
+        // value to set in input on click, defaults to searchKey (optional)
+        value: el.name.toString(),
+      );
+    }).toList();
+
     if (list.isNotEmpty) {
-      Provider.of<ValueProvider>(context, listen: false).setDropdown(list.first.name ?? '');
+      // Provider.of<ValueProvider>(context, listen: false).setDropdown(list.first.name ?? '');
+      Provider.of<ValueProvider>(context, listen: false).setSelectedValue(symbols.first);
     }
   }
 
@@ -81,9 +95,11 @@ class HomeScreenState extends State<HomeScreen> {
     }
 
     Dio dio = Dio();
-    final symbol = Provider.of<ValueProvider>(context, listen: false).dropdown;
+    // final symbol = Provider.of<ValueProvider>(context, listen: false).dropdown;
+    final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue!.value;
     final volume = Provider.of<ValueProvider>(context, listen: false).volume;
     var data = OpenPositionModel(actionType: actionType, symbol: symbol, volume: volume as num, takeProfit: takeProfit);
+    print(data);
     final openResponse = await dio.post(
       'http://localhost: 3001/trade/open',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
@@ -211,8 +227,10 @@ class HomeScreenState extends State<HomeScreen> {
     }
 
     Dio dio = Dio();
-    final symbol = Provider.of<ValueProvider>(context, listen: false).dropdown;
+    // final symbol = Provider.of<ValueProvider>(context, listen: false).dropdown;
+    final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue!.value;
     final data = ClosePositionModel(actionType: actionType, symbol: symbol);
+    print(data);
     final closeResponse = await dio.post(
       'http://localhost:3001/trade/close',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
@@ -307,10 +325,6 @@ class HomeScreenState extends State<HomeScreen> {
           );
         }
 
-        final List<MenuEntry> menuEntries = list
-            .map<MenuEntry>((ResponseModel item) => MenuEntry(value: item.name ?? "", label: item.name ?? ""))
-            .toList();
-
         //  Case 5: Everything ready → show your main UI
         return Scaffold(
           backgroundColor: Color.fromRGBO(230, 230, 250, 1),
@@ -332,19 +346,28 @@ class HomeScreenState extends State<HomeScreen> {
                   child: ListView(
                     padding: EdgeInsets.zero,
                     children: [
-                      for (var l in list)
+                      // for (var l in list)
+                      //   ListTile(
+                      //     title: Text(l.name ?? 'Data Not found'),
+                      //     trailing: Text(
+                      //       l.status ?? 'Data Not found',
+                      //       style: TextStyle(
+                      //         fontSize: 16,
+                      //         color: l.status == 'live' ? Colors.green : Colors.grey.shade400,
+                      //       ),
+                      //     ),
+                      //     onTap: () {
+                      //       Provider.of<ValueProvider>(context, listen: false).setDropdown(l.name as String);
+                      //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.name} clicked')));
+                      //       Navigator.pop(context);
+                      //     },
+                      //   ),
+                      for (var l in symbols)
                         ListTile(
-                          title: Text(l.name ?? 'Data Not found'),
-                          trailing: Text(
-                            l.status ?? 'Data Not found',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: l.status == 'live' ? Colors.green : Colors.grey.shade400,
-                            ),
-                          ),
+                          title: Text(l.value ?? 'Data Not found'),
                           onTap: () {
-                            Provider.of<ValueProvider>(context, listen: false).setDropdown(l.name as String);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.name} clicked')));
+                            Provider.of<ValueProvider>(context, listen: false).setSelectedValue(l);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.value} clicked')));
                             Navigator.pop(context);
                           },
                         ),
@@ -441,16 +464,38 @@ class HomeScreenState extends State<HomeScreen> {
                             children: [
                               Consumer<ValueProvider>(
                                 builder: (context, drop, child) {
-                                  return SizedBox(
-                                    child: DropdownMenu<String>(
+                                  return ConstrainedBox(
+                                    constraints: BoxConstraints(maxWidth: 200, minWidth: 100),
+                                    child: SizedBox(
                                       width: 150,
-                                      initialSelection: drop.dropdown,
-                                      dropdownMenuEntries: menuEntries,
-                                      onSelected: (String? value) {
-                                        setState(() {
-                                          Provider.of<ValueProvider>(context, listen: false).setDropdown(value ?? '');
-                                        });
-                                      },
+                                      child: SearchField<String>(
+                                        searchInputDecoration: SearchInputDecoration(
+                                          hintText: 'Symbols',
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide(width: 5, color: Colors.black),
+                                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                                          ),
+                                        ),
+                                        maxSuggestionBoxHeight: 50,
+                                        onSuggestionTap: (SearchFieldListItem<String> item) {
+                                          Provider.of<ValueProvider>(context, listen: false).setSelectedValue(item);
+                                        },
+                                        onSearchTextChanged: (searchText) {
+                                          if (searchText.isEmpty) {
+                                            return symbols;
+                                          }
+                                          final filter = symbols.where((s) {
+                                            final key = s.searchKey.toString();
+                                            final value = s.value?.toString() ?? '';
+                                            return key.toUpperCase().contains(searchText.toUpperCase()) ||
+                                                value.toUpperCase().contains(searchText.toUpperCase());
+                                          }).toList();
+                                          return filter;
+                                        },
+                                        selectedValue: drop.selectedValue,
+                                        suggestions: symbols,
+                                        suggestionState: Suggestion.expand,
+                                      ),
                                     ),
                                   );
                                 },

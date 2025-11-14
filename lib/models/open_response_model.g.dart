@@ -9,7 +9,7 @@ part of 'open_response_model.dart';
 OpenPositionModel _$OpenPositionModelFromJson(Map<String, dynamic> json) =>
     OpenPositionModel(
       actionType: json['actionType'] as String,
-      symbol: json['symbol'] as String,
+      symbol: json['symbol'] as String?,
       volume: json['volume'] as num,
       takeProfit: json['takeProfit'] as num?,
     );
