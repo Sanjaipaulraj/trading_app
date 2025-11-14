@@ -1,0 +1,7 @@
+14/11/2025
+
+=> The alert function that captures the api request data message and the 
+   details from the message its enable the reversal plus and signal exit 
+   checked boxes enable true or false its triggered the close symbol
+=> The small database like sqlite or something not postgres or big database
+   its stores the detail and another data to the that.

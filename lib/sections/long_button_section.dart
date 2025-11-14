@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 import 'package:provider/provider.dart';
-import 'package:trading_app/checked_box_provider.dart';
+import 'package:trading_app/Providers/checked_box_provider.dart';
 import 'package:trading_app/intent.dart';
-import 'package:trading_app/token_provider.dart';
+import 'package:trading_app/Providers/token_provider.dart';
 
 class LongButtonSection extends StatefulWidget {
   const LongButtonSection({super.key});
@@ -15,7 +15,7 @@ class LongButtonSection extends StatefulWidget {
 class _LongButtonSectionState extends State<LongButtonSection> {
   @override
   Widget build(BuildContext context) {
-    return Consumer2<Mytoken, CheckedBox>(
+    return Consumer2<MytokenProvider, CheckedBoxProvider>(
       builder: (context, myToken, checkedBox, child) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -36,9 +36,9 @@ class _LongButtonSectionState extends State<LongButtonSection> {
               ),
               onPressed: checkedBox.isLongAllChecked
                   ? () {
-                      final token = Provider.of<Mytoken>(context, listen: false).token;
+                      final token = Provider.of<MytokenProvider>(context, listen: false).token;
                       if (token != null) {
-                        Actions.invoke(context, const LongIntent());
+                        Actions.invoke(context, const LongIntent(actionType: "ORDER_TYPE_BUY"));
                         toastification.show(
                           backgroundColor: Color.fromRGBO(199, 226, 201, 1),
                           context: context,
@@ -75,7 +75,7 @@ class _LongButtonSectionState extends State<LongButtonSection> {
     );
   }
 
-  Widget _buildCheckboxRow(String checkboxField, CheckedBox checkedBox) {
+  Widget _buildCheckboxRow(String checkboxField, CheckedBoxProvider checkedBox) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -94,7 +94,7 @@ class _LongButtonSectionState extends State<LongButtonSection> {
     );
   }
 
-  bool _getCheckboxValue(String checkboxField, CheckedBox checkedBox) {
+  bool _getCheckboxValue(String checkboxField, CheckedBoxProvider checkedBox) {
     switch (checkboxField) {
       case 'LongTcChecked':
         return checkedBox.isLongTcChecked;

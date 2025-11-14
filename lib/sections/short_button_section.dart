@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
-import 'package:trading_app/checked_box_provider.dart';
+import 'package:trading_app/Providers/checked_box_provider.dart';
 import 'package:trading_app/intent.dart';
-import 'package:trading_app/token_provider.dart';
+import 'package:trading_app/Providers/token_provider.dart';
 
 class ShortButtonSection extends StatefulWidget {
   const ShortButtonSection({super.key});
@@ -20,7 +20,7 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<Mytoken, CheckedBox>(
+    return Consumer2<MytokenProvider, CheckedBoxProvider>(
       builder: (context, myToken, checkedBox, child) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -41,9 +41,9 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
               ),
               onPressed: checkedBox.isShortAllChecked
                   ? () {
-                      final token = Provider.of<Mytoken>(context, listen: false).token;
+                      final token = Provider.of<MytokenProvider>(context, listen: false).token;
                       if (token != null) {
-                        Actions.invoke(context, const ShortIntent());
+                        Actions.invoke(context, const ShortIntent(actionType: "ORDER_TYPE_SELL"));
                         toastification.show(
                           backgroundColor: Color.fromRGBO(199, 226, 201, 1),
                           context: context,
@@ -80,7 +80,7 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
     );
   }
 
-  Widget _buildCheckboxRow(String checkboxField, CheckedBox checkedBox) {
+  Widget _buildCheckboxRow(String checkboxField, CheckedBoxProvider checkedBox) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -99,7 +99,7 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
     );
   }
 
-  bool _getCheckboxValue(String checkboxField, CheckedBox checkedBox) {
+  bool _getCheckboxValue(String checkboxField, CheckedBoxProvider checkedBox) {
     switch (checkboxField) {
       case 'ShortTcChecked':
         return checkedBox.isShortTcChecked;

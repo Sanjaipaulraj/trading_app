@@ -1,3 +1,3 @@
 # trading_app
 
-A new Flutter project.
+A Flutter project for a trading platform.
