@@ -11,6 +11,9 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool isShortNeoChecked = false;
   bool isShortHwoChecked = false;
   bool isShortConfChecked = false;
+  bool isReversalPlusChecked = false;
+  bool isSignalExitChecked = false;
+  bool isTcChangeChecked = false;
 
   bool get isLongAllChecked =>
       isLongTcChecked && isLongTtChecked && isLongNeoChecked && isLongHwoChecked && isLongConfChecked;
@@ -59,6 +62,15 @@ class CheckedBoxProvider extends ChangeNotifier {
       case 'ShortConfChecked':
         isShortConfChecked = !isShortConfChecked;
         isLongConfChecked = false;
+        break;
+      case 'Reversal Plus':
+        isReversalPlusChecked = !isReversalPlusChecked;
+        break;
+      case 'Signal Exit':
+        isSignalExitChecked = !isSignalExitChecked;
+        break;
+      case 'Tc Change':
+        isTcChangeChecked = !isTcChangeChecked;
         break;
     }
     notifyListeners();

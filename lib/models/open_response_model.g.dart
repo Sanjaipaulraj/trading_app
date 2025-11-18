@@ -12,6 +12,9 @@ OpenPositionModel _$OpenPositionModelFromJson(Map<String, dynamic> json) =>
       symbol: json['symbol'] as String?,
       volume: json['volume'] as num,
       takeProfit: json['takeProfit'] as num?,
+      reversalPlus: json['reversalPlus'] as bool,
+      signalExit: json['signalExit'] as bool,
+      tcChange: json['tcChange'] as bool,
     );
 
 Map<String, dynamic> _$OpenPositionModelToJson(OpenPositionModel instance) =>
@@ -20,4 +23,7 @@ Map<String, dynamic> _$OpenPositionModelToJson(OpenPositionModel instance) =>
       'symbol': instance.symbol,
       'volume': instance.volume,
       'takeProfit': instance.takeProfit,
+      'reversalPlus': instance.reversalPlus,
+      'signalExit': instance.signalExit,
+      'tcChange': instance.tcChange,
     };

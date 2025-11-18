@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ValueProvider extends ChangeNotifier {
   SearchFieldListItem<String>? selectedValue;
-  double volume = 1.03;
+  num volume = 1.03;
   bool _isLoading = true;
 
   bool get isLoading => _isLoading;

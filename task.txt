@@ -5,3 +5,26 @@
    checked boxes enable true or false its triggered the close symbol
 => The small database like sqlite or something not postgres or big database
    its stores the detail and another data to the that.
+
+
+15/11/2025
+
+=> Use the flutter sqflite package to create the table and manage the trade
+   transaction in the frontend 
+=> Use the rustsqlite crate to manage the trade transactions in the backend 
+   if the frontend call the backend for response then we send the status from
+   the rustsqlite
+=> Main thing is the reversal plus,signal exit,tc change are the boolean values
+   that attached to a data of the openfn to the backend and the logic of the 
+   boolean value are executed in backend ,if the boolean value is true then the 
+   backend server calls the other api service for the response and when the 
+   response gets its gets the alert then call the close function and update the
+   rustsqlite symbol closed status in the table,when the time of frontend ask for 
+   the symbol close or anything then we provide the status we managed in the 
+   rustsqlite
+=> if the close status are the new details are get from the backend and then frontend
+   widget state are rebuild for the value clearance
+
+Additional Ideas:
+=> The frontend database use sqflite then the symbol and the details are managed in
+   the table 

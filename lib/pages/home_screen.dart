@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:toastification/toastification.dart';
+import 'package:trading_app/Providers/checked_box_provider.dart';
 import 'package:trading_app/Providers/value_provider.dart';
 import 'package:trading_app/intent.dart';
 import 'package:trading_app/models/close_response_model.dart';
@@ -26,7 +27,6 @@ class HomeScreen extends StatefulWidget {
 
 late List<ResponseModel> list;
 typedef MenuEntry = DropdownMenuEntry<String>;
-// Trail
 late List<SearchFieldListItem<String>> symbols;
 // SearchFieldListItem<String>? selectedValue;
 
@@ -66,7 +66,6 @@ class HomeScreenState extends State<HomeScreen> {
     }).toList();
 
     if (list.isNotEmpty) {
-      // Provider.of<ValueProvider>(context, listen: false).setDropdown(list.first.name ?? '');
       Provider.of<ValueProvider>(context, listen: false).setSelectedValue(symbols.first);
     }
   }
@@ -95,16 +94,27 @@ class HomeScreenState extends State<HomeScreen> {
     }
 
     Dio dio = Dio();
-    // final symbol = Provider.of<ValueProvider>(context, listen: false).dropdown;
     final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue!.value;
     final volume = Provider.of<ValueProvider>(context, listen: false).volume;
-    var data = OpenPositionModel(actionType: actionType, symbol: symbol, volume: volume as num, takeProfit: takeProfit);
+    final reversal = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalPlusChecked;
+    final signal = Provider.of<CheckedBoxProvider>(context, listen: false).isSignalExitChecked;
+    final tc = Provider.of<CheckedBoxProvider>(context, listen: false).isTcChangeChecked;
+    var data = OpenPositionModel(
+      actionType: actionType,
+      symbol: symbol,
+      volume: volume,
+      takeProfit: takeProfit,
+      reversalPlus: reversal,
+      signalExit: signal,
+      tcChange: tc,
+    );
     print(data);
     final openResponse = await dio.post(
-      'http://localhost: 3001/trade/open',
+      'http://localhost:3001/trade/open',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       data: jsonEncode(data),
     );
+    print(openResponse.data);
     try {
       if (openResponse.statusCode == 200) {
         toastification.show(
@@ -169,7 +179,7 @@ class HomeScreenState extends State<HomeScreen> {
           description: Text('Status code: ${response.statusCode}'),
           type: ToastificationType.error,
           alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
+          autoCloseDuration: const Duration(seconds: 1),
         );
         return [];
       }
@@ -346,22 +356,6 @@ class HomeScreenState extends State<HomeScreen> {
                   child: ListView(
                     padding: EdgeInsets.zero,
                     children: [
-                      // for (var l in list)
-                      //   ListTile(
-                      //     title: Text(l.name ?? 'Data Not found'),
-                      //     trailing: Text(
-                      //       l.status ?? 'Data Not found',
-                      //       style: TextStyle(
-                      //         fontSize: 16,
-                      //         color: l.status == 'live' ? Colors.green : Colors.grey.shade400,
-                      //       ),
-                      //     ),
-                      //     onTap: () {
-                      //       Provider.of<ValueProvider>(context, listen: false).setDropdown(l.name as String);
-                      //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.name} clicked')));
-                      //       Navigator.pop(context);
-                      //     },
-                      //   ),
                       for (var l in symbols)
                         ListTile(
                           title: Text(l.value ?? 'Data Not found'),
