@@ -28,3 +28,16 @@
 Additional Ideas:
 => The frontend database use sqflite then the symbol and the details are managed in
    the table 
+
+20/11/2025
+
+=> Complete the plan but the remaining changes and their solution:
+
+   * The close function in trade server close fn called and it directly call the 
+     meta api trader but first its check the db for api status (status) and check
+     the status is completed or not if its completed then the frontend msg to be
+     its already closed and backend need not to be call the api of meta trader
+   
+=> 21/11/2025
+
+   => The planned db changes are almost completed waiting for the verify

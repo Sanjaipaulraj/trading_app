@@ -6,6 +6,7 @@ class ValueProvider extends ChangeNotifier {
   SearchFieldListItem<String>? selectedValue;
   num volume = 1.03;
   bool _isLoading = true;
+  String? positionId;
 
   bool get isLoading => _isLoading;
 
@@ -29,6 +30,11 @@ class ValueProvider extends ChangeNotifier {
 
   void setSelectedValue(SearchFieldListItem<String> value) {
     selectedValue = value;
+    notifyListeners();
+  }
+
+  void setPositionId(String posId) {
+    positionId = posId;
     notifyListeners();
   }
 }

@@ -8,7 +8,8 @@ import 'package:toastification/toastification.dart';
 import 'package:trading_app/Providers/checked_box_provider.dart';
 import 'package:trading_app/Providers/value_provider.dart';
 import 'package:trading_app/intent.dart';
-import 'package:trading_app/models/close_response_model.dart';
+import 'package:trading_app/models/close_request_model.dart';
+import 'package:trading_app/models/open_request_model.dart';
 import 'package:trading_app/models/open_response_model.dart';
 import 'package:trading_app/models/response_model.dart';
 import 'package:trading_app/sections/automatic_closing_section.dart';
@@ -99,7 +100,7 @@ class HomeScreenState extends State<HomeScreen> {
     final reversal = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalPlusChecked;
     final signal = Provider.of<CheckedBoxProvider>(context, listen: false).isSignalExitChecked;
     final tc = Provider.of<CheckedBoxProvider>(context, listen: false).isTcChangeChecked;
-    var data = OpenPositionModel(
+    var data = OpenRequestModel(
       actionType: actionType,
       symbol: symbol,
       volume: volume,
@@ -108,15 +109,16 @@ class HomeScreenState extends State<HomeScreen> {
       signalExit: signal,
       tcChange: tc,
     );
-    print(data);
     final openResponse = await dio.post(
       'http://localhost:3001/trade/open',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       data: jsonEncode(data),
     );
-    print(openResponse.data);
     try {
       if (openResponse.statusCode == 200) {
+        var sData = openResponse.data;
+        var response = OpenResponseModel.fromJson(sData);
+        Provider.of<ValueProvider>(context, listen: false).setPositionId(response.positionId);
         toastification.show(
           backgroundColor: Color.fromRGBO(199, 226, 201, 1),
           title: const Text('Success!'),
@@ -237,10 +239,8 @@ class HomeScreenState extends State<HomeScreen> {
     }
 
     Dio dio = Dio();
-    // final symbol = Provider.of<ValueProvider>(context, listen: false).dropdown;
-    final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue!.value;
-    final data = ClosePositionModel(actionType: actionType, symbol: symbol);
-    print(data);
+    final positionId = Provider.of<ValueProvider>(context, listen: false).positionId;
+    final data = CloseRequestModel(actionType: actionType, positionId: positionId);
     final closeResponse = await dio.post(
       'http://localhost:3001/trade/close',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
@@ -419,7 +419,7 @@ class HomeScreenState extends State<HomeScreen> {
                 actionType: "ORDER_TYPE_SELL",
               ),
               LogicalKeySet(LogicalKeyboardKey.keyC, LogicalKeyboardKey.control): CloseIntent(
-                actionType: "POSITIONS_CLOSE_SYMBOL",
+                actionType: "POSITION_CLOSE_ID",
               ),
             },
             child: Actions(
@@ -539,7 +539,7 @@ class HomeScreenState extends State<HomeScreen> {
                                 onPressed: () {
                                   final token = Provider.of<MytokenProvider>(listen: false, context).token;
                                   if (token != null) {
-                                    Actions.invoke(context, CloseIntent(actionType: "POSITIONS_CLOSE_SYMBOL"));
+                                    Actions.invoke(context, CloseIntent(actionType: "POSITION_CLOSE_ID"));
                                     toastification.show(
                                       backgroundColor: Color.fromRGBO(180, 231, 240, 1),
                                       context: context,

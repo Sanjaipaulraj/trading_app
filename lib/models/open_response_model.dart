@@ -3,31 +3,31 @@ import 'package:json_annotation/json_annotation.dart';
 part 'open_response_model.g.dart';
 
 @JsonSerializable()
-class OpenPositionModel {
-  String actionType;
-  String? symbol;
-  num volume;
-  num? takeProfit;
-  bool reversalPlus;
-  bool signalExit;
-  bool tcChange;
+class OpenResponseModel {
+  String stringCode;
+  num numericCode;
+  String message;
+  String orderId;
+  String positionId;
+  String tradeExecutionTime;
+  String tradeStartTime;
 
-  OpenPositionModel({
-    required this.actionType,
-    required this.symbol,
-    required this.volume,
-    this.takeProfit,
-    required this.reversalPlus,
-    required this.signalExit,
-    required this.tcChange,
+  OpenResponseModel({
+    required this.stringCode,
+    required this.numericCode,
+    required this.message,
+    required this.orderId,
+    required this.positionId,
+    required this.tradeExecutionTime,
+    required this.tradeStartTime,
   });
 
-  factory OpenPositionModel.fromJson(Map<String, dynamic> json) => _$OpenPositionModelFromJson(json);
+  factory OpenResponseModel.fromJson(Map<String, dynamic> json) => _$OpenResponseModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$OpenPositionModelToJson(this);
+  Map<String, dynamic> toJson() => _$OpenResponseModelToJson(this);
 
   @override
   String toString() {
-    return "OpenPositionModel{Action type: $actionType,Symbol : $symbol,Volume: $volume,Take profit: $takeProfit,Reversal Plus: $reversalPlus,Signal Exit: $signalExit,Tc Change: $tcChange}";
+    return "OpenResponseModel{String code: $stringCode,Numeric Code : $numericCode,Message: $message,Order Id: $orderId,Position Id: $positionId,Trade Execution Time: $tradeExecutionTime,Trade Start Time: $tradeStartTime}";
   }
 }
