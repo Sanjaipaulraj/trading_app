@@ -41,3 +41,10 @@ Additional Ideas:
 => 21/11/2025
 
    => The planned db changes are almost completed waiting for the verify
+
+
+=> 10/12/2025
+   => The trade close using only symbol not the position id
+   => The api status method should be web socket for the request and 
+      immediate change of the icluding boolean factors trade
+   => Divergence response/request to be {Divergence-> name,symbol,Green/Red} 

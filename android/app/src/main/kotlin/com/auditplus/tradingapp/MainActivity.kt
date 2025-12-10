@@ -1,4 +1,4 @@
-package trading_app
+package com.auditplus.tradingapp
 
 import io.flutter.embedding.android.FlutterActivity
 

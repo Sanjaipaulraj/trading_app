@@ -110,7 +110,8 @@ class HomeScreenState extends State<HomeScreen> {
       tcChange: tc,
     );
     final openResponse = await dio.post(
-      'http://localhost:3001/trade/open',
+      // 'http://localhost:3001/trade/open',
+      'http://103.35.142.91:4000/trade/open',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       data: jsonEncode(data),
     );
@@ -157,7 +158,8 @@ class HomeScreenState extends State<HomeScreen> {
 
     try {
       final response = await dio.get(
-        'http://localhost:3001/trade/list',
+        // 'http://localhost:3001/trade/list',
+        'http://103.35.142.91:4000/trade/list',
         options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       );
       if (response.statusCode == 200) {
@@ -242,7 +244,8 @@ class HomeScreenState extends State<HomeScreen> {
     final positionId = Provider.of<ValueProvider>(context, listen: false).positionId;
     final data = CloseRequestModel(actionType: actionType, positionId: positionId);
     final closeResponse = await dio.post(
-      'http://localhost:3001/trade/close',
+      // 'http://localhost:3001/trade/close',
+      'http://103.35.142.91:4000/trade/close',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       data: jsonEncode(data),
     );
