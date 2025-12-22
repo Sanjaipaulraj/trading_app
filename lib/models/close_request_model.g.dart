@@ -9,11 +9,13 @@ part of 'close_request_model.dart';
 CloseRequestModel _$CloseRequestModelFromJson(Map<String, dynamic> json) =>
     CloseRequestModel(
       actionType: json['actionType'] as String,
-      positionId: json['positionId'] as String?,
+      symbol: json['symbol'] as String?,
+      description: json['description'] as String,
     );
 
 Map<String, dynamic> _$CloseRequestModelToJson(CloseRequestModel instance) =>
     <String, dynamic>{
       'actionType': instance.actionType,
-      'positionId': instance.positionId,
+      'symbol': instance.symbol,
+      'description': instance.description,
     };

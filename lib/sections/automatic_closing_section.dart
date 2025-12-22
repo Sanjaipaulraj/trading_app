@@ -23,9 +23,9 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                 'Automatic Closing',
                 style: TextStyle(color: Color.fromRGBO(101, 101, 255, 1), fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              _buildCheckboxRow('Reversal Plus', checkedbox),
-              _buildCheckboxRow('Signal Exit', checkedbox),
-              _buildCheckboxRow('Tc Change', checkedbox),
+              _buildCheckboxRow('ReversalPlusChecked', 'Reversal Plus', checkedbox),
+              _buildCheckboxRow('SignalExitChecked', 'Signal Exit', checkedbox),
+              _buildCheckboxRow('TcChangeChecked', 'Tc Change', checkedbox),
             ],
           ),
         );
@@ -33,24 +33,22 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
     );
   }
 
-  Widget _buildCheckboxRow(String checkboxField, CheckedBoxProvider checkedBox) {
+  Widget _buildCheckboxRow(String key, String label, CheckedBoxProvider checkedBox) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 5,
       children: [
         SizedBox(
           width: 150,
-          child: Text(checkboxField, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          child: Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
         ),
         SizedBox(
           height: 40,
           width: 40,
           child: Checkbox(
-            value: _getCheckboxValue(checkboxField, checkedBox),
+            value: _getCheckboxValue(key, checkedBox),
             onChanged: (bool? newValue) {
-              setState(() {
-                checkedBox.changeValue(checkboxField);
-              });
+              checkedBox.changeValue(key);
             },
             activeColor: Colors.green,
             checkColor: Colors.white,
@@ -62,11 +60,11 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
 
   bool _getCheckboxValue(String checkboxField, CheckedBoxProvider checkedBox) {
     switch (checkboxField) {
-      case 'Reversal Plus':
+      case 'ReversalPlusChecked':
         return checkedBox.isReversalPlusChecked;
-      case 'Signal Exit':
+      case 'SignalExitChecked':
         return checkedBox.isSignalExitChecked;
-      case 'Tc Change':
+      case 'TcChangeChecked':
         return checkedBox.isTcChangeChecked;
       default:
         return false;

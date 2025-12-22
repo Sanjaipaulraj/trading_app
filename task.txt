@@ -46,5 +46,41 @@ Additional Ideas:
 => 10/12/2025
    => The trade close using only symbol not the position id
    => The api status method should be web socket for the request and 
-      immediate change of the icluding boolean factors trade
+      immediate change of the including boolean factors trade
    => Divergence response/request to be {Divergence-> name,symbol,Green/Red} 
+
+--------------> 19/12/2025 -> Important final update
+
+   => Trading app reversal plus and that section will be saved in local storage 
+      until the manually clear the checked box if the reversal plus or other
+      checked box is enable if we close the app and then we open it again
+      the checked box status remain same as we set 
+   
+   => the trade server api_status method is triggered the close function,when 
+      the request comes to the api_status handler then the handler check the symbol first 
+      if it is the same symbol is opened in the trade row then check the row columns
+      reversal plus or signal exit or tc change is true if it is true then will be next step 
+      the message request like (XAUUSD-SIGNAL-EXIT) if like this then close the XAUUSD even 
+      id ORDER_TYPE_BUY or ORDER_TYPE_SELL  ,the mesage will be like(XAUUSD-TC-DOWN) then the 
+      XAUUSD symbol row in the row with open check the order_type ,the order type of the XAUUSD
+      in the row is ORDER_TYPE_BUY then the close function triggered like the 
+      {
+         "symbol": "XAUUSD", 
+         "action_type": "POSITIONS_CLOSE_SYMBOL", 
+         "description": "TC-DOWN",
+      }
+      the message is XAUUSD-TC-UP then reverse the logic  => find the symbol in row and check the
+      order_type the order_type is ORDER_TYPE_SELL then the close fn triggered like 
+      {
+         "symbol": "XAUUSD", 
+         "action_type": "POSITIONS_CLOSE_SYMBOL", 
+         "description": "TC-UP",
+      }
+
+   => reversal plus concept is bullish reversal then close the buy and bearish is reversal then close the
+      sell in the same symbol the format like( XAUUSD-ReversalPlus-Bearish reversal + ) and 
+      ( XAUUSD-ReversalPlus-Bullish reversal + )
+
+   => in table update the reason alos for the closing the trade in the row 
+
+   => Divergence and the function executed the updation to be live on the  Ui so change the server as websocket

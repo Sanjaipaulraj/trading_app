@@ -10,7 +10,6 @@ import 'package:trading_app/Providers/value_provider.dart';
 import 'package:trading_app/intent.dart';
 import 'package:trading_app/models/close_request_model.dart';
 import 'package:trading_app/models/open_request_model.dart';
-import 'package:trading_app/models/open_response_model.dart';
 import 'package:trading_app/models/response_model.dart';
 import 'package:trading_app/sections/automatic_closing_section.dart';
 import 'package:trading_app/sections/conditon_title_section.dart';
@@ -29,7 +28,6 @@ class HomeScreen extends StatefulWidget {
 late List<ResponseModel> list;
 typedef MenuEntry = DropdownMenuEntry<String>;
 late List<SearchFieldListItem<String>> symbols;
-// SearchFieldListItem<String>? selectedValue;
 
 class HomeScreenState extends State<HomeScreen> {
   List<ResponseModel> list = [];
@@ -66,9 +64,7 @@ class HomeScreenState extends State<HomeScreen> {
       );
     }).toList();
 
-    if (list.isNotEmpty) {
-      Provider.of<ValueProvider>(context, listen: false).setSelectedValue(symbols.first);
-    }
+    if (list.isNotEmpty) {}
   }
 
   @override
@@ -100,7 +96,7 @@ class HomeScreenState extends State<HomeScreen> {
     final reversal = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalPlusChecked;
     final signal = Provider.of<CheckedBoxProvider>(context, listen: false).isSignalExitChecked;
     final tc = Provider.of<CheckedBoxProvider>(context, listen: false).isTcChangeChecked;
-    var data = OpenRequestModel(
+    final data = OpenRequestModel(
       actionType: actionType,
       symbol: symbol,
       volume: volume,
@@ -109,30 +105,40 @@ class HomeScreenState extends State<HomeScreen> {
       signalExit: signal,
       tcChange: tc,
     );
-    final openResponse = await dio.post(
-      // 'http://localhost:3001/trade/open',
-      'http://103.35.142.91:4000/trade/open',
-      options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
-      data: jsonEncode(data),
-    );
     try {
-      if (openResponse.statusCode == 200) {
-        var sData = openResponse.data;
-        var response = OpenResponseModel.fromJson(sData);
-        Provider.of<ValueProvider>(context, listen: false).setPositionId(response.positionId);
+      final _ = await dio.post(
+        // 'http://13.201.225.85/trade/open',
+        'http://localhost:4000/trade/open',
+        data: jsonEncode(data),
+        options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
+      );
+
+      // ✅ Only 2xx responses reach here
+      toastification.show(
+        backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
+        title: const Text('Success!'),
+        description: const Text('Send successfully'),
+        type: ToastificationType.success,
+        alignment: Alignment.center,
+        autoCloseDuration: const Duration(seconds: 2),
+      );
+    } on DioException catch (e) {
+      final statusCode = e.response?.statusCode;
+
+      if (statusCode == 409) {
         toastification.show(
-          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-          title: const Text('Success!'),
-          description: const Text('Send successfuly'),
-          type: ToastificationType.success,
+          backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
+          title: Text('${e.response?.data}'),
+          description: const Text('Try another symbol'),
+          type: ToastificationType.info,
           alignment: Alignment.center,
           autoCloseDuration: const Duration(seconds: 2),
         );
       } else {
         toastification.show(
-          backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+          backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
           title: const Text('Error!'),
-          description: Text('Status code : ${openResponse.statusCode}'),
+          description: Text('Status code: $statusCode\n${e.message}'),
           type: ToastificationType.error,
           alignment: Alignment.center,
           autoCloseDuration: const Duration(seconds: 2),
@@ -140,9 +146,9 @@ class HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       toastification.show(
-        backgroundColor: Color.fromRGBO(242, 186, 185, 1),
-        title: const Text('Error!'),
-        description: Text('Error occurs : $e'),
+        backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
+        title: const Text('Unexpected Error!'),
+        description: Text(e.toString()),
         type: ToastificationType.error,
         alignment: Alignment.center,
         autoCloseDuration: const Duration(seconds: 2),
@@ -158,8 +164,8 @@ class HomeScreenState extends State<HomeScreen> {
 
     try {
       final response = await dio.get(
-        // 'http://localhost:3001/trade/list',
-        'http://103.35.142.91:4000/trade/list',
+        // 'http://13.201.225.85/trade/list',
+        'http://localhost:4000/trade/list',
         options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       );
       if (response.statusCode == 200) {
@@ -172,10 +178,11 @@ class HomeScreenState extends State<HomeScreen> {
           description: const Text('List fetched successfully.'),
           type: ToastificationType.success,
           alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
+          autoCloseDuration: const Duration(seconds: 1),
         );
         return parsedList;
       } else {
+        // ignore: use_build_context_synchronously
         Provider.of<MytokenProvider>(context, listen: false).clearToken();
         toastification.show(
           backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
@@ -201,6 +208,7 @@ class HomeScreenState extends State<HomeScreen> {
           autoCloseDuration: const Duration(seconds: 2),
         );
       } else {
+        // ignore: use_build_context_synchronously
         Provider.of<MytokenProvider>(context, listen: false).clearToken();
         toastification.show(
           backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
@@ -241,17 +249,17 @@ class HomeScreenState extends State<HomeScreen> {
     }
 
     Dio dio = Dio();
-    final positionId = Provider.of<ValueProvider>(context, listen: false).positionId;
-    final data = CloseRequestModel(actionType: actionType, positionId: positionId);
+    final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue!.value;
+    String description = "Manual Close";
+    final data = CloseRequestModel(actionType: actionType, symbol: symbol, description: description);
     final closeResponse = await dio.post(
-      // 'http://localhost:3001/trade/close',
-      'http://103.35.142.91:4000/trade/close',
+      // 'http://13.201.225.85/trade/close',
+      'http://localhost:4000/trade/close',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       data: jsonEncode(data),
     );
     try {
       if (closeResponse.statusCode == 200) {
-        print(closeResponse.data);
         toastification.show(
           backgroundColor: Color.fromRGBO(199, 226, 201, 1),
           title: const Text('Success!'),
@@ -422,7 +430,7 @@ class HomeScreenState extends State<HomeScreen> {
                 actionType: "ORDER_TYPE_SELL",
               ),
               LogicalKeySet(LogicalKeyboardKey.keyC, LogicalKeyboardKey.control): CloseIntent(
-                actionType: "POSITION_CLOSE_ID",
+                actionType: "POSITIONS_CLOSE_SYMBOL",
               ),
             },
             child: Actions(
@@ -459,39 +467,92 @@ class HomeScreenState extends State<HomeScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Consumer<ValueProvider>(
-                                builder: (context, drop, child) {
+                              // Consumer<ValueProvider>(
+                              //   builder: (context, drop, child) {
+                              //     return ConstrainedBox(
+                              //       constraints: BoxConstraints(maxWidth: 200, minWidth: 100),
+                              //       child: SizedBox(
+                              //         width: 150,
+                              //         child: SearchField<String>(
+                              //           searchInputDecoration: SearchInputDecoration(
+                              //             hintText: 'Symbols',
+                              //             border: OutlineInputBorder(
+                              //               borderSide: BorderSide(width: 5, color: Colors.black),
+                              //               borderRadius: BorderRadius.all(Radius.circular(8)),
+                              //             ),
+                              //           ),
+                              //           maxSuggestionBoxHeight: 50,
+                              //           onSearchTextChanged: (searchText) {
+                              //             if (searchText.isEmpty) {
+                              //               return symbols;
+                              //             }
+                              //             final filter = symbols.where((s) {
+                              //               final key = s.searchKey.toString();
+                              //               final value = s.value?.toString() ?? '';
+                              //               return key.toUpperCase().contains(searchText.toUpperCase()) ||
+                              //                   value.toUpperCase().contains(searchText.toUpperCase());
+                              //             }).toList();
+                              //             return filter;
+                              //           },
+                              //           onSuggestionTap: (SearchFieldListItem<String> item) {
+                              //             Provider.of<ValueProvider>(context, listen: false).setSelectedValue(item);
+
+                              //             Provider.of<CheckedBoxProvider>(
+                              //               context,
+                              //               listen: false,
+                              //             ).loadForSymbol(item.value!);
+                              //           },
+                              //           selectedValue: drop.selectedValue,
+                              //           suggestions: symbols,
+                              //           suggestionState: Suggestion.expand,
+                              //         ),
+                              //       ),
+                              //     );
+                              //   },
+                              // ),
+                              Selector<ValueProvider, SearchFieldListItem<String>?>(
+                                selector: (_, p) => p.selectedValue,
+                                builder: (context, selectedValue, _) {
                                   return ConstrainedBox(
-                                    constraints: BoxConstraints(maxWidth: 200, minWidth: 100),
+                                    constraints: const BoxConstraints(maxWidth: 200, minWidth: 100),
                                     child: SizedBox(
                                       width: 150,
                                       child: SearchField<String>(
+                                        focusNode: _symbolFocusNode,
+                                        selectedValue: selectedValue,
+                                        suggestions: symbols,
+                                        suggestionState: Suggestion.expand,
+                                        maxSuggestionBoxHeight: 50,
+
                                         searchInputDecoration: SearchInputDecoration(
                                           hintText: 'Symbols',
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(width: 5, color: Colors.black),
-                                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                                          ),
+                                          border: OutlineInputBorder(),
                                         ),
-                                        maxSuggestionBoxHeight: 50,
-                                        onSuggestionTap: (SearchFieldListItem<String> item) {
-                                          Provider.of<ValueProvider>(context, listen: false).setSelectedValue(item);
-                                        },
+
                                         onSearchTextChanged: (searchText) {
-                                          if (searchText.isEmpty) {
-                                            return symbols;
-                                          }
-                                          final filter = symbols.where((s) {
+                                          if (searchText.isEmpty) return symbols;
+
+                                          return symbols.where((s) {
                                             final key = s.searchKey.toString();
                                             final value = s.value?.toString() ?? '';
                                             return key.toUpperCase().contains(searchText.toUpperCase()) ||
                                                 value.toUpperCase().contains(searchText.toUpperCase());
                                           }).toList();
-                                          return filter;
                                         },
-                                        selectedValue: drop.selectedValue,
-                                        suggestions: symbols,
-                                        suggestionState: Suggestion.expand,
+
+                                        onSuggestionTap: (SearchFieldListItem<String> item) {
+                                          _symbolFocusNode.unfocus();
+
+                                          Future.microtask(() {
+                                            // ignore: use_build_context_synchronously
+                                            Provider.of<ValueProvider>(context, listen: false).setSelectedValue(item);
+                                            Provider.of<CheckedBoxProvider>(
+                                              // ignore: use_build_context_synchronously
+                                              context,
+                                              listen: false,
+                                            ).loadForSymbol(item.value!);
+                                          });
+                                        },
                                       ),
                                     ),
                                   );
@@ -542,7 +603,8 @@ class HomeScreenState extends State<HomeScreen> {
                                 onPressed: () {
                                   final token = Provider.of<MytokenProvider>(listen: false, context).token;
                                   if (token != null) {
-                                    Actions.invoke(context, CloseIntent(actionType: "POSITION_CLOSE_ID"));
+                                    Actions.invoke(context, CloseIntent(actionType: "POSITIONS_CLOSE_SYMBOL"));
+                                    Provider.of<CheckedBoxProvider>(context, listen: false).clearState();
                                     toastification.show(
                                       backgroundColor: Color.fromRGBO(180, 231, 240, 1),
                                       context: context,
