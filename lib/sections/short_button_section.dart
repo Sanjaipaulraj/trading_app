@@ -44,15 +44,6 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
                       final token = Provider.of<MytokenProvider>(context, listen: false).token;
                       if (token != null) {
                         Actions.invoke(context, const ShortIntent(actionType: "ORDER_TYPE_SELL"));
-                        toastification.show(
-                          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-                          context: context,
-                          title: const Text('Success!'),
-                          description: const Text('Your value submited successfully'),
-                          type: ToastificationType.success,
-                          alignment: Alignment.center,
-                          autoCloseDuration: const Duration(seconds: 2),
-                        );
                       } else {
                         toastification.show(
                           backgroundColor: Color.fromRGBO(242, 186, 185, 1),
