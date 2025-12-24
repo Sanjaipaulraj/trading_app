@@ -33,6 +33,12 @@ class ValueProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearSelectedValue() {
+    selectedValue = null;
+    selectedItem = null;
+    notifyListeners();
+  }
+
   void setSelectedItem(SearchFieldListItem<String> item) {
     selectedItem = item; // UI-safe object
     selectedValue = item.searchKey; // pure data

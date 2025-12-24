@@ -84,3 +84,16 @@ Additional Ideas:
    => in table update the reason alos for the closing the trade in the row 
 
    => Divergence and the function executed the updation to be live on the  Ui so change the server as websocket
+
+24/12/2025
+   => UI updation the automatic section also selected after the trade open (in this automatic section triggered the function 
+   one new endpoint that calls the db and only update the part)
+   => if the first time trade booking ,at that time any of the automatic closing section checked box triggered then check the status 
+   of the symbol is open in the local storage that means when the trade is opening in first time its stored in the frontend also 
+   get that data and check if it is open or not ,that data also show to the menu bar live status list and their score 
+   and the report for the datewise filtered records 
+   => Now symbol mapped to another model and give live status that is wrong change into the normal list and only show 
+      the symbol live status that have our database open status that shown to the menu bar 
+   => Menu bar have the live status list dropdown and the report actoin section 
+   => How to find a trade point for finding the between of open time trade value point and close time trade value point  
+      Refer the file in notepad ++ (new 8) this have the way to find a score 

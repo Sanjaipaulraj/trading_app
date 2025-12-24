@@ -195,7 +195,7 @@ class HomeScreenState extends State<HomeScreen> {
           description: const Text('List fetched successfully.'),
           type: ToastificationType.success,
           alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 1),
+          autoCloseDuration: const Duration(milliseconds: 800),
         );
         return parsedList;
       } else if (response.statusCode == 500) {
@@ -538,6 +538,8 @@ class HomeScreenState extends State<HomeScreen> {
                                         if (searchText.isEmpty) {
                                           return List<SearchFieldListItem<String>>.from(symbols);
                                         }
+                                        context.read<ValueProvider>().clearSelectedValue();
+                                        context.read<CheckedBoxProvider>().clearState();
 
                                         final query = searchText.toUpperCase();
                                         return symbols.where((s) {
@@ -601,8 +603,19 @@ class HomeScreenState extends State<HomeScreen> {
                                 onPressed: () {
                                   final token = Provider.of<MytokenProvider>(listen: false, context).token;
                                   if (token != null) {
+                                    var symbol = context.read<ValueProvider>().selectedValue;
+                                    if (symbol == null) {
+                                      toastification.show(
+                                        backgroundColor: Color.fromRGBO(235, 225, 171, 1),
+                                        context: context,
+                                        title: const Text('Symbol!'),
+                                        description: const Text('Select a symbol'),
+                                        type: ToastificationType.info,
+                                        alignment: Alignment.center,
+                                        autoCloseDuration: const Duration(seconds: 1),
+                                      );
+                                    }
                                     Actions.invoke(context, CloseIntent(actionType: "POSITIONS_CLOSE_SYMBOL"));
-                                    Provider.of<CheckedBoxProvider>(context, listen: false).clearState();
                                   } else {
                                     toastification.show(
                                       backgroundColor: Color.fromRGBO(242, 186, 185, 1),
@@ -611,7 +624,7 @@ class HomeScreenState extends State<HomeScreen> {
                                       description: const Text('Your token is empty'),
                                       type: ToastificationType.error,
                                       alignment: Alignment.center,
-                                      autoCloseDuration: const Duration(seconds: 2),
+                                      autoCloseDuration: const Duration(seconds: 1),
                                     );
                                   }
                                 },
