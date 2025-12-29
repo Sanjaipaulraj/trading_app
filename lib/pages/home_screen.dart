@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -5,11 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:toastification/toastification.dart';
+import 'package:trading_app/Providers/checked_box_provider.dart';
 import 'package:trading_app/Providers/value_provider.dart';
 import 'package:trading_app/intent.dart';
-import 'package:trading_app/models/close_response_model.dart';
-import 'package:trading_app/models/open_response_model.dart';
-import 'package:trading_app/models/response_model.dart';
+import 'package:trading_app/models/close_request_model.dart';
+import 'package:trading_app/models/current_open_model.dart';
+import 'package:trading_app/models/open_request_model.dart';
 import 'package:trading_app/sections/automatic_closing_section.dart';
 import 'package:trading_app/sections/conditon_title_section.dart';
 import 'package:trading_app/sections/long_button_section.dart';
@@ -24,24 +27,32 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => HomeScreenState();
 }
 
-late List<ResponseModel> list;
-typedef MenuEntry = DropdownMenuEntry<String>;
-// Trail
-late List<SearchFieldListItem<String>> symbols;
-// SearchFieldListItem<String>? selectedValue;
+late List<String> list;
 
 class HomeScreenState extends State<HomeScreen> {
-  List<ResponseModel> list = [];
+  List<String> list = [];
+  List<SearchFieldListItem<String>> symbols = [];
   bool isLoading = true;
 
   late TextEditingController _tokenController;
-  final FocusNode _symbolFocusNode = FocusNode();
+  late FocusNode _symbolFocusNode;
   final FocusNode _longButtonFocusNode = FocusNode();
   final FocusNode _shortButtonFocusNode = FocusNode();
   final FocusNode _closeButtonFocusNode = FocusNode();
 
-  Future<void> _initializeApp(BuildContext context) async {
+  @override
+  void initState() {
+    super.initState();
+
+    _symbolFocusNode = FocusNode();
     _tokenController = TextEditingController();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeApp(context);
+    });
+  }
+
+  Future<void> _initializeApp(BuildContext context) async {
     final provider = Provider.of<MytokenProvider>(context, listen: false);
 
     while (provider.isLoading) {
@@ -56,19 +67,16 @@ class HomeScreenState extends State<HomeScreen> {
 
     list = await _getList();
 
-    symbols = list.map((ResponseModel el) {
+    symbols = list.map((el) {
       return SearchFieldListItem<String>(
         //  search will be performed on this value
-        el.name ?? "",
+        el,
         // value to set in input on click, defaults to searchKey (optional)
-        value: el.name.toString(),
+        value: el.toString(),
       );
     }).toList();
 
-    if (list.isNotEmpty) {
-      // Provider.of<ValueProvider>(context, listen: false).setDropdown(list.first.name ?? '');
-      Provider.of<ValueProvider>(context, listen: false).setSelectedValue(symbols.first);
-    }
+    if (list.isNotEmpty) {}
   }
 
   @override
@@ -95,31 +103,68 @@ class HomeScreenState extends State<HomeScreen> {
     }
 
     Dio dio = Dio();
-    // final symbol = Provider.of<ValueProvider>(context, listen: false).dropdown;
-    final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue!.value;
+    final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
     final volume = Provider.of<ValueProvider>(context, listen: false).volume;
-    var data = OpenPositionModel(actionType: actionType, symbol: symbol, volume: volume as num, takeProfit: takeProfit);
-    print(data);
-    final openResponse = await dio.post(
-      'http://localhost: 3001/trade/open',
-      options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
-      data: jsonEncode(data),
+    final reversal = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalPlusChecked;
+    final signal = Provider.of<CheckedBoxProvider>(context, listen: false).isSignalExitChecked;
+    final tc = Provider.of<CheckedBoxProvider>(context, listen: false).isTcChangeChecked;
+    final data = OpenRequestModel(
+      actionType: actionType,
+      symbol: symbol,
+      volume: volume,
+      takeProfit: takeProfit,
+      reversalPlus: reversal,
+      signalExit: signal,
+      tcChange: tc,
     );
     try {
-      if (openResponse.statusCode == 200) {
+      final _ = await dio.post(
+        // 'http://13.201.225.85/trade/open',
+        'http://localhost:4000/trade/open',
+        data: jsonEncode(data),
+        options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
+      );
+
+      final reversal = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalPlusChecked;
+      final signal = Provider.of<CheckedBoxProvider>(context, listen: false).isSignalExitChecked;
+      final tc = Provider.of<CheckedBoxProvider>(context, listen: false).isTcChangeChecked;
+      final mod = CurrentOpenModel(symbol: symbol!, reversalPlus: reversal, signalExit: signal, tcChange: tc);
+      Provider.of<ValueProvider>(context, listen: false).addCurrentOpen(mod);
+      // ✅ Only 2xx responses reach here
+      toastification.show(
+        backgroundColor: const Color.fromARGB(55, 172, 221, 159),
+        title: const Text('Success!'),
+        description: const Text('Send successfully'),
+        type: ToastificationType.success,
+        alignment: Alignment.center,
+        autoCloseDuration: const Duration(seconds: 2),
+      );
+    } on DioException catch (e) {
+      final statusCode = e.response?.statusCode;
+
+      if (statusCode == 409) {
         toastification.show(
-          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-          title: const Text('Success!'),
-          description: const Text('Send successfuly'),
-          type: ToastificationType.success,
+          backgroundColor: const Color.fromARGB(255, 240, 230, 174),
+          title: Text('${e.response?.data}'),
+          description: Text(e.response!.data),
+          type: ToastificationType.warning,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 2),
+        );
+      } else if (statusCode == 401) {
+        toastification.show(
+          backgroundColor: const Color.fromARGB(255, 242, 186, 185),
+          title: Text('${e.response?.data}'),
+          description: const Text('Token not Valid'),
+          type: ToastificationType.error,
           alignment: Alignment.center,
           autoCloseDuration: const Duration(seconds: 2),
         );
       } else {
         toastification.show(
-          backgroundColor: Color.fromRGBO(242, 186, 185, 1),
+          backgroundColor: const Color.fromARGB(255, 242, 186, 185),
           title: const Text('Error!'),
-          description: Text('Status code : ${openResponse.statusCode}'),
+          description: Text('Status code: $statusCode\n${e.message}'),
           type: ToastificationType.error,
           alignment: Alignment.center,
           autoCloseDuration: const Duration(seconds: 2),
@@ -127,9 +172,9 @@ class HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       toastification.show(
-        backgroundColor: Color.fromRGBO(242, 186, 185, 1),
-        title: const Text('Error!'),
-        description: Text('Error occurs : $e'),
+        backgroundColor: const Color.fromRGBO(255, 242, 186, 185),
+        title: const Text('Unexpected Error!'),
+        description: Text(e.toString()),
         type: ToastificationType.error,
         alignment: Alignment.center,
         autoCloseDuration: const Duration(seconds: 2),
@@ -137,7 +182,7 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<List<ResponseModel>> _getList() async {
+  Future<List<String>> _getList() async {
     final token = Provider.of<MytokenProvider>(context, listen: false).token;
     Dio dio = Dio(
       BaseOptions(connectTimeout: const Duration(seconds: 120), receiveTimeout: const Duration(seconds: 120)),
@@ -145,12 +190,13 @@ class HomeScreenState extends State<HomeScreen> {
 
     try {
       final response = await dio.get(
-        'http://localhost:3001/trade/list',
+        // 'http://13.201.225.85/trade/list',
+        'http://localhost:4000/trade/list',
         options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       );
       if (response.statusCode == 200) {
-        final List<dynamic> data = response.data;
-        final parsedList = data.map((e) => ResponseModel.fromJson(e)).toList();
+        final List<String> data = (response.data as List).map((e) => e.toString()).toList();
+        final parsedList = data.toList();
 
         toastification.show(
           backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
@@ -158,9 +204,19 @@ class HomeScreenState extends State<HomeScreen> {
           description: const Text('List fetched successfully.'),
           type: ToastificationType.success,
           alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
+          autoCloseDuration: const Duration(seconds: 1),
         );
         return parsedList;
+      } else if (response.statusCode == 500) {
+        toastification.show(
+          backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
+          title: const Text('Server Error!'),
+          description: Text('Response : ${response.data}'),
+          type: ToastificationType.success,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 1),
+        );
+        return [];
       } else {
         Provider.of<MytokenProvider>(context, listen: false).clearToken();
         toastification.show(
@@ -169,7 +225,7 @@ class HomeScreenState extends State<HomeScreen> {
           description: Text('Status code: ${response.statusCode}'),
           type: ToastificationType.error,
           alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
+          autoCloseDuration: const Duration(seconds: 1),
         );
         return [];
       }
@@ -227,23 +283,52 @@ class HomeScreenState extends State<HomeScreen> {
     }
 
     Dio dio = Dio();
-    // final symbol = Provider.of<ValueProvider>(context, listen: false).dropdown;
-    final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue!.value;
-    final data = ClosePositionModel(actionType: actionType, symbol: symbol);
-    print(data);
-    final closeResponse = await dio.post(
-      'http://localhost:3001/trade/close',
-      options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
-      data: jsonEncode(data),
-    );
+    final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+    String description = "Manual Close";
+    final data = CloseRequestModel(actionType: actionType, symbol: symbol, description: description);
     try {
-      if (closeResponse.statusCode == 200) {
-        print(closeResponse.data);
+      await dio.post(
+        // 'http://13.201.225.85/trade/close',
+        'http://localhost:4000/trade/close',
+        options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
+        data: jsonEncode(data),
+      );
+      Provider.of<ValueProvider>(context, listen: false).clearCurrentOpenBySymbol(symbol!);
+      toastification.show(
+        backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+        title: const Text('Success!'),
+        description: const Text('Send successfully'),
+        type: ToastificationType.success,
+        alignment: Alignment.center,
+        autoCloseDuration: const Duration(seconds: 2),
+      );
+    } on DioException catch (e) {
+      final statusCode = e.response?.statusCode;
+
+      if (statusCode == 409) {
         toastification.show(
           backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-          title: const Text('Success!'),
-          description: const Text('Send successfully'),
-          type: ToastificationType.success,
+          title: const Text('INFO!'),
+          description: Text('${e.response?.data}'),
+          type: ToastificationType.warning,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 2),
+        );
+      } else if (statusCode == 400) {
+        toastification.show(
+          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+          title: const Text('Error!'),
+          description: Text('${e.response?.data}'),
+          type: ToastificationType.error,
+          alignment: Alignment.center,
+          autoCloseDuration: const Duration(seconds: 2),
+        );
+      } else if (statusCode == 401) {
+        toastification.show(
+          backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
+          title: Text('${e.response?.data}'),
+          description: const Text('Token not Valid'),
+          type: ToastificationType.error,
           alignment: Alignment.center,
           autoCloseDuration: const Duration(seconds: 2),
         );
@@ -251,7 +336,7 @@ class HomeScreenState extends State<HomeScreen> {
         toastification.show(
           backgroundColor: Color.fromRGBO(242, 186, 185, 1),
           title: const Text('Error!'),
-          description: Text('Status code : ${closeResponse.statusCode}'),
+          description: Text('Status code : $statusCode'),
           type: ToastificationType.error,
           alignment: Alignment.center,
           autoCloseDuration: const Duration(seconds: 2),
@@ -295,7 +380,12 @@ class HomeScreenState extends State<HomeScreen> {
           return Scaffold(body: Center(child: Text("Error: ${snapshot.error}")));
         }
 
-        //  Case 3: Token missing — show input screen
+        //Case 3: If the value provider loading - show CircularprogressIndicator
+        if (context.watch<ValueProvider>().isLoading) {
+          return CircularProgressIndicator();
+        }
+
+        //  Case 4: Token missing — show input screen
         final token = myTokenProvider.token;
         if (token == null || token.isEmpty) {
           return Scaffold(
@@ -346,27 +436,11 @@ class HomeScreenState extends State<HomeScreen> {
                   child: ListView(
                     padding: EdgeInsets.zero,
                     children: [
-                      // for (var l in list)
-                      //   ListTile(
-                      //     title: Text(l.name ?? 'Data Not found'),
-                      //     trailing: Text(
-                      //       l.status ?? 'Data Not found',
-                      //       style: TextStyle(
-                      //         fontSize: 16,
-                      //         color: l.status == 'live' ? Colors.green : Colors.grey.shade400,
-                      //       ),
-                      //     ),
-                      //     onTap: () {
-                      //       Provider.of<ValueProvider>(context, listen: false).setDropdown(l.name as String);
-                      //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.name} clicked')));
-                      //       Navigator.pop(context);
-                      //     },
-                      //   ),
                       for (var l in symbols)
                         ListTile(
                           title: Text(l.value ?? 'Data Not found'),
                           onTap: () {
-                            Provider.of<ValueProvider>(context, listen: false).setSelectedValue(l);
+                            Provider.of<ValueProvider>(context, listen: false).setSelectedValue(l.value ?? "");
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.value} clicked')));
                             Navigator.pop(context);
                           },
@@ -464,68 +538,78 @@ class HomeScreenState extends State<HomeScreen> {
                             children: [
                               Consumer<ValueProvider>(
                                 builder: (context, drop, child) {
-                                  return ConstrainedBox(
-                                    constraints: BoxConstraints(maxWidth: 200, minWidth: 100),
-                                    child: SizedBox(
-                                      width: 150,
-                                      child: SearchField<String>(
-                                        searchInputDecoration: SearchInputDecoration(
-                                          hintText: 'Symbols',
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(width: 5, color: Colors.black),
-                                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                                          ),
-                                        ),
-                                        maxSuggestionBoxHeight: 50,
-                                        onSuggestionTap: (SearchFieldListItem<String> item) {
-                                          Provider.of<ValueProvider>(context, listen: false).setSelectedValue(item);
-                                        },
-                                        onSearchTextChanged: (searchText) {
-                                          if (searchText.isEmpty) {
-                                            return symbols;
-                                          }
-                                          final filter = symbols.where((s) {
-                                            final key = s.searchKey.toString();
-                                            final value = s.value?.toString() ?? '';
-                                            return key.toUpperCase().contains(searchText.toUpperCase()) ||
-                                                value.toUpperCase().contains(searchText.toUpperCase());
-                                          }).toList();
-                                          return filter;
-                                        },
-                                        selectedValue: drop.selectedValue,
-                                        suggestions: symbols,
-                                        suggestionState: Suggestion.expand,
+                                  return SizedBox(
+                                    width: 150,
+                                    child: SearchField<String>(
+                                      focusNode: _symbolFocusNode,
+                                      suggestions: symbols,
+                                      suggestionState: Suggestion.hidden,
+                                      selectedValue: drop.selectedItem,
+                                      searchInputDecoration: SearchInputDecoration(
+                                        hintText: 'Symbols',
+                                        border: OutlineInputBorder(),
                                       ),
+                                      maxSuggestionsInViewPort: 6,
+                                      onSearchTextChanged: (searchText) {
+                                        if (searchText.isEmpty) {
+                                          return List<SearchFieldListItem<String>>.from(symbols);
+                                        }
+                                        context.read<ValueProvider>().clearSelectedValue();
+                                        context.read<CheckedBoxProvider>().clearState();
+
+                                        final query = searchText.toUpperCase();
+                                        return symbols.where((s) {
+                                          final key = s.searchKey.toUpperCase();
+                                          final value = (s.value ?? '').toUpperCase();
+                                          return key.contains(query) || value.contains(query);
+                                        }).toList();
+                                      },
+                                      onSuggestionTap: (SearchFieldListItem<String> item) {
+                                        _symbolFocusNode.unfocus();
+
+                                        context.read<ValueProvider>().setSelectedItem(item, context);
+                                        context.read<CheckedBoxProvider>().loadForSymbol(item.value!);
+                                      },
+                                      onSubmit: (item) {
+                                        Provider.of<ValueProvider>(
+                                          context,
+                                          listen: false,
+                                        ).setSelectedItem(SearchFieldListItem(item), context);
+                                      },
                                     ),
                                   );
                                 },
                               ),
                             ],
                           ),
-                          Container(
-                            height: 55,
-                            width: 90,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                              border: Border.all(
-                                color: Color.fromRGBO(128, 128, 128, 1),
-                                width: 2.0,
-                                style: BorderStyle.solid,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              initialValue: Provider.of<ValueProvider>(context, listen: false).volume.toString(),
-                              onChanged: (newValue) {
-                                final parsedValue = double.tryParse(newValue);
-                                if (parsedValue != null) {
-                                  Provider.of<ValueProvider>(context, listen: false).setVolume(parsedValue);
-                                }
-                              },
-                              decoration: InputDecoration(border: OutlineInputBorder()),
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-                            ),
+                          Consumer<ValueProvider>(
+                            builder: (context, drop, child) {
+                              return Container(
+                                height: 55,
+                                width: 90,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  border: Border.all(color: const Color.fromRGBO(128, 128, 128, 1), width: 2.0),
+                                ),
+                                child: TextFormField(
+                                  controller: drop.volumeController, // ✅
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (newValue) {
+                                    final parsedValue = double.tryParse(newValue);
+                                    if (parsedValue != null) {
+                                      drop.setVolume(parsedValue);
+                                    }
+                                  },
+                                  decoration: const InputDecoration(border: OutlineInputBorder()),
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                           Consumer<MytokenProvider>(
                             builder: (context, myToken, child) {
@@ -545,16 +629,19 @@ class HomeScreenState extends State<HomeScreen> {
                                 onPressed: () {
                                   final token = Provider.of<MytokenProvider>(listen: false, context).token;
                                   if (token != null) {
+                                    var symbol = context.read<ValueProvider>().selectedValue;
                                     Actions.invoke(context, CloseIntent(actionType: "POSITIONS_CLOSE_SYMBOL"));
-                                    toastification.show(
-                                      backgroundColor: Color.fromRGBO(180, 231, 240, 1),
-                                      context: context,
-                                      title: const Text('Closed!'),
-                                      description: const Text('Closed successfully'),
-                                      type: ToastificationType.info,
-                                      alignment: Alignment.center,
-                                      autoCloseDuration: const Duration(seconds: 2),
-                                    );
+                                    if (symbol == null) {
+                                      toastification.show(
+                                        backgroundColor: Color.fromRGBO(235, 225, 171, 1),
+                                        context: context,
+                                        title: const Text('Symbol!'),
+                                        description: const Text('Select a symbol'),
+                                        type: ToastificationType.info,
+                                        alignment: Alignment.center,
+                                        autoCloseDuration: const Duration(seconds: 1),
+                                      );
+                                    }
                                   } else {
                                     toastification.show(
                                       backgroundColor: Color.fromRGBO(242, 186, 185, 1),
@@ -563,7 +650,7 @@ class HomeScreenState extends State<HomeScreen> {
                                       description: const Text('Your token is empty'),
                                       type: ToastificationType.error,
                                       alignment: Alignment.center,
-                                      autoCloseDuration: const Duration(seconds: 2),
+                                      autoCloseDuration: const Duration(seconds: 1),
                                     );
                                   }
                                 },

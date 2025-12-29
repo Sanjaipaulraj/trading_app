@@ -13,7 +13,7 @@ void main() {
         providers: [
           ChangeNotifierProvider(create: (context) => MytokenProvider()),
           ChangeNotifierProvider(create: (context) => CheckedBoxProvider()),
-          ChangeNotifierProvider(create: (context) => ValueProvider()),
+          ChangeNotifierProvider(create: (context) => ValueProvider(context)),
         ],
         child: MainApp(),
       ),

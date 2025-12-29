@@ -39,15 +39,6 @@ class _LongButtonSectionState extends State<LongButtonSection> {
                       final token = Provider.of<MytokenProvider>(context, listen: false).token;
                       if (token != null) {
                         Actions.invoke(context, const LongIntent(actionType: "ORDER_TYPE_BUY"));
-                        toastification.show(
-                          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-                          context: context,
-                          title: const Text('Success!'),
-                          description: const Text('Your value submitted successfully'),
-                          type: ToastificationType.success,
-                          alignment: Alignment.center,
-                          autoCloseDuration: const Duration(seconds: 2),
-                        );
                       } else {
                         toastification.show(
                           backgroundColor: Color.fromRGBO(242, 186, 185, 1),
@@ -84,7 +75,7 @@ class _LongButtonSectionState extends State<LongButtonSection> {
           value: _getCheckboxValue(checkboxField, checkedBox),
           onChanged: (bool? newValue) {
             setState(() {
-              checkedBox.changeValue(checkboxField);
+              checkedBox.changeValue(checkboxField, context);
             });
           },
           activeColor: Colors.green,
