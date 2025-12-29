@@ -1,6 +1,11 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trading_app/Providers/token_provider.dart';
+import 'package:trading_app/Providers/value_provider.dart';
+import 'package:trading_app/models/current_open_model.dart';
 
 class CheckedBoxProvider extends ChangeNotifier {
   String? _currentSymbol;
@@ -77,7 +82,7 @@ class CheckedBoxProvider extends ChangeNotifier {
   }
 
   // --------- CHANGE VALUE ----------
-  void changeValue(String field) {
+  void changeValue(String field, BuildContext context) {
     _values[field] = !(_values[field] ?? false);
 
     // enforce Long ↔ Short exclusivity
@@ -90,6 +95,17 @@ class CheckedBoxProvider extends ChangeNotifier {
 
     _persist();
     notifyListeners();
+    // 🔥 NEW: if special checkbox → update backend
+    if (field == 'ReversalPlusChecked' || field == 'SignalExitChecked' || field == 'TcChangeChecked') {
+      print("Enter special field");
+      final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+      final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
+      print(crnt);
+      var crntMod = crnt.firstWhere((el) => el.symbol == symbol);
+      updateTradeFlags(crntMod, context);
+    } else {
+      return;
+    }
   }
 
   // --------- CLEAR UI (ON CLOSE) ----------
@@ -98,4 +114,35 @@ class CheckedBoxProvider extends ChangeNotifier {
     _currentSymbol = null;
     notifyListeners();
   }
+}
+
+Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async {
+  print('Enter UpdateTradeFlags');
+  final token = Provider.of<MytokenProvider>(context, listen: false).token;
+  final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+
+  if (symbol == null) return;
+
+  final checked = Provider.of<CheckedBoxProvider>(context, listen: false);
+  final valueProv = Provider.of<ValueProvider>(context, listen: false);
+
+  final openTrade = valueProv.getOpenBySymbol(symbol);
+  if (openTrade == null) return; // no open trade → nothing to update
+
+  final dio = Dio(
+    BaseOptions(connectTimeout: const Duration(seconds: 10), receiveTimeout: const Duration(seconds: 10)),
+  );
+  await dio.post(
+    'http://localhost:4000/trade/update-flags',
+    data: {
+      'symbol': symbol,
+      'reversalPlus': checked.isReversalPlusChecked,
+      'signalExit': checked.isSignalExitChecked,
+      'tcChange': checked.isTcChangeChecked,
+    },
+    options: Options(headers: {'auth-token': token}),
+  );
+
+  // update local cache
+  valueProv.updateFlags(symbol, checked.isReversalPlusChecked, checked.isSignalExitChecked, checked.isTcChangeChecked);
 }

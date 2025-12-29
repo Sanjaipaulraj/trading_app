@@ -75,7 +75,7 @@ class _LongButtonSectionState extends State<LongButtonSection> {
           value: _getCheckboxValue(checkboxField, checkedBox),
           onChanged: (bool? newValue) {
             setState(() {
-              checkedBox.changeValue(checkboxField);
+              checkedBox.changeValue(checkboxField, context);
             });
           },
           activeColor: Colors.green,

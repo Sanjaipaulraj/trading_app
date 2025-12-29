@@ -23,9 +23,9 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                 'Automatic Closing',
                 style: TextStyle(color: Color.fromRGBO(101, 101, 255, 1), fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              _buildCheckboxRow('ReversalPlusChecked', 'Reversal Plus', checkedbox),
-              _buildCheckboxRow('SignalExitChecked', 'Signal Exit', checkedbox),
-              _buildCheckboxRow('TcChangeChecked', 'Tc Change', checkedbox),
+              _buildCheckboxRow('ReversalPlusChecked', 'Reversal Plus', checkedbox, context),
+              _buildCheckboxRow('SignalExitChecked', 'Signal Exit', checkedbox, context),
+              _buildCheckboxRow('TcChangeChecked', 'Tc Change', checkedbox, context),
             ],
           ),
         );
@@ -33,7 +33,7 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
     );
   }
 
-  Widget _buildCheckboxRow(String key, String label, CheckedBoxProvider checkedBox) {
+  Widget _buildCheckboxRow(String key, String label, CheckedBoxProvider checkedBox, BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 5,
@@ -48,7 +48,7 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
           child: Checkbox(
             value: _getCheckboxValue(key, checkedBox),
             onChanged: (bool? newValue) {
-              checkedBox.changeValue(key);
+              checkedBox.changeValue(key, context);
             },
             activeColor: Colors.green,
             checkColor: Colors.white,

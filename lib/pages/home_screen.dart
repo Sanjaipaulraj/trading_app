@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +11,8 @@ import 'package:trading_app/Providers/checked_box_provider.dart';
 import 'package:trading_app/Providers/value_provider.dart';
 import 'package:trading_app/intent.dart';
 import 'package:trading_app/models/close_request_model.dart';
+import 'package:trading_app/models/current_open_model.dart';
 import 'package:trading_app/models/open_request_model.dart';
-import 'package:trading_app/models/response_model.dart';
 import 'package:trading_app/sections/automatic_closing_section.dart';
 import 'package:trading_app/sections/conditon_title_section.dart';
 import 'package:trading_app/sections/long_button_section.dart';
@@ -25,10 +27,10 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => HomeScreenState();
 }
 
-late List<ResponseModel> list;
+late List<String> list;
 
 class HomeScreenState extends State<HomeScreen> {
-  List<ResponseModel> list = [];
+  List<String> list = [];
   List<SearchFieldListItem<String>> symbols = [];
   bool isLoading = true;
 
@@ -65,12 +67,12 @@ class HomeScreenState extends State<HomeScreen> {
 
     list = await _getList();
 
-    symbols = list.map((ResponseModel el) {
+    symbols = list.map((el) {
       return SearchFieldListItem<String>(
         //  search will be performed on this value
-        el.name ?? "",
+        el,
         // value to set in input on click, defaults to searchKey (optional)
-        value: el.name.toString(),
+        value: el.toString(),
       );
     }).toList();
 
@@ -117,11 +119,17 @@ class HomeScreenState extends State<HomeScreen> {
     );
     try {
       final _ = await dio.post(
-        'http://13.201.225.85/trade/open',
+        // 'http://13.201.225.85/trade/open',
+        'http://localhost:4000/trade/open',
         data: jsonEncode(data),
         options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       );
 
+      final reversal = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalPlusChecked;
+      final signal = Provider.of<CheckedBoxProvider>(context, listen: false).isSignalExitChecked;
+      final tc = Provider.of<CheckedBoxProvider>(context, listen: false).isTcChangeChecked;
+      final mod = CurrentOpenModel(symbol: symbol!, reversalPlus: reversal, signalExit: signal, tcChange: tc);
+      Provider.of<ValueProvider>(context, listen: false).addCurrentOpen(mod);
       // ✅ Only 2xx responses reach here
       toastification.show(
         backgroundColor: const Color.fromARGB(55, 172, 221, 159),
@@ -174,7 +182,7 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<List<ResponseModel>> _getList() async {
+  Future<List<String>> _getList() async {
     final token = Provider.of<MytokenProvider>(context, listen: false).token;
     Dio dio = Dio(
       BaseOptions(connectTimeout: const Duration(seconds: 120), receiveTimeout: const Duration(seconds: 120)),
@@ -182,12 +190,13 @@ class HomeScreenState extends State<HomeScreen> {
 
     try {
       final response = await dio.get(
-        'http://13.201.225.85/trade/list',
+        // 'http://13.201.225.85/trade/list',
+        'http://localhost:4000/trade/list',
         options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       );
       if (response.statusCode == 200) {
-        final List<dynamic> data = response.data;
-        final parsedList = data.map((e) => ResponseModel.fromJson(e)).toList();
+        final List<String> data = (response.data as List).map((e) => e.toString()).toList();
+        final parsedList = data.toList();
 
         toastification.show(
           backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
@@ -195,7 +204,7 @@ class HomeScreenState extends State<HomeScreen> {
           description: const Text('List fetched successfully.'),
           type: ToastificationType.success,
           alignment: Alignment.center,
-          autoCloseDuration: const Duration(milliseconds: 800),
+          autoCloseDuration: const Duration(seconds: 1),
         );
         return parsedList;
       } else if (response.statusCode == 500) {
@@ -209,7 +218,6 @@ class HomeScreenState extends State<HomeScreen> {
         );
         return [];
       } else {
-        // ignore: use_build_context_synchronously
         Provider.of<MytokenProvider>(context, listen: false).clearToken();
         toastification.show(
           backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
@@ -235,7 +243,6 @@ class HomeScreenState extends State<HomeScreen> {
           autoCloseDuration: const Duration(seconds: 2),
         );
       } else {
-        // ignore: use_build_context_synchronously
         Provider.of<MytokenProvider>(context, listen: false).clearToken();
         toastification.show(
           backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
@@ -279,43 +286,47 @@ class HomeScreenState extends State<HomeScreen> {
     final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
     String description = "Manual Close";
     final data = CloseRequestModel(actionType: actionType, symbol: symbol, description: description);
-    final closeResponse = await dio.post(
-      'http://13.201.225.85/trade/close',
-      options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
-      data: jsonEncode(data),
-    );
     try {
-      if (closeResponse.statusCode == 200) {
-        toastification.show(
-          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-          title: const Text('Success!'),
-          description: const Text('Send successfully'),
-          type: ToastificationType.success,
-          alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
-        );
-      } else if (closeResponse.statusCode == 409) {
+      await dio.post(
+        // 'http://13.201.225.85/trade/close',
+        'http://localhost:4000/trade/close',
+        options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
+        data: jsonEncode(data),
+      );
+      Provider.of<ValueProvider>(context, listen: false).clearCurrentOpenBySymbol(symbol!);
+      toastification.show(
+        backgroundColor: Color.fromRGBO(199, 226, 201, 1),
+        title: const Text('Success!'),
+        description: const Text('Send successfully'),
+        type: ToastificationType.success,
+        alignment: Alignment.center,
+        autoCloseDuration: const Duration(seconds: 2),
+      );
+    } on DioException catch (e) {
+      final statusCode = e.response?.statusCode;
+
+      if (statusCode == 409) {
         toastification.show(
           backgroundColor: Color.fromRGBO(199, 226, 201, 1),
           title: const Text('INFO!'),
-          description: Text(closeResponse.data),
+          description: Text('${e.response?.data}'),
           type: ToastificationType.warning,
           alignment: Alignment.center,
           autoCloseDuration: const Duration(seconds: 2),
         );
-      } else if (closeResponse.statusCode == 400) {
+      } else if (statusCode == 400) {
         toastification.show(
           backgroundColor: Color.fromRGBO(199, 226, 201, 1),
           title: const Text('Error!'),
-          description: Text(closeResponse.data),
+          description: Text('${e.response?.data}'),
           type: ToastificationType.error,
           alignment: Alignment.center,
           autoCloseDuration: const Duration(seconds: 2),
         );
-      } else if (closeResponse.statusCode == 401) {
+      } else if (statusCode == 401) {
         toastification.show(
           backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
-          title: Text('${closeResponse.data}'),
+          title: Text('${e.response?.data}'),
           description: const Text('Token not Valid'),
           type: ToastificationType.error,
           alignment: Alignment.center,
@@ -325,7 +336,7 @@ class HomeScreenState extends State<HomeScreen> {
         toastification.show(
           backgroundColor: Color.fromRGBO(242, 186, 185, 1),
           title: const Text('Error!'),
-          description: Text('Status code : ${closeResponse.statusCode}'),
+          description: Text('Status code : $statusCode'),
           type: ToastificationType.error,
           alignment: Alignment.center,
           autoCloseDuration: const Duration(seconds: 2),
@@ -369,7 +380,12 @@ class HomeScreenState extends State<HomeScreen> {
           return Scaffold(body: Center(child: Text("Error: ${snapshot.error}")));
         }
 
-        //  Case 3: Token missing — show input screen
+        //Case 3: If the value provider loading - show CircularprogressIndicator
+        if (context.watch<ValueProvider>().isLoading) {
+          return CircularProgressIndicator();
+        }
+
+        //  Case 4: Token missing — show input screen
         final token = myTokenProvider.token;
         if (token == null || token.isEmpty) {
           return Scaffold(
@@ -551,8 +567,14 @@ class HomeScreenState extends State<HomeScreen> {
                                       onSuggestionTap: (SearchFieldListItem<String> item) {
                                         _symbolFocusNode.unfocus();
 
-                                        context.read<ValueProvider>().setSelectedItem(item);
+                                        context.read<ValueProvider>().setSelectedItem(item, context);
                                         context.read<CheckedBoxProvider>().loadForSymbol(item.value!);
+                                      },
+                                      onSubmit: (item) {
+                                        Provider.of<ValueProvider>(
+                                          context,
+                                          listen: false,
+                                        ).setSelectedItem(SearchFieldListItem(item), context);
                                       },
                                     ),
                                   );
@@ -560,30 +582,34 @@ class HomeScreenState extends State<HomeScreen> {
                               ),
                             ],
                           ),
-                          Container(
-                            height: 55,
-                            width: 90,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                              border: Border.all(
-                                color: Color.fromRGBO(128, 128, 128, 1),
-                                width: 2.0,
-                                style: BorderStyle.solid,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              initialValue: Provider.of<ValueProvider>(context, listen: false).volume.toString(),
-                              onChanged: (newValue) {
-                                final parsedValue = double.tryParse(newValue);
-                                if (parsedValue != null) {
-                                  Provider.of<ValueProvider>(context, listen: false).setVolume(parsedValue);
-                                }
-                              },
-                              decoration: InputDecoration(border: OutlineInputBorder()),
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-                            ),
+                          Consumer<ValueProvider>(
+                            builder: (context, drop, child) {
+                              return Container(
+                                height: 55,
+                                width: 90,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  border: Border.all(color: const Color.fromRGBO(128, 128, 128, 1), width: 2.0),
+                                ),
+                                child: TextFormField(
+                                  controller: drop.volumeController, // ✅
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (newValue) {
+                                    final parsedValue = double.tryParse(newValue);
+                                    if (parsedValue != null) {
+                                      drop.setVolume(parsedValue);
+                                    }
+                                  },
+                                  decoration: const InputDecoration(border: OutlineInputBorder()),
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                           Consumer<MytokenProvider>(
                             builder: (context, myToken, child) {
@@ -604,6 +630,7 @@ class HomeScreenState extends State<HomeScreen> {
                                   final token = Provider.of<MytokenProvider>(listen: false, context).token;
                                   if (token != null) {
                                     var symbol = context.read<ValueProvider>().selectedValue;
+                                    Actions.invoke(context, CloseIntent(actionType: "POSITIONS_CLOSE_SYMBOL"));
                                     if (symbol == null) {
                                       toastification.show(
                                         backgroundColor: Color.fromRGBO(235, 225, 171, 1),
@@ -615,7 +642,6 @@ class HomeScreenState extends State<HomeScreen> {
                                         autoCloseDuration: const Duration(seconds: 1),
                                       );
                                     }
-                                    Actions.invoke(context, CloseIntent(actionType: "POSITIONS_CLOSE_SYMBOL"));
                                   } else {
                                     toastification.show(
                                       backgroundColor: Color.fromRGBO(242, 186, 185, 1),

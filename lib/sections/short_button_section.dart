@@ -80,7 +80,7 @@ class _ShortButtonSectionState extends State<ShortButtonSection> {
           value: _getCheckboxValue(checkboxField, checkedBox),
           onChanged: (bool? newValue) {
             setState(() {
-              checkedBox.changeValue(checkboxField);
+              checkedBox.changeValue(checkboxField, context);
             });
           },
           activeColor: Colors.green,

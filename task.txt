@@ -97,3 +97,7 @@ Additional Ideas:
    => Menu bar have the live status list dropdown and the report actoin section 
    => How to find a trade point for finding the between of open time trade value point and close time trade value point  
       Refer the file in notepad ++ (new 8) this have the way to find a score 
+   => if close position then not cleared the local settings
+
+27/12/2025
+   => In pdf csv the tamil font problem to check the selvam repository to our dart pdf and local dart pdf to our pdf csv
