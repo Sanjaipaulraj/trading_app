@@ -31,7 +31,6 @@ class CheckedBoxProvider extends ChangeNotifier {
     'TcChangeChecked': false,
   };
 
-  // --------- GETTERS (USED BY UI) ----------
   bool get isLongTcChecked => _values['LongTcChecked']!;
   bool get isLongTtChecked => _values['LongTtChecked']!;
   bool get isLongNeoChecked => _values['LongNeoChecked']!;
@@ -54,7 +53,6 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isShortAllChecked =>
       isShortTcChecked && isShortTtChecked && isShortNeoChecked && isShortHwoChecked && isShortConfChecked;
 
-  // --------- LOAD BY SYMBOL ----------
   Future<void> loadForSymbol(String symbol) async {
     _isLoading = true;
     notifyListeners();
@@ -74,18 +72,15 @@ class CheckedBoxProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // --------- SAVE ----------
   Future<void> _persist() async {
     if (_currentSymbol == null) return;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('checkbox_state:$_currentSymbol', jsonEncode(_values));
   }
 
-  // --------- CHANGE VALUE ----------
   void changeValue(String field, BuildContext context) {
     _values[field] = !(_values[field] ?? false);
 
-    // enforce Long ↔ Short exclusivity
     if (field.startsWith('Long')) {
       _values[field.replaceFirst('Long', 'Short')] = false;
     }
@@ -95,12 +90,9 @@ class CheckedBoxProvider extends ChangeNotifier {
 
     _persist();
     notifyListeners();
-    // 🔥 NEW: if special checkbox → update backend
     if (field == 'ReversalPlusChecked' || field == 'SignalExitChecked' || field == 'TcChangeChecked') {
-      print("Enter special field");
       final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
       final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
-      print(crnt);
       var crntMod = crnt.firstWhere((el) => el.symbol == symbol);
       updateTradeFlags(crntMod, context);
     } else {
@@ -108,7 +100,6 @@ class CheckedBoxProvider extends ChangeNotifier {
     }
   }
 
-  // --------- CLEAR UI (ON CLOSE) ----------
   void clearState() {
     _values = _emptyValues();
     _currentSymbol = null;
@@ -117,7 +108,6 @@ class CheckedBoxProvider extends ChangeNotifier {
 }
 
 Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async {
-  print('Enter UpdateTradeFlags');
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
   final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
 
@@ -127,13 +117,13 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
   final valueProv = Provider.of<ValueProvider>(context, listen: false);
 
   final openTrade = valueProv.getOpenBySymbol(symbol);
-  if (openTrade == null) return; // no open trade → nothing to update
+  if (openTrade == null) return;
 
   final dio = Dio(
     BaseOptions(connectTimeout: const Duration(seconds: 10), receiveTimeout: const Duration(seconds: 10)),
   );
   await dio.post(
-    'http://localhost:4000/trade/update-flags',
+    'http://13.201.225.85/trade/update-flags',
     data: {
       'symbol': symbol,
       'reversalPlus': checked.isReversalPlusChecked,
