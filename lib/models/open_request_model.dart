@@ -9,6 +9,7 @@ class OpenRequestModel {
   num volume;
   num? takeProfit;
   bool reversalPlus;
+  bool reversal;
   bool signalExit;
   bool tcChange;
 
@@ -18,6 +19,7 @@ class OpenRequestModel {
     required this.volume,
     this.takeProfit,
     required this.reversalPlus,
+    required this.reversal,
     required this.signalExit,
     required this.tcChange,
   });
@@ -28,6 +30,6 @@ class OpenRequestModel {
 
   @override
   String toString() {
-    return "OpenRequestModel{Action type: $actionType,Symbol : $symbol,Volume: $volume,Take profit: $takeProfit,Reversal Plus: $reversalPlus,Signal Exit: $signalExit,Tc Change: $tcChange}";
+    return "OpenRequestModel{Action type: $actionType,Symbol : $symbol,Volume: $volume,Take profit: $takeProfit,Reversal Plus: $reversalPlus,Reversal: $reversal,Signal Exit: $signalExit,Tc Change: $tcChange}";
   }
 }

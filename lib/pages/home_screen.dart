@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -10,15 +8,14 @@ import 'package:toastification/toastification.dart';
 import 'package:trading_app/Providers/checked_box_provider.dart';
 import 'package:trading_app/Providers/value_provider.dart';
 import 'package:trading_app/intent.dart';
-import 'package:trading_app/models/close_request_model.dart';
-import 'package:trading_app/models/current_open_model.dart';
-import 'package:trading_app/models/open_request_model.dart';
 import 'package:trading_app/sections/automatic_closing_section.dart';
 import 'package:trading_app/sections/conditon_title_section.dart';
 import 'package:trading_app/sections/long_button_section.dart';
 import 'package:trading_app/sections/short_button_section.dart';
 import 'package:trading_app/sections/status_section.dart';
 import 'package:trading_app/Providers/token_provider.dart';
+
+import '../api_methods/api_methods.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -65,7 +62,7 @@ class HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    list = await _getList();
+    list = await getList(context);
 
     symbols = list.map((el) {
       return SearchFieldListItem<String>(
@@ -88,271 +85,28 @@ class HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  Future<void> _openPosition(String actionType, num? takeProfit) async {
-    final token = Provider.of<MytokenProvider>(context, listen: false).token;
-    if (token == null) {
-      toastification.show(
-        backgroundColor: Color.fromRGBO(242, 186, 185, 1),
-        title: const Text('Error!'),
-        description: const Text('Token is empty!'),
-        type: ToastificationType.error,
-        alignment: Alignment.center,
-        autoCloseDuration: const Duration(seconds: 2),
-      );
-      return;
-    }
-
-    Dio dio = Dio();
-    final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
-    final volume = Provider.of<ValueProvider>(context, listen: false).volume;
-    final reversal = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalPlusChecked;
-    final signal = Provider.of<CheckedBoxProvider>(context, listen: false).isSignalExitChecked;
-    final tc = Provider.of<CheckedBoxProvider>(context, listen: false).isTcChangeChecked;
-    final data = OpenRequestModel(
-      actionType: actionType,
-      symbol: symbol,
-      volume: volume,
-      takeProfit: takeProfit,
-      reversalPlus: reversal,
-      signalExit: signal,
-      tcChange: tc,
-    );
-    try {
-      final _ = await dio.post(
-        'http://13.201.225.85/trade/open',
-        data: jsonEncode(data),
-        options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
-      );
-
-      final reversal = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalPlusChecked;
-      final signal = Provider.of<CheckedBoxProvider>(context, listen: false).isSignalExitChecked;
-      final tc = Provider.of<CheckedBoxProvider>(context, listen: false).isTcChangeChecked;
-      final mod = CurrentOpenModel(symbol: symbol!, reversalPlus: reversal, signalExit: signal, tcChange: tc);
-      Provider.of<ValueProvider>(context, listen: false).addCurrentOpen(mod);
-      // ✅ Only 2xx responses reach here
-      toastification.show(
-        backgroundColor: const Color.fromARGB(55, 172, 221, 159),
-        title: const Text('Success!'),
-        description: const Text('Send successfully'),
-        type: ToastificationType.success,
-        alignment: Alignment.center,
-        autoCloseDuration: const Duration(seconds: 2),
-      );
-    } on DioException catch (e) {
-      final statusCode = e.response?.statusCode;
-
-      if (statusCode == 409) {
-        toastification.show(
-          backgroundColor: const Color.fromARGB(255, 240, 230, 174),
-          title: Text('${e.response?.data}'),
-          description: Text(e.response!.data),
-          type: ToastificationType.warning,
-          alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
-        );
-      } else if (statusCode == 401) {
-        toastification.show(
-          backgroundColor: const Color.fromARGB(255, 242, 186, 185),
-          title: Text('${e.response?.data}'),
-          description: const Text('Token not Valid'),
-          type: ToastificationType.error,
-          alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
-        );
-      } else {
-        toastification.show(
-          backgroundColor: const Color.fromARGB(255, 242, 186, 185),
-          title: const Text('Error!'),
-          description: Text('Status code: $statusCode\n${e.message}'),
-          type: ToastificationType.error,
-          alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
-        );
-      }
-    } catch (e) {
-      toastification.show(
-        backgroundColor: const Color.fromRGBO(255, 242, 186, 185),
-        title: const Text('Unexpected Error!'),
-        description: Text(e.toString()),
-        type: ToastificationType.error,
-        alignment: Alignment.center,
-        autoCloseDuration: const Duration(seconds: 2),
-      );
-    }
-  }
-
-  Future<List<String>> _getList() async {
-    final token = Provider.of<MytokenProvider>(context, listen: false).token;
-    Dio dio = Dio(
-      BaseOptions(connectTimeout: const Duration(seconds: 120), receiveTimeout: const Duration(seconds: 120)),
-    );
-
-    try {
-      final response = await dio.get(
-        'http://13.201.225.85/trade/list',
-        options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
-      );
-      if (response.statusCode == 200) {
-        final List<String> data = (response.data as List).map((e) => e.toString()).toList();
-        final parsedList = data.toList();
-
-        toastification.show(
-          backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
-          title: const Text('Success!'),
-          description: const Text('List fetched successfully.'),
-          type: ToastificationType.success,
-          alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 1),
-        );
-        return parsedList;
-      } else if (response.statusCode == 500) {
-        toastification.show(
-          backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
-          title: const Text('Server Error!'),
-          description: Text('Response : ${response.data}'),
-          type: ToastificationType.success,
-          alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 1),
-        );
-        return [];
-      } else {
-        Provider.of<MytokenProvider>(context, listen: false).clearToken();
-        toastification.show(
-          backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
-          title: const Text('Error!'),
-          description: Text('Status code: ${response.statusCode}'),
-          type: ToastificationType.error,
-          alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 1),
-        );
-        return [];
-      }
-    } on DioException catch (e) {
-      //  Handle Dio-specific timeout cases
-      if (e.type == DioExceptionType.connectionTimeout ||
-          e.type == DioExceptionType.receiveTimeout ||
-          e.type == DioExceptionType.sendTimeout) {
-        toastification.show(
-          backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
-          title: const Text('Timeout!'),
-          description: const Text('Request timed out. Please try again later.'),
-          type: ToastificationType.error,
-          alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
-        );
-      } else {
-        Provider.of<MytokenProvider>(context, listen: false).clearToken();
-        toastification.show(
-          backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
-          title: const Text('Error!'),
-          description: Text('Error: ${e.message}'),
-          type: ToastificationType.error,
-          alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 5),
-        );
-      }
-      return [];
-    } catch (e) {
-      //  Catch unexpected errors
-      toastification.show(
-        backgroundColor: const Color.fromRGBO(242, 186, 185, 1),
-        title: const Text('Error!'),
-        description: Text('Unexpected error: $e'),
-        type: ToastificationType.error,
-        alignment: Alignment.center,
-        autoCloseDuration: const Duration(seconds: 2),
-      );
-      return [];
-    }
-  }
-
-  Future<void> _onClosePosition(String actionType) async {
-    final token = Provider.of<MytokenProvider>(context, listen: false).token;
-    if (token == null) {
-      toastification.show(
-        backgroundColor: Color.fromRGBO(242, 186, 185, 1),
-        title: const Text('Error!'),
-        description: const Text('Token is empty!'),
-        type: ToastificationType.error,
-        alignment: Alignment.center,
-        autoCloseDuration: const Duration(seconds: 2),
-      );
-      return;
-    }
-
-    Dio dio = Dio();
-    final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
-    String description = "Manual Close";
-    final data = CloseRequestModel(actionType: actionType, symbol: symbol, description: description);
-    try {
-      await dio.post(
-        'http://13.201.225.85/trade/close',
-        options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
-        data: jsonEncode(data),
-      );
-      Provider.of<ValueProvider>(context, listen: false).clearCurrentOpenBySymbol(symbol!);
-      toastification.show(
-        backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-        title: const Text('Success!'),
-        description: const Text('Send successfully'),
-        type: ToastificationType.success,
-        alignment: Alignment.center,
-        autoCloseDuration: const Duration(seconds: 2),
-      );
-    } on DioException catch (e) {
-      final statusCode = e.response?.statusCode;
-
-      if (statusCode == 409) {
-        toastification.show(
-          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-          title: const Text('INFO!'),
-          description: Text('${e.response?.data}'),
-          type: ToastificationType.warning,
-          alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
-        );
-      } else if (statusCode == 400) {
-        toastification.show(
-          backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-          title: const Text('Error!'),
-          description: Text('${e.response?.data}'),
-          type: ToastificationType.error,
-          alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
-        );
-      } else if (statusCode == 401) {
-        toastification.show(
-          backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
-          title: Text('${e.response?.data}'),
-          description: const Text('Token not Valid'),
-          type: ToastificationType.error,
-          alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
-        );
-      } else {
-        toastification.show(
-          backgroundColor: Color.fromRGBO(242, 186, 185, 1),
-          title: const Text('Error!'),
-          description: Text('Status code : $statusCode'),
-          type: ToastificationType.error,
-          alignment: Alignment.center,
-          autoCloseDuration: const Duration(seconds: 2),
-        );
-      }
-    } catch (e) {
-      toastification.show(
-        backgroundColor: Color.fromRGBO(242, 186, 185, 1),
-        title: const Text('Error!'),
-        description: Text('Error occurs : $e'),
-        type: ToastificationType.error,
-        alignment: Alignment.center,
-        autoCloseDuration: const Duration(seconds: 2),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    bool isExpanded = false;
+    bool isLoading = false;
+    List<String> liveSymbols = [];
+    Future<void> fetchLiveSymbols() async {
+      setState(() {
+        isLoading = true;
+      });
+
+      // Simulate API call
+      await Future.delayed(const Duration(seconds: 1));
+
+      // Example backend response
+      liveSymbols = ['Option 1', 'Option 2', 'Option 3'];
+
+      setState(() {
+        isLoading = false;
+        isExpanded = true;
+      });
+    }
+
     return FutureBuilder(
       future: _initializeApp(context),
       builder: (context, snapshot) {
@@ -415,39 +169,97 @@ class HomeScreenState extends State<HomeScreen> {
         //  Case 5: Everything ready → show your main UI
         return Scaffold(
           backgroundColor: Color.fromRGBO(230, 230, 250, 1),
-          drawer: Drawer(
-            backgroundColor: const Color.fromRGBO(230, 230, 250, 1),
-            width: MediaQuery.of(context).size.width * 0.6,
-            child: Column(
-              children: [
-                const SizedBox(height: 40),
-                Container(
-                  alignment: Alignment.bottomLeft,
-                  padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 8),
-                  child: const Text('Symbol Status', style: TextStyle(color: Colors.black, fontSize: 22)),
-                ),
-                const Divider(color: Color.fromRGBO(79, 79, 79, 1)),
-                const SizedBox(height: 6),
+          // drawer: Drawer(
+          //   backgroundColor: const Color.fromRGBO(230, 230, 250, 1),
+          //   width: MediaQuery.of(context).size.width * 0.6,
+          //   child: Column(
+          //     children: [
+          //       const SizedBox(height: 40),
+          //       Container(
+          //         alignment: Alignment.bottomLeft,
+          //         padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 8),
+          //         child: const Text('Symbol Status', style: TextStyle(color: Colors.black, fontSize: 22)),
+          //       ),
+          //       const Divider(color: Color.fromRGBO(79, 79, 79, 1)),
+          //       const SizedBox(height: 6),
 
-                Expanded(
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    children: [
-                      for (var l in symbols)
-                        ListTile(
-                          title: Text(l.value ?? 'Data Not found'),
-                          onTap: () {
-                            Provider.of<ValueProvider>(context, listen: false).setSelectedValue(l.value ?? "");
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.value} clicked')));
-                            Navigator.pop(context);
-                          },
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          //       Expanded(
+          //         // child: ListView(
+          //         //   padding: EdgeInsets.zero,
+          //         //   children: [
+          //         //     for (var l in symbols)
+          //         //       ListTile(
+          //         //         title: Text(l.value ?? 'Data Not found'),
+          //         //         onTap: () {
+          //         //           Provider.of<ValueProvider>(context, listen: false).setSelectedValue(l.value ?? "");
+          //         //           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.value} clicked')));
+          //         //           Navigator.pop(context);
+          //         //         },
+          //         //       ),
+          //         //   ],
+          //         // ),
+          //         child: ListView(
+          //           padding: EdgeInsets.zero,
+          //           children: [
+          //             // ListTile(
+          //             //   title: const Text(
+          //             //     'Live Symbol',
+          //             //     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
+          //             //   ),
+          //             //   focusColor: Colors.blue,
+          //             //   onTap: () {
+          //             //     // Update the state of the app.
+          //             //     // ...
+          //             //   },
+          //             // ),
+          //             ListTile(
+          //               title: const Text('Live Symbol', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          //               trailing: Icon(isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
+          //               onTap: () async {
+          //                 if (isExpanded) {
+          //                   setState(() {
+          //                     isExpanded = false;
+          //                   });
+          //                 } else {
+          //                   await fetchLiveSymbols();
+          //                 }
+          //               },
+          //             ),
+
+          //             if (isExpanded)
+          //               Padding(
+          //                 padding: const EdgeInsets.only(left: 16),
+          //                 child: isLoading
+          //                     ? const CircularProgressIndicator()
+          //                     : Column(
+          //                         children: liveSymbols.map((item) {
+          //                           return ListTile(
+          //                             title: Text(item),
+          //                             onTap: () {
+          //                               print('Selected: $item');
+          //                               // handle selection
+          //                             },
+          //                           );
+          //                         }).toList(),
+          //                       ),
+          //               ),
+          //             ListTile(
+          //               title: const Text(
+          //                 'Report',
+          //                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
+          //               ),
+          //               focusColor: Colors.blue,
+          //               onTap: () {
+          //                 // Update the state of the app.
+          //                 // ...
+          //               },
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           appBar: AppBar(
             backgroundColor: Color.fromRGBO(101, 101, 255, 1),
             actions: <Widget>[
@@ -503,19 +315,21 @@ class HomeScreenState extends State<HomeScreen> {
               actions: {
                 LongIntent: CallbackAction<LongIntent>(
                   onInvoke: (intent) {
-                    _openPosition('ORDER_TYPE_BUY', null);
+                    // _openPosition('ORDER_TYPE_BUY', null);
+                    openPosition('ORDER_TYPE_BUY', null, context);
                     return null;
                   },
                 ),
                 ShortIntent: CallbackAction<ShortIntent>(
                   onInvoke: (intent) {
-                    _openPosition('ORDER_TYPE_SELL', null);
+                    // _openPosition('ORDER_TYPE_SELL', null);
+                    openPosition('ORDER_TYPE_SELL', null, context);
                     return null;
                   },
                 ),
                 CloseIntent: CallbackAction<CloseIntent>(
                   onInvoke: (intent) {
-                    _onClosePosition(intent.actionType);
+                    onClosePosition(context, intent.actionType);
                     return null;
                   },
                 ),
@@ -590,7 +404,7 @@ class HomeScreenState extends State<HomeScreen> {
                                   border: Border.all(color: const Color.fromRGBO(128, 128, 128, 1), width: 2.0),
                                 ),
                                 child: TextFormField(
-                                  controller: drop.volumeController, // ✅
+                                  controller: drop.volumeController,
                                   keyboardType: TextInputType.number,
                                   onChanged: (newValue) {
                                     final parsedValue = double.tryParse(newValue);

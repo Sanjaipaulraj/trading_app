@@ -1,54 +1,3 @@
-14/11/2025
-
-=> The alert function that captures the api request data message and the 
-   details from the message its enable the reversal plus and signal exit 
-   checked boxes enable true or false its triggered the close symbol
-=> The small database like sqlite or something not postgres or big database
-   its stores the detail and another data to the that.
-
-
-15/11/2025
-
-=> Use the flutter sqflite package to create the table and manage the trade
-   transaction in the frontend 
-=> Use the rustsqlite crate to manage the trade transactions in the backend 
-   if the frontend call the backend for response then we send the status from
-   the rustsqlite
-=> Main thing is the reversal plus,signal exit,tc change are the boolean values
-   that attached to a data of the openfn to the backend and the logic of the 
-   boolean value are executed in backend ,if the boolean value is true then the 
-   backend server calls the other api service for the response and when the 
-   response gets its gets the alert then call the close function and update the
-   rustsqlite symbol closed status in the table,when the time of frontend ask for 
-   the symbol close or anything then we provide the status we managed in the 
-   rustsqlite
-=> if the close status are the new details are get from the backend and then frontend
-   widget state are rebuild for the value clearance
-
-Additional Ideas:
-=> The frontend database use sqflite then the symbol and the details are managed in
-   the table 
-
-20/11/2025
-
-=> Complete the plan but the remaining changes and their solution:
-
-   * The close function in trade server close fn called and it directly call the 
-     meta api trader but first its check the db for api status (status) and check
-     the status is completed or not if its completed then the frontend msg to be
-     its already closed and backend need not to be call the api of meta trader
-   
-=> 21/11/2025
-
-   => The planned db changes are almost completed waiting for the verify
-
-
-=> 10/12/2025
-   => The trade close using only symbol not the position id
-   => The api status method should be web socket for the request and 
-      immediate change of the including boolean factors trade
-   => Divergence response/request to be {Divergence-> name,symbol,Green/Red} 
-
 --------------> 19/12/2025 -> Important final update
 
    => Trading app reversal plus and that section will be saved in local storage 
@@ -101,3 +50,7 @@ Additional Ideas:
 
 27/12/2025
    => In pdf csv the tamil font problem to check the selvam repository to our dart pdf and local dart pdf to our pdf csv
+
+30/12/2025
+   => Menu bar in UI have the two types of actions that is current live symbols and their score
+   => Report for the symbol that get a input symbol,from date to to date to get thee symbol row details 

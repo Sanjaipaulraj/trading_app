@@ -24,6 +24,7 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                 style: TextStyle(color: Color.fromRGBO(101, 101, 255, 1), fontSize: 20, fontWeight: FontWeight.bold),
               ),
               _buildCheckboxRow('ReversalPlusChecked', 'Reversal Plus', checkedbox, context),
+              _buildCheckboxRow('ReversalChecked', 'Reversal', checkedbox, context),
               _buildCheckboxRow('SignalExitChecked', 'Signal Exit', checkedbox, context),
               _buildCheckboxRow('TcChangeChecked', 'Tc Change', checkedbox, context),
             ],
@@ -62,6 +63,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
     switch (checkboxField) {
       case 'ReversalPlusChecked':
         return checkedBox.isReversalPlusChecked;
+      case 'ReversalChecked':
+        return checkedBox.isReversalChecked;
       case 'SignalExitChecked':
         return checkedBox.isSignalExitChecked;
       case 'TcChangeChecked':
