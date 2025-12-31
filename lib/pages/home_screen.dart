@@ -87,25 +87,22 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isExpanded = false;
-    bool isLoading = false;
-    List<String> liveSymbols = [];
-    Future<void> fetchLiveSymbols() async {
-      setState(() {
-        isLoading = true;
-      });
+    // // List<String> liveSymbols = [];
+    // Future<void> fetchSymbols() async {
+    //   if (!mounted) return;
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
+    //   setState(() => isLoading = true);
 
-      // Example backend response
-      liveSymbols = ['Option 1', 'Option 2', 'Option 3'];
+    //   final l = await fetchLiveSymbols();
+    //   Provider.of<ValueProvider>(context, listen: false).updateFetchSymbols(l);
+    //   print(l.toList());
 
-      setState(() {
-        isLoading = false;
-        isExpanded = true;
-      });
-    }
+    //   if (!mounted) return;
+
+    //   setState(() {
+    //     isLoading = false;
+    //   });
+    // }
 
     return FutureBuilder(
       future: _initializeApp(context),
@@ -169,97 +166,69 @@ class HomeScreenState extends State<HomeScreen> {
         //  Case 5: Everything ready → show your main UI
         return Scaffold(
           backgroundColor: Color.fromRGBO(230, 230, 250, 1),
-          // drawer: Drawer(
-          //   backgroundColor: const Color.fromRGBO(230, 230, 250, 1),
-          //   width: MediaQuery.of(context).size.width * 0.6,
-          //   child: Column(
-          //     children: [
-          //       const SizedBox(height: 40),
-          //       Container(
-          //         alignment: Alignment.bottomLeft,
-          //         padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 8),
-          //         child: const Text('Symbol Status', style: TextStyle(color: Colors.black, fontSize: 22)),
-          //       ),
-          //       const Divider(color: Color.fromRGBO(79, 79, 79, 1)),
-          //       const SizedBox(height: 6),
-
-          //       Expanded(
-          //         // child: ListView(
-          //         //   padding: EdgeInsets.zero,
-          //         //   children: [
-          //         //     for (var l in symbols)
-          //         //       ListTile(
-          //         //         title: Text(l.value ?? 'Data Not found'),
-          //         //         onTap: () {
-          //         //           Provider.of<ValueProvider>(context, listen: false).setSelectedValue(l.value ?? "");
-          //         //           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${l.value} clicked')));
-          //         //           Navigator.pop(context);
-          //         //         },
-          //         //       ),
-          //         //   ],
-          //         // ),
-          //         child: ListView(
-          //           padding: EdgeInsets.zero,
-          //           children: [
-          //             // ListTile(
-          //             //   title: const Text(
-          //             //     'Live Symbol',
-          //             //     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
-          //             //   ),
-          //             //   focusColor: Colors.blue,
-          //             //   onTap: () {
-          //             //     // Update the state of the app.
-          //             //     // ...
-          //             //   },
-          //             // ),
-          //             ListTile(
-          //               title: const Text('Live Symbol', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-          //               trailing: Icon(isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
-          //               onTap: () async {
-          //                 if (isExpanded) {
-          //                   setState(() {
-          //                     isExpanded = false;
-          //                   });
-          //                 } else {
-          //                   await fetchLiveSymbols();
-          //                 }
-          //               },
-          //             ),
-
-          //             if (isExpanded)
-          //               Padding(
-          //                 padding: const EdgeInsets.only(left: 16),
-          //                 child: isLoading
-          //                     ? const CircularProgressIndicator()
-          //                     : Column(
-          //                         children: liveSymbols.map((item) {
-          //                           return ListTile(
-          //                             title: Text(item),
-          //                             onTap: () {
-          //                               print('Selected: $item');
-          //                               // handle selection
-          //                             },
-          //                           );
-          //                         }).toList(),
-          //                       ),
-          //               ),
-          //             ListTile(
-          //               title: const Text(
-          //                 'Report',
-          //                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
-          //               ),
-          //               focusColor: Colors.blue,
-          //               onTap: () {
-          //                 // Update the state of the app.
-          //                 // ...
-          //               },
-          //             ),
-          //           ],
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
+          drawer: Drawer(
+            backgroundColor: const Color.fromRGBO(230, 230, 250, 1),
+            width: MediaQuery.of(context).size.width * 0.6,
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                const DrawerHeader(
+                  decoration: BoxDecoration(color: Color.fromRGBO(101, 101, 255, 1)),
+                  child: Text('Symbol Settings', style: TextStyle(color: Colors.white, fontSize: 24)),
+                ),
+                Consumer<ValueProvider>(
+                  builder: (context, symbList, child) {
+                    final lis = symbList.liveSymbols;
+                    return ExpansionTile(
+                      onExpansionChanged: (value) async {
+                        final symbolList = await fetchLiveSymbols();
+                        // print(symbolList);
+                        Provider.of<ValueProvider>(context, listen: false).updateFetchSymbols(symbolList);
+                      },
+                      leading: const Icon(Icons.check_circle),
+                      title: const Text('Live Symbol'),
+                      children: [
+                        for (var l in lis)
+                          ListTile(
+                            title: Text(l.symbol),
+                            trailing: Text(
+                              l.profit.toString(),
+                              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                            ),
+                            onTap: () {
+                              SearchFieldListItem<String> val = SearchFieldListItem<String>(l.symbol, value: l.symbol);
+                              Provider.of<ValueProvider>(context, listen: false).setSelectedItem(val, context);
+                              ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(SnackBar(content: Text('${l.symbol} clicked')));
+                              Navigator.pop(context);
+                            },
+                          ),
+                      ],
+                    );
+                  },
+                ),
+                ExpansionTile(
+                  leading: const Icon(Icons.article),
+                  title: const Text('Report'),
+                  children: [
+                    ListTile(
+                      title: const Text('Report Option 1'),
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Report Option 2'),
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
           appBar: AppBar(
             backgroundColor: Color.fromRGBO(101, 101, 255, 1),
             actions: <Widget>[
