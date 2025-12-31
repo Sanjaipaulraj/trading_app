@@ -87,23 +87,6 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // // List<String> liveSymbols = [];
-    // Future<void> fetchSymbols() async {
-    //   if (!mounted) return;
-
-    //   setState(() => isLoading = true);
-
-    //   final l = await fetchLiveSymbols();
-    //   Provider.of<ValueProvider>(context, listen: false).updateFetchSymbols(l);
-    //   print(l.toList());
-
-    //   if (!mounted) return;
-
-    //   setState(() {
-    //     isLoading = false;
-    //   });
-    // }
-
     return FutureBuilder(
       future: _initializeApp(context),
       builder: (context, snapshot) {
