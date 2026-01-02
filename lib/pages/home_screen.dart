@@ -161,6 +161,42 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
                 Consumer<ValueProvider>(
                   builder: (context, symbList, child) {
+                    final lis = symbList.tradeHistory;
+                    return ExpansionTile(
+                      onExpansionChanged: (value) async {
+                        final symbolList = await fetchTradeHistory();
+                        // print(symbolList);
+                        Provider.of<ValueProvider>(context, listen: false).updateFetchHistory(symbolList);
+                      },
+                      leading: const Icon(Icons.history),
+                      title: const Text('Today History'),
+                      children: [
+                        for (var l in lis)
+                          ListTile(
+                            title: Text(l.symbol),
+                            trailing: Text(
+                              l.profit.toString(),
+                              style: TextStyle(
+                                color: (l.profit > 0) ? Colors.green : Colors.red,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            onTap: () {
+                              // SearchFieldListItem<String> val = SearchFieldListItem<String>(l.symbol, value: l.symbol);
+                              // Provider.of<ValueProvider>(context, listen: false).setSelectedItem(val, context);
+                              ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(SnackBar(content: Text('${l.symbol} clicked')));
+                              // Navigator.pop(context);
+                            },
+                          ),
+                      ],
+                    );
+                  },
+                ),
+                Consumer<ValueProvider>(
+                  builder: (context, symbList, child) {
                     final lis = symbList.liveSymbols;
                     return ExpansionTile(
                       onExpansionChanged: (value) async {
@@ -176,7 +212,11 @@ class HomeScreenState extends State<HomeScreen> {
                             title: Text(l.symbol),
                             trailing: Text(
                               l.profit.toString(),
-                              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                              style: TextStyle(
+                                color: (l.profit > 0) ? Colors.green : Colors.red,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                             onTap: () {
                               SearchFieldListItem<String> val = SearchFieldListItem<String>(l.symbol, value: l.symbol);

@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trading_app/Providers/checked_box_provider.dart';
 import 'package:trading_app/models/active_symbol_model.dart';
 import 'package:trading_app/models/current_open_model.dart';
+import 'package:trading_app/models/trade_history_model.dart';
 
 class ValueProvider extends ChangeNotifier {
   String? selectedValue;
@@ -17,6 +18,7 @@ class ValueProvider extends ChangeNotifier {
   Set<CurrentOpenModel> currentOpening = {};
   SearchFieldListItem<String>? lastActiveSymbol;
   List<ActiveSymbolModel> liveSymbols = [];
+  List<TradeHistoryModel> tradeHistory = [];
 
   bool get isLoading => _isLoading;
 
@@ -116,6 +118,11 @@ class ValueProvider extends ChangeNotifier {
 
   void updateFetchSymbols(List<ActiveSymbolModel> symbolList) {
     liveSymbols = symbolList;
+    notifyListeners();
+  }
+
+  void updateFetchHistory(List<TradeHistoryModel> symbolList) {
+    tradeHistory = symbolList;
     notifyListeners();
   }
 }
