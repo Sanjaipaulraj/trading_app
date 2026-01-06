@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,9 +12,18 @@ import 'package:trading_app/models/trade_history_model.dart';
 
 class ValueProvider extends ChangeNotifier {
   String? selectedValue;
+  String menuSelectedValue = "ALL";
   SearchFieldListItem<String>? selectedItem;
+  SearchFieldListItem<String> menuSelectedItem = SearchFieldListItem("ALL");
   num volume = 1.03;
   final TextEditingController volumeController = TextEditingController();
+  late FocusNode menuSymbolFocusNode;
+  final TextEditingController fromDateController = TextEditingController();
+  final TextEditingController toDateController = TextEditingController();
+
+  String? startDate;
+  String? endDate;
+
   bool _isLoading = true;
   Set<CurrentOpenModel> currentOpening = {};
   SearchFieldListItem<String>? lastActiveSymbol;
@@ -23,12 +33,16 @@ class ValueProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   ValueProvider(BuildContext context) {
+    menuSymbolFocusNode = FocusNode();
     _loadVolume(context);
   }
 
   @override
   void dispose() {
     volumeController.dispose();
+    menuSymbolFocusNode.dispose();
+    fromDateController.dispose();
+    toDateController.dispose();
     super.dispose();
   }
 
@@ -60,14 +74,20 @@ class ValueProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSelectedValue(String value) {
-    selectedValue = value;
-    notifyListeners();
-  }
+  // void setSelectedValue(String value) {
+  //   selectedValue = value;
+  //   notifyListeners();
+  // }
 
   void clearSelectedValue() {
     selectedValue = null;
     selectedItem = null;
+    notifyListeners();
+  }
+
+  void clearMenuSelectedValue() {
+    menuSelectedValue = "ALL";
+    menuSelectedItem = SearchFieldListItem("ALL");
     notifyListeners();
   }
 
@@ -77,6 +97,13 @@ class ValueProvider extends ChangeNotifier {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('lastActiveSymbol', item.searchKey);
+
+    notifyListeners();
+  }
+
+  void setMenuSelectedItem(SearchFieldListItem<String> item, BuildContext context) async {
+    menuSelectedItem = item;
+    menuSelectedValue = item.searchKey;
 
     notifyListeners();
   }
@@ -124,5 +151,33 @@ class ValueProvider extends ChangeNotifier {
   void updateFetchHistory(List<TradeHistoryModel> symbolList) {
     tradeHistory = symbolList;
     notifyListeners();
+  }
+
+  Future<void> pickDate({required BuildContext context, required bool isFromDate}) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2021),
+      lastDate: DateTime(2030),
+    );
+
+    if (pickedDate != null) {
+      final formatted =
+          '${pickedDate.day.toString().padLeft(2, '0')}-'
+          '${pickedDate.month.toString().padLeft(2, '0')}-'
+          '${pickedDate.year}';
+
+      final apiFormat = DateFormat('yyyy-MM-dd').format(pickedDate);
+
+      if (isFromDate) {
+        startDate = apiFormat;
+        fromDateController.text = formatted;
+      } else {
+        endDate = apiFormat;
+        toDateController.text = formatted;
+      }
+
+      notifyListeners();
+    }
   }
 }
