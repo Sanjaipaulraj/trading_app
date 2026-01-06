@@ -13,6 +13,7 @@ OpenRequestModel _$OpenRequestModelFromJson(Map<String, dynamic> json) =>
       volume: json['volume'] as num,
       takeProfit: json['takeProfit'] as num?,
       reversalPlus: json['reversalPlus'] as bool,
+      reversal: json['reversal'] as bool,
       signalExit: json['signalExit'] as bool,
       tcChange: json['tcChange'] as bool,
     );
@@ -24,6 +25,7 @@ Map<String, dynamic> _$OpenRequestModelToJson(OpenRequestModel instance) =>
       'volume': instance.volume,
       'takeProfit': instance.takeProfit,
       'reversalPlus': instance.reversalPlus,
+      'reversal': instance.reversal,
       'signalExit': instance.signalExit,
       'tcChange': instance.tcChange,
     };
