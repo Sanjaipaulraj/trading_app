@@ -7,3 +7,9 @@
 => Check the Reversal and Reversal plus checkbox ,that would be first enable and after it be disable the signal 
    from the indicator closed in a second signal if its after disable ,check that up and down completely
 => In symbol today history make precision 2 after the decimal its too long 
+
+Finished ---------
+06/01/2026
+=> Create a excel file report for the trade history
+=> Need to change the git path for the search field --> Fork the reopsitory and 
+   add to the sanjai repo and used in the trade project

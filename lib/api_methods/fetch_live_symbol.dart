@@ -3,7 +3,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
-import 'package:trading_app/models/active_symbol_model.dart';
+import '../models/models.dart';
 
 Future<List<ActiveSymbolModel>> fetchLiveSymbols() async {
   Dio dio = Dio(
@@ -12,8 +12,8 @@ Future<List<ActiveSymbolModel>> fetchLiveSymbols() async {
 
   try {
     final response = await dio.get(
-      // 'http://13.201.225.85/trade/active-symbol',
-      'http://localhost:4000/trade/active-symbol',
+      'http://13.201.225.85/trade/active-symbol',
+      // 'http://localhost:4000/trade/active-symbol',
     );
 
     final List<ActiveSymbolModel> models = (response.data as List).map((e) => ActiveSymbolModel.fromJson(e)).toList();
@@ -38,7 +38,7 @@ Future<List<ActiveSymbolModel>> fetchLiveSymbols() async {
         backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
         title: const Text('Server Error!'),
         description: Text('Response : ${e.response?.data}'),
-        type: ToastificationType.success,
+        type: ToastificationType.error,
         alignment: Alignment.center,
         autoCloseDuration: const Duration(seconds: 1),
       );

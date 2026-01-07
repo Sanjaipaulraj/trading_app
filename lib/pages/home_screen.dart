@@ -7,7 +7,7 @@ import 'package:searchfield/searchfield.dart';
 import 'package:toastification/toastification.dart';
 import 'package:trading_app/Providers/checked_box_provider.dart';
 import 'package:trading_app/Providers/value_provider.dart';
-import 'package:trading_app/api_methods/get_report_method.dart';
+import 'package:trading_app/drawer_widget.dart';
 import 'package:trading_app/intent.dart';
 import 'package:trading_app/sections/automatic_closing_section.dart';
 import 'package:trading_app/sections/conditon_title_section.dart';
@@ -153,172 +153,7 @@ class HomeScreenState extends State<HomeScreen> {
           drawer: Drawer(
             backgroundColor: const Color.fromRGBO(230, 230, 250, 1),
             width: MediaQuery.of(context).size.width * 0.6,
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                const DrawerHeader(
-                  decoration: BoxDecoration(color: Color.fromRGBO(101, 101, 255, 1)),
-                  child: Text('Symbol Settings', style: TextStyle(color: Colors.white, fontSize: 24)),
-                ),
-                Consumer<ValueProvider>(
-                  builder: (context, symbList, child) {
-                    final lis = symbList.tradeHistory;
-                    return ExpansionTile(
-                      onExpansionChanged: (value) async {
-                        final symbolList = await fetchTradeHistory();
-                        // print(symbolList);
-                        Provider.of<ValueProvider>(context, listen: false).updateFetchHistory(symbolList);
-                      },
-                      leading: const Icon(Icons.history),
-                      title: const Text('Today History'),
-                      children: [
-                        for (var l in lis)
-                          ListTile(
-                            title: Text(l.symbol),
-                            trailing: Text(
-                              l.profit.toStringAsFixed(2),
-                              style: TextStyle(
-                                color: (l.profit > 0) ? Colors.green : Colors.red,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            onTap: () {
-                              // SearchFieldListItem<String> val = SearchFieldListItem<String>(l.symbol, value: l.symbol);
-                              // Provider.of<ValueProvider>(context, listen: false).setSelectedItem(val, context);
-                              ScaffoldMessenger.of(
-                                context,
-                              ).showSnackBar(SnackBar(content: Text('${l.symbol} clicked')));
-                              // Navigator.pop(context);
-                            },
-                          ),
-                      ],
-                    );
-                  },
-                ),
-                Consumer<ValueProvider>(
-                  builder: (context, symbList, child) {
-                    final lis = symbList.liveSymbols;
-                    return ExpansionTile(
-                      onExpansionChanged: (value) async {
-                        final symbolList = await fetchLiveSymbols();
-                        // print(symbolList);
-                        Provider.of<ValueProvider>(context, listen: false).updateFetchSymbols(symbolList);
-                      },
-                      leading: const Icon(Icons.check_circle, color: Colors.green),
-                      title: const Text('Live Symbol'),
-                      children: [
-                        for (var l in lis)
-                          ListTile(
-                            title: Text(l.symbol),
-                            trailing: Text(
-                              l.profit.toStringAsFixed(2),
-                              style: TextStyle(
-                                color: (l.profit > 0) ? Colors.green : Colors.red,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            onTap: () {
-                              SearchFieldListItem<String> val = SearchFieldListItem<String>(l.symbol, value: l.symbol);
-                              Provider.of<ValueProvider>(context, listen: false).setSelectedItem(val, context);
-                              ScaffoldMessenger.of(
-                                context,
-                              ).showSnackBar(SnackBar(content: Text('${l.symbol} clicked')));
-                              Navigator.pop(context);
-                            },
-                          ),
-                      ],
-                    );
-                  },
-                ),
-                ExpansionTile(
-                  maintainState: true,
-                  leading: const Icon(Icons.article),
-                  title: const Text('Report'),
-                  children: [
-                    Consumer<ValueProvider>(
-                      builder: (context, provider, child) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Consumer<ValueProvider>(
-                                builder: (context, menu, child) {
-                                  return SizedBox(
-                                    height: 40,
-                                    child: SearchField<String>(
-                                      focusNode: menu.menuSymbolFocusNode,
-                                      suggestions: symbols,
-                                      suggestionState: Suggestion.hidden,
-                                      selectedValue: menu.menuSelectedItem,
-                                      searchInputDecoration: SearchInputDecoration(
-                                        hintText: 'Symbols',
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      maxSuggestionsInViewPort: 4,
-                                      onSearchTextChanged: (searchText) {
-                                        if (searchText.isEmpty) {
-                                          return List<SearchFieldListItem<String>>.from(symbols);
-                                        }
-                                        context.read<ValueProvider>().clearMenuSelectedValue();
-
-                                        final query = searchText.toUpperCase();
-                                        return symbols.where((s) {
-                                          final key = s.searchKey.toUpperCase();
-                                          final value = (s.value ?? '').toUpperCase();
-                                          return key.contains(query) || value.contains(query);
-                                        }).toList();
-                                      },
-                                      onSuggestionTap: (SearchFieldListItem<String> item) {
-                                        menu.menuSymbolFocusNode.unfocus();
-
-                                        context.read<ValueProvider>().setMenuSelectedItem(item, context);
-                                      },
-                                      onSubmit: (item) {
-                                        Provider.of<ValueProvider>(
-                                          context,
-                                          listen: false,
-                                        ).setMenuSelectedItem(SearchFieldListItem(item), context);
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
-                              const SizedBox(height: 10),
-                              dateField(
-                                label: 'From Date *',
-                                controller: provider.fromDateController,
-                                onTap: () {
-                                  provider.pickDate(context: context, isFromDate: true);
-                                },
-                              ),
-                              const SizedBox(height: 10),
-                              dateField(
-                                label: 'To Date *',
-                                controller: provider.toDateController,
-                                onTap: () {
-                                  provider.pickDate(context: context, isFromDate: false);
-                                },
-                              ),
-                              const SizedBox(height: 10),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.brown[700],
-                                  foregroundColor: Colors.white,
-                                ),
-                                onPressed: () => getReport(context),
-                                child: Text('Get Report', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            child: DrawerWidget(),
           ),
           appBar: AppBar(
             backgroundColor: Color.fromRGBO(101, 101, 255, 1),
@@ -553,26 +388,4 @@ class HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-}
-
-Widget dateField({required String label, required TextEditingController controller, required VoidCallback onTap}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-      const SizedBox(height: 6),
-      InkWell(
-        onTap: onTap,
-        child: TextFormField(
-          controller: controller,
-          enabled: false,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            suffixIcon: Icon(Icons.calendar_today, size: 18),
-            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          ),
-        ),
-      ),
-    ],
-  );
 }
