@@ -12,8 +12,8 @@ Future<List<TradeHistoryModel>> fetchTradeHistory() async {
 
   try {
     final response = await dio.get(
-      'http://13.201.225.85/trade/history',
-      // 'http://localhost:4000/trade/history',
+      // 'http://13.201.225.85/trade/history',
+      'http://localhost:4000/trade/history',
     );
 
     final List<TradeHistoryModel> models = (response.data as List).map((e) => TradeHistoryModel.fromJson(e)).toList();

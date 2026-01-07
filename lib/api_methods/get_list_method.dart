@@ -14,8 +14,8 @@ Future<List<String>> getList(BuildContext context) async {
 
   try {
     final response = await dio.get(
-      'http://13.201.225.85/trade/list',
-      // 'http://localhost:4000/trade/list',
+      // 'http://13.201.225.85/trade/list',
+      'http://localhost:4000/trade/list',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );
     if (response.statusCode == 200) {

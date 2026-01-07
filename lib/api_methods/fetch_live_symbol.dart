@@ -12,8 +12,8 @@ Future<List<ActiveSymbolModel>> fetchLiveSymbols() async {
 
   try {
     final response = await dio.get(
-      'http://13.201.225.85/trade/active-symbol',
-      // 'http://localhost:4000/trade/active-symbol',
+      // 'http://13.201.225.85/trade/active-symbol',
+      'http://localhost:4000/trade/active-symbol',
     );
 
     final List<ActiveSymbolModel> models = (response.data as List).map((e) => ActiveSymbolModel.fromJson(e)).toList();
