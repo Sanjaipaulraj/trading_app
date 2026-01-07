@@ -3,7 +3,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
-import 'package:trading_app/models/trade_history_model.dart';
+import '../models/models.dart';
 
 Future<List<TradeHistoryModel>> fetchTradeHistory() async {
   Dio dio = Dio(
@@ -12,8 +12,8 @@ Future<List<TradeHistoryModel>> fetchTradeHistory() async {
 
   try {
     final response = await dio.get(
-      // 'http://13.201.225.85/trade/history',
-      'http://localhost:4000/trade/history',
+      'http://13.201.225.85/trade/history',
+      // 'http://localhost:4000/trade/history',
     );
 
     final List<TradeHistoryModel> models = (response.data as List).map((e) => TradeHistoryModel.fromJson(e)).toList();
@@ -38,7 +38,7 @@ Future<List<TradeHistoryModel>> fetchTradeHistory() async {
         backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
         title: const Text('Server Error!'),
         description: Text('Response : ${e.response?.data}'),
-        type: ToastificationType.success,
+        type: ToastificationType.error,
         alignment: Alignment.center,
         autoCloseDuration: const Duration(seconds: 1),
       );

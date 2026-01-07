@@ -9,8 +9,7 @@ import 'package:toastification/toastification.dart';
 import 'package:trading_app/Providers/checked_box_provider.dart';
 import 'package:trading_app/Providers/token_provider.dart';
 import 'package:trading_app/Providers/value_provider.dart';
-import 'package:trading_app/models/current_open_model.dart';
-import 'package:trading_app/models/open_request_model.dart';
+import '../models/models.dart';
 
 Future<void> openPosition(String actionType, num? takeProfit, BuildContext context) async {
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
@@ -45,8 +44,8 @@ Future<void> openPosition(String actionType, num? takeProfit, BuildContext conte
   );
   try {
     final _ = await dio.post(
-      // 'http://13.201.225.85/trade/open',
-      'http://localhost:4000/trade/open',
+      'http://13.201.225.85/trade/open',
+      // 'http://localhost:4000/trade/open',
       data: jsonEncode(data),
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );
@@ -57,14 +56,14 @@ Future<void> openPosition(String actionType, num? takeProfit, BuildContext conte
     final mod = CurrentOpenModel(symbol: symbol!, reversalPlus: reversal, signalExit: signal, tcChange: tc);
     Provider.of<ValueProvider>(context, listen: false).addCurrentOpen(mod);
     // ✅ Only 2xx responses reach here
-    toastification.show(
-      backgroundColor: const Color.fromARGB(55, 172, 221, 159),
-      title: const Text('Success!'),
-      description: const Text('Send successfully'),
-      type: ToastificationType.success,
-      alignment: Alignment.center,
-      autoCloseDuration: Duration(seconds: 1),
-    );
+    // toastification.show(
+    //   backgroundColor: const Color.fromARGB(55, 172, 221, 159),
+    //   title: const Text('Success!'),
+    //   description: const Text('Send successfully'),
+    //   type: ToastificationType.success,
+    //   alignment: Alignment.center,
+    //   autoCloseDuration: Duration(seconds: 1),
+    // );
   } on DioException catch (e) {
     final statusCode = e.response?.statusCode;
 

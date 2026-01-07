@@ -14,29 +14,29 @@ Future<List<String>> getList(BuildContext context) async {
 
   try {
     final response = await dio.get(
-      // 'http://13.201.225.85/trade/list',
-      'http://localhost:4000/trade/list',
+      'http://13.201.225.85/trade/list',
+      // 'http://localhost:4000/trade/list',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );
     if (response.statusCode == 200) {
       final List<String> data = (response.data as List).map((e) => e.toString()).toList();
       final parsedList = data.toList();
 
-      toastification.show(
-        backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
-        title: const Text('Success!'),
-        description: const Text('List fetched successfully.'),
-        type: ToastificationType.success,
-        alignment: Alignment.center,
-        autoCloseDuration: Duration(seconds: 1),
-      );
+      // toastification.show(
+      //   backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
+      //   title: const Text('Success!'),
+      //   description: const Text('List fetched successfully.'),
+      //   type: ToastificationType.success,
+      //   alignment: Alignment.center,
+      //   autoCloseDuration: Duration(seconds: 1),
+      // );
       return parsedList;
     } else if (response.statusCode == 500) {
       toastification.show(
         backgroundColor: const Color.fromRGBO(199, 226, 201, 1),
         title: const Text('Server Error!'),
         description: Text('Response : ${response.data}'),
-        type: ToastificationType.success,
+        type: ToastificationType.error,
         alignment: Alignment.center,
         autoCloseDuration: const Duration(seconds: 1),
       );
