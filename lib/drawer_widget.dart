@@ -45,18 +45,25 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       ...list.map((el) => SearchFieldListItem<String>(el, value: el)),
     ];
 
+    final now = DateTime.now();
+    final String formattedDate = DateFormat('yyyy-MM-dd').format(now);
+    // print(formattedDate);
+
     setState(() {
       menuSelectedItem = symbols.first; // "ALL"
       menuSelectedValue = "ALL";
+      fromDateController.text = formattedDate;
+      toDateController.text = formattedDate;
     });
   }
 
   Future<void> pickDate({required bool isFromDate}) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2021),
-      lastDate: DateTime(2030),
+      // initialDate: DateTime.now(),
+      firstDate: DateTime(2026),
+      // lastDate: DateTime(2035),
+      lastDate: DateTime.now(),
     );
 
     if (pickedDate != null) {

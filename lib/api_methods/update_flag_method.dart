@@ -22,8 +22,8 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
     BaseOptions(connectTimeout: const Duration(seconds: 60), receiveTimeout: const Duration(seconds: 60)),
   );
   await dio.post(
-    // 'http://13.201.225.85/trade/update-flags',
-    'http://localhost:4000/trade/update-flags',
+    'http://13.201.225.85/trade/update-flags',
+    // 'http://localhost:4000/trade/update-flags',
     data: {
       'symbol': symbol,
       'reversalPlus': checked.isReversalPlusChecked,

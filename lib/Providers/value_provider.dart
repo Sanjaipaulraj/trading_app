@@ -31,7 +31,7 @@ class ValueProvider extends ChangeNotifier {
   Future<void> _loadVolume(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    volume = prefs.getDouble('volume') ?? 1.03;
+    volume = prefs.getDouble('volume') ?? 0.01;
     volumeController.text = volume.toString();
     final decoded = jsonDecode(prefs.getString('currentOpening') ?? '[]') as List;
 

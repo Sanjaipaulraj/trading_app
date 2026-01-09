@@ -44,8 +44,8 @@ Future<void> openPosition(String actionType, num? takeProfit, BuildContext conte
   );
   try {
     final _ = await dio.post(
-      // 'http://13.201.225.85/trade/open',
-      'http://localhost:4000/trade/open',
+      'http://13.201.225.85/trade/open',
+      // 'http://localhost:4000/trade/open',
       data: jsonEncode(data),
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );

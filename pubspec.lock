@@ -572,11 +572,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "2045cd8"
-      resolved-ref: "2045cd8a0756f6a74bde2a04271dff0276a53d62"
-      url: "https://github.com/maheshj01/searchfield.git"
+      ref: master
+      resolved-ref: "647c5cc5a83ff7b3f9924859a4ddc78e0710a896"
+      url: "https://github.com/Sanjaipaulraj/searchfield.git"
     source: git
-    version: "1.3.5"
+    version: "1.4.0"
   shared_preferences:
     dependency: "direct main"
     description:

@@ -31,8 +31,8 @@ Future<void> onClosePosition(BuildContext context, String actionType) async {
   final data = CloseRequestModel(actionType: actionType, symbol: symbol, description: description);
   try {
     await dio.post(
-      // 'http://13.201.225.85/trade/close',
-      'http://localhost:4000/trade/close',
+      'http://13.201.225.85/trade/close',
+      // 'http://localhost:4000/trade/close',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       data: jsonEncode(data),
     );
