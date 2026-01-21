@@ -26,8 +26,8 @@ Future<void> getReport(BuildContext context, String symbol, String startDate, St
   final data = GetReportModel(symbol: symbol, startDate: startDate, endDate: endDate);
   try {
     final response = await dio.post(
-      'http://13.201.225.85/trade/report',
-      // 'http://localhost:4000/trade/report',
+      // 'http://13.201.225.85/trade/report',
+      'http://localhost:4000/trade/report',
       data: jsonEncode(data),
     );
     // print(response);

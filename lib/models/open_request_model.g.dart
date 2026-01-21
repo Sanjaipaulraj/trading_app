@@ -10,6 +10,7 @@ OpenRequestModel _$OpenRequestModelFromJson(Map<String, dynamic> json) =>
     OpenRequestModel(
       actionType: json['actionType'] as String,
       symbol: json['symbol'] as String?,
+      method: json['method'] as String?,
       volume: json['volume'] as num,
       takeProfit: json['takeProfit'] as num?,
       reversalPlus: json['reversalPlus'] as bool,
@@ -22,6 +23,7 @@ Map<String, dynamic> _$OpenRequestModelToJson(OpenRequestModel instance) =>
     <String, dynamic>{
       'actionType': instance.actionType,
       'symbol': instance.symbol,
+      'method': instance.method,
       'volume': instance.volume,
       'takeProfit': instance.takeProfit,
       'reversalPlus': instance.reversalPlus,

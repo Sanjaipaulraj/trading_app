@@ -101,7 +101,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           child: Text(
             'Symbol Settings',
             textAlign: TextAlign.center,
-            style: TextStyle(color: Color.fromRGBO(101, 101, 255, 1), fontSize: 24),
+            style: TextStyle(color: Color.fromRGBO(24, 55, 69, 1), fontSize: 24),
+            // style: TextStyle(color: Color.fromRGBO(101, 101, 255, 1), fontSize: 24),
           ),
         ),
         ExpansionTile(

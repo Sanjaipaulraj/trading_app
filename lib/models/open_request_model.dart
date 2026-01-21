@@ -6,6 +6,7 @@ part 'open_request_model.g.dart';
 class OpenRequestModel {
   String actionType;
   String? symbol;
+  String? method;
   num volume;
   num? takeProfit;
   bool reversalPlus;
@@ -16,6 +17,7 @@ class OpenRequestModel {
   OpenRequestModel({
     required this.actionType,
     required this.symbol,
+    required this.method,
     required this.volume,
     this.takeProfit,
     required this.reversalPlus,

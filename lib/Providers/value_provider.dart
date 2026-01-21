@@ -97,10 +97,11 @@ class ValueProvider extends ChangeNotifier {
     }
   }
 
-  void updateFlags(String symbol, bool r, bool s, bool t) {
+  void updateFlags(String symbol, bool rp, bool r, bool s, bool t) {
     final open = getOpenBySymbol(symbol);
     if (open != null) {
-      open.reversalPlus = r;
+      open.reversalPlus = rp;
+      open.reversal = r;
       open.signalExit = s;
       open.tcChange = t;
       notifyListeners();

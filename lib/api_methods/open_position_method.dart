@@ -11,7 +11,7 @@ import 'package:trading_app/Providers/token_provider.dart';
 import 'package:trading_app/Providers/value_provider.dart';
 import '../models/models.dart';
 
-Future<void> openPosition(String actionType, num? takeProfit, BuildContext context) async {
+Future<void> openPosition(String method, String actionType, num? takeProfit, BuildContext context) async {
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
   if (token == null) {
     toastification.show(
@@ -26,15 +26,43 @@ Future<void> openPosition(String actionType, num? takeProfit, BuildContext conte
   }
 
   Dio dio = Dio();
-  final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
-  final volume = Provider.of<ValueProvider>(context, listen: false).volume;
-  final reversalPlus = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalPlusChecked;
-  final reversal = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalChecked;
-  final signal = Provider.of<CheckedBoxProvider>(context, listen: false).isSignalExitChecked;
-  final tc = Provider.of<CheckedBoxProvider>(context, listen: false).isTcChangeChecked;
+  final valueProv = Provider.of<ValueProvider>(context, listen: false);
+  final checkedProv = Provider.of<CheckedBoxProvider>(context, listen: false);
+  final symbol = valueProv.selectedValue;
+  final volume = valueProv.volume;
+  // final reversalPlus = checkedProv.isReversalPlusChecked;
+  // final reversal = checkedProv.isReversalChecked;
+  // final signal = checkedProv.isSignalExitChecked;
+  // final tc = checkedProv.isTcChangeChecked;
+  late bool reversalPlus;
+  late bool reversal;
+  late bool signal;
+  late bool tc;
+
+  // sample
+  if (method == 'method1') {
+    reversalPlus = checkedProv.isM1ReversalPlusChecked;
+    reversal = checkedProv.isM1ReversalChecked;
+    signal = checkedProv.isM1SignalExitChecked;
+    tc = checkedProv.isM1TcChangeChecked;
+  } else if (method == 'method2') {
+    reversalPlus = checkedProv.isM2ReversalPlusChecked;
+    reversal = checkedProv.isM2ReversalChecked;
+    signal = checkedProv.isM2SignalExitChecked;
+    tc = checkedProv.isM2TcChangeChecked;
+  } else if (method == 'method3') {
+    reversalPlus = checkedProv.isM3ReversalPlusChecked;
+    reversal = checkedProv.isM3ReversalChecked;
+    signal = checkedProv.isM3SignalExitChecked;
+    tc = checkedProv.isM3TcChangeChecked;
+  }
+
+  // sample
+
   final data = OpenRequestModel(
     actionType: actionType,
     symbol: symbol,
+    method: method,
     volume: volume,
     takeProfit: takeProfit,
     reversalPlus: reversalPlus,
@@ -44,16 +72,47 @@ Future<void> openPosition(String actionType, num? takeProfit, BuildContext conte
   );
   try {
     final _ = await dio.post(
-      'http://13.201.225.85/trade/open',
-      // 'http://localhost:4000/trade/open',
+      // 'http://13.201.225.85/trade/open',
+      'http://localhost:4000/trade/open',
       data: jsonEncode(data),
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );
 
-    final reversal = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalPlusChecked;
-    final signal = Provider.of<CheckedBoxProvider>(context, listen: false).isSignalExitChecked;
-    final tc = Provider.of<CheckedBoxProvider>(context, listen: false).isTcChangeChecked;
-    final mod = CurrentOpenModel(symbol: symbol!, reversalPlus: reversal, signalExit: signal, tcChange: tc);
+    // final reversalPlus = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalPlusChecked;
+    // final reversal = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalChecked;
+    // final signal = Provider.of<CheckedBoxProvider>(context, listen: false).isSignalExitChecked;
+    // final tc = Provider.of<CheckedBoxProvider>(context, listen: false).isTcChangeChecked;
+    late bool reversalPlus;
+    late bool reversal;
+    late bool signal;
+    late bool tc;
+
+    // sample
+    if (method == 'method1') {
+      reversalPlus = checkedProv.isM1ReversalPlusChecked;
+      reversal = checkedProv.isM1ReversalChecked;
+      signal = checkedProv.isM1SignalExitChecked;
+      tc = checkedProv.isM1TcChangeChecked;
+    } else if (method == 'method2') {
+      reversalPlus = checkedProv.isM2ReversalPlusChecked;
+      reversal = checkedProv.isM2ReversalChecked;
+      signal = checkedProv.isM2SignalExitChecked;
+      tc = checkedProv.isM2TcChangeChecked;
+    } else if (method == 'method3') {
+      reversalPlus = checkedProv.isM3ReversalPlusChecked;
+      reversal = checkedProv.isM3ReversalChecked;
+      signal = checkedProv.isM3SignalExitChecked;
+      tc = checkedProv.isM3TcChangeChecked;
+    }
+    final mod = CurrentOpenModel(
+      symbol: symbol!,
+      method: data.method!,
+      reversalPlus: reversalPlus,
+      reversal: reversal,
+      signalExit: signal,
+      tcChange: tc,
+    );
+    print("Mod : $mod");
     Provider.of<ValueProvider>(context, listen: false).addCurrentOpen(mod);
     // ✅ Only 2xx responses reach here
     // toastification.show(
