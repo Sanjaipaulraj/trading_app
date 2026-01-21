@@ -157,7 +157,6 @@ class HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             iconTheme: IconThemeData(color: Colors.white),
             backgroundColor: Color.fromRGBO(24, 55, 69, 1),
-            // backgroundColor: Color.fromRGBO(101, 101, 255, 1),
             actions: <Widget>[
               GestureDetector(
                 onTap: () => showDialog<String>(
@@ -194,7 +193,6 @@ class HomeScreenState extends State<HomeScreen> {
               ),
             ],
             title: Text('Auditplus Fx', style: TextStyle(color: Colors.white)),
-            // title: Text('Auditplus Fx'),
           ),
           body: Shortcuts(
             shortcuts: {
@@ -214,14 +212,12 @@ class HomeScreenState extends State<HomeScreen> {
               actions: {
                 LongIntent: CallbackAction<LongIntent>(
                   onInvoke: (intent) {
-                    // _openPosition('ORDER_TYPE_BUY', null);
                     openPosition(intent.method, 'ORDER_TYPE_BUY', null, context);
                     return null;
                   },
                 ),
                 ShortIntent: CallbackAction<ShortIntent>(
                   onInvoke: (intent) {
-                    // _openPosition('ORDER_TYPE_SELL', null);
                     openPosition(intent.method, 'ORDER_TYPE_SELL', null, context);
                     return null;
                   },
@@ -236,7 +232,6 @@ class HomeScreenState extends State<HomeScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  // mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 2),
@@ -255,7 +250,6 @@ class HomeScreenState extends State<HomeScreen> {
                                   selectedValue: drop.selectedItem,
                                   searchInputDecoration: SearchInputDecoration(
                                     hintText: 'Symbols',
-                                    // border: OutlineInputBorder(),
                                     isDense: true,
                                     contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
@@ -331,13 +325,11 @@ class HomeScreenState extends State<HomeScreen> {
                                 style: OutlinedButton.styleFrom(
                                   fixedSize: Size(100, 25),
                                   backgroundColor: Color.fromRGBO(24, 55, 69, 1),
-                                  // backgroundColor: Color.fromRGBO(101, 101, 255, 1),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     side: BorderSide(color: Color.fromRGBO(27, 29, 29, 1), width: 2),
                                   ),
                                   foregroundColor: Colors.white,
-                                  // foregroundColor: Colors.black,
                                   textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                 ),
                                 onPressed: () {
@@ -376,7 +368,6 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Method1Section(),
-                    // Divider(height: 0.5, color: Color.fromRGBO(129, 131, 248, 1)),
                     DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
                     Method2Section(),
                     DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),

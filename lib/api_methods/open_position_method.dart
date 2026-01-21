@@ -30,16 +30,11 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
   final checkedProv = Provider.of<CheckedBoxProvider>(context, listen: false);
   final symbol = valueProv.selectedValue;
   final volume = valueProv.volume;
-  // final reversalPlus = checkedProv.isReversalPlusChecked;
-  // final reversal = checkedProv.isReversalChecked;
-  // final signal = checkedProv.isSignalExitChecked;
-  // final tc = checkedProv.isTcChangeChecked;
   late bool reversalPlus;
   late bool reversal;
   late bool signal;
   late bool tc;
 
-  // sample
   if (method == 'method1') {
     reversalPlus = checkedProv.isM1ReversalPlusChecked;
     reversal = checkedProv.isM1ReversalChecked;
@@ -56,8 +51,6 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     signal = checkedProv.isM3SignalExitChecked;
     tc = checkedProv.isM3TcChangeChecked;
   }
-
-  // sample
 
   final data = OpenRequestModel(
     actionType: actionType,
@@ -78,16 +71,11 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );
 
-    // final reversalPlus = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalPlusChecked;
-    // final reversal = Provider.of<CheckedBoxProvider>(context, listen: false).isReversalChecked;
-    // final signal = Provider.of<CheckedBoxProvider>(context, listen: false).isSignalExitChecked;
-    // final tc = Provider.of<CheckedBoxProvider>(context, listen: false).isTcChangeChecked;
     late bool reversalPlus;
     late bool reversal;
     late bool signal;
     late bool tc;
 
-    // sample
     if (method == 'method1') {
       reversalPlus = checkedProv.isM1ReversalPlusChecked;
       reversal = checkedProv.isM1ReversalChecked;
@@ -112,7 +100,6 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
       signalExit: signal,
       tcChange: tc,
     );
-    print("Mod : $mod");
     Provider.of<ValueProvider>(context, listen: false).addCurrentOpen(mod);
     // ✅ Only 2xx responses reach here
     // toastification.show(
