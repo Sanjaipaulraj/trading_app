@@ -37,8 +37,8 @@ class _Method1SectionState extends State<Method1Section> {
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(100, 25),
-                          maximumSize: Size(100, 45),
+                          minimumSize: Size(100, 35),
+                          maximumSize: Size(100, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
                             side: BorderSide(color: Colors.black, width: 2),
@@ -73,8 +73,8 @@ class _Method1SectionState extends State<Method1Section> {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(100, 25),
-                          maximumSize: Size(100, 45),
+                          minimumSize: Size(100, 35),
+                          maximumSize: Size(100, 50),
                           backgroundColor: checkedBox.isM1ShortAllChecked ? Colors.red : Colors.grey,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
@@ -218,7 +218,7 @@ class _Method1SectionState extends State<Method1Section> {
               checkedBox.changeValue('method1', checkboxField, context);
             });
           },
-          activeColor: Colors.green,
+          activeColor: method == 'long' ? Colors.green : Colors.red,
           checkColor: Colors.white,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           visualDensity: VisualDensity.compact,

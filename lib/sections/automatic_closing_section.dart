@@ -48,7 +48,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                       "Automatic Closing",
                       style: TextStyle(
                         color: const Color.fromRGBO(4, 46, 124, 1),
-                        // color: const Color.fromARGB(255, 55, 115, 228),
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -63,8 +62,9 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                   ElevatedButton(
                     style: _getCheckboxValue(reversalPlus, checkedbox)
                         ? ElevatedButton.styleFrom(
-                            minimumSize: Size(50, 30),
-                            maximumSize: Size(95, 80),
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            minimumSize: Size(0, 0),
+                            elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
                               borderRadius: BorderRadiusGeometry.circular(10),
@@ -73,8 +73,9 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                             backgroundColor: Color.fromRGBO(24, 55, 69, 1),
                           )
                         : ElevatedButton.styleFrom(
-                            minimumSize: Size(50, 30),
-                            maximumSize: Size(95, 80),
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            minimumSize: Size(0, 0),
+                            elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
                               borderRadius: BorderRadiusGeometry.circular(10),
@@ -86,17 +87,26 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                       checkedbox.changeValue(widget.method, reversalPlus, context);
                     },
                     child: Row(
+                      spacing: 3,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text("Rev", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                        Icon(Icons.add, color: Colors.green, size: 16.0),
+                        Text("Rev", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                        Icon(
+                          Icons.add,
+                          color: _getCheckboxValue(reversalPlus, checkedbox)
+                              ? Color.fromRGBO(6, 255, 14, 1)
+                              : Color.fromRGBO(0, 57, 2, 1),
+                          size: 20.0,
+                        ),
                       ],
                     ),
                   ),
                   ElevatedButton(
                     style: _getCheckboxValue(reversal, checkedbox)
                         ? ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
                             minimumSize: Size(50, 30),
-                            maximumSize: Size(95, 80),
+                            elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
                               borderRadius: BorderRadiusGeometry.circular(10),
@@ -105,8 +115,9 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                             backgroundColor: Color.fromRGBO(24, 55, 69, 1),
                           )
                         : ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
                             minimumSize: Size(50, 30),
-                            maximumSize: Size(95, 80),
+                            elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
                               borderRadius: BorderRadiusGeometry.circular(10),
@@ -117,13 +128,14 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                     onPressed: () {
                       checkedbox.changeValue(widget.method, reversal, context);
                     },
-                    child: Text("Rev", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                    child: Text("Rev", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   ),
                   ElevatedButton(
                     style: _getCheckboxValue(signal, checkedbox)
                         ? ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             minimumSize: Size(50, 30),
-                            maximumSize: Size(95, 80),
+                            elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
                               borderRadius: BorderRadiusGeometry.circular(10),
@@ -132,8 +144,9 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                             backgroundColor: Color.fromRGBO(24, 55, 69, 1),
                           )
                         : ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             minimumSize: Size(50, 30),
-                            maximumSize: Size(95, 80),
+                            elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
                               borderRadius: BorderRadiusGeometry.circular(10),
@@ -145,17 +158,24 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                       checkedbox.changeValue(widget.method, signal, context);
                     },
                     child: Row(
+                      spacing: 3,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text("Sig", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                        Icon(Icons.close, color: Colors.red, size: 14.0),
+                        Text("Sig", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                        Icon(
+                          Icons.close,
+                          color: _getCheckboxValue(signal, checkedbox) ? Colors.red : Color.fromRGBO(102, 7, 0, 1),
+                          size: 20.0,
+                        ),
                       ],
                     ),
                   ),
                   ElevatedButton(
                     style: _getCheckboxValue(tc, checkedbox)
                         ? ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             minimumSize: Size(50, 30),
-                            maximumSize: Size(95, 80),
+                            elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
                               borderRadius: BorderRadiusGeometry.circular(10),
@@ -164,8 +184,9 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                             backgroundColor: Color.fromRGBO(24, 55, 69, 1),
                           )
                         : ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             minimumSize: Size(50, 30),
-                            maximumSize: Size(95, 80),
+                            elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
                               borderRadius: BorderRadiusGeometry.circular(10),
@@ -177,10 +198,22 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                       checkedbox.changeValue(widget.method, tc, context);
                     },
                     child: Row(
+                      spacing: 3,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text("TC", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                        Icon(Icons.arrow_upward_rounded, color: Colors.green, size: 14.0),
-                        Icon(Icons.arrow_downward_rounded, color: Colors.red, size: 14.0),
+                        Text("Tc", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                        Icon(
+                          Icons.arrow_upward_rounded,
+                          color: _getCheckboxValue(tc, checkedbox)
+                              ? Color.fromRGBO(6, 255, 14, 1)
+                              : Color.fromRGBO(0, 57, 2, 1),
+                          size: 20.0,
+                        ),
+                        Icon(
+                          Icons.arrow_downward_rounded,
+                          color: _getCheckboxValue(tc, checkedbox) ? Colors.red : Color.fromRGBO(102, 7, 0, 1),
+                          size: 20.0,
+                        ),
                       ],
                     ),
                   ),

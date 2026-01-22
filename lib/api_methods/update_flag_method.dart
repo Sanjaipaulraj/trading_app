@@ -23,7 +23,6 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
   late bool signal;
   late bool tc;
 
-  // sample
   if (mod.method == 'method1') {
     reversalPlus = checked.isM1ReversalPlusChecked;
     reversal = checked.isM1ReversalChecked;

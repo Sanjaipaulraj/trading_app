@@ -9,6 +9,7 @@ import 'package:toastification/toastification.dart';
 import 'package:trading_app/Providers/checked_box_provider.dart';
 import 'package:trading_app/Providers/token_provider.dart';
 import 'package:trading_app/Providers/value_provider.dart';
+import 'package:trading_app/api_methods/api_methods.dart';
 import '../models/models.dart';
 
 Future<void> openPosition(String method, String actionType, num? takeProfit, BuildContext context) async {
@@ -36,16 +37,55 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
   late bool tc;
 
   if (method == 'method1') {
+    final prov = Provider.of<ValueProvider>(context, listen: false);
+    final symbol = prov.selectedValue;
+    final Set<CurrentOpenModel> crntOpen = prov.currentOpening;
+    for (final model in crntOpen) {
+      if (model.symbol != symbol) continue;
+
+      if (model.method == 'method2' || model.method == 'method3') {
+        if (model.actionType != actionType) {
+          await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
+          break;
+        }
+      }
+    }
     reversalPlus = checkedProv.isM1ReversalPlusChecked;
     reversal = checkedProv.isM1ReversalChecked;
     signal = checkedProv.isM1SignalExitChecked;
     tc = checkedProv.isM1TcChangeChecked;
   } else if (method == 'method2') {
+    final prov = Provider.of<ValueProvider>(context, listen: false);
+    final symbol = prov.selectedValue;
+    final Set<CurrentOpenModel> crntOpen = prov.currentOpening;
+    for (final model in crntOpen) {
+      if (model.symbol != symbol) continue;
+
+      if (model.method == 'method1' || model.method == 'method3') {
+        if (model.actionType != actionType) {
+          await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
+          break;
+        }
+      }
+    }
     reversalPlus = checkedProv.isM2ReversalPlusChecked;
     reversal = checkedProv.isM2ReversalChecked;
     signal = checkedProv.isM2SignalExitChecked;
     tc = checkedProv.isM2TcChangeChecked;
   } else if (method == 'method3') {
+    final prov = Provider.of<ValueProvider>(context, listen: false);
+    final symbol = prov.selectedValue;
+    final Set<CurrentOpenModel> crntOpen = prov.currentOpening;
+    for (final model in crntOpen) {
+      if (model.symbol != symbol) continue;
+
+      if (model.method == 'method1' || model.method == 'method2') {
+        if (model.actionType != actionType) {
+          await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
+          break;
+        }
+      }
+    }
     reversalPlus = checkedProv.isM3ReversalPlusChecked;
     reversal = checkedProv.isM3ReversalChecked;
     signal = checkedProv.isM3SignalExitChecked;
@@ -92,24 +132,26 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
       signal = checkedProv.isM3SignalExitChecked;
       tc = checkedProv.isM3TcChangeChecked;
     }
+
     final mod = CurrentOpenModel(
       symbol: symbol!,
       method: data.method!,
+      actionType: actionType,
       reversalPlus: reversalPlus,
       reversal: reversal,
       signalExit: signal,
       tcChange: tc,
     );
     Provider.of<ValueProvider>(context, listen: false).addCurrentOpen(mod);
-    // ✅ Only 2xx responses reach here
-    // toastification.show(
-    //   backgroundColor: const Color.fromARGB(55, 172, 221, 159),
-    //   title: const Text('Success!'),
-    //   description: const Text('Send successfully'),
-    //   type: ToastificationType.success,
-    //   alignment: Alignment.center,
-    //   autoCloseDuration: Duration(seconds: 1),
-    // );
+    // Only 2xx responses reach here
+    toastification.show(
+      backgroundColor: const Color.fromARGB(55, 172, 221, 159),
+      title: const Text('Success!'),
+      description: const Text('Send successfully'),
+      type: ToastificationType.success,
+      alignment: Alignment.center,
+      autoCloseDuration: Duration(seconds: 1),
+    );
   } on DioException catch (e) {
     final statusCode = e.response?.statusCode;
 
