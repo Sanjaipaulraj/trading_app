@@ -13,3 +13,8 @@ Finished ---------
 => Create a excel file report for the trade history
 => Need to change the git path for the search field --> Fork the reopsitory and 
    add to the sanjai repo and used in the trade project
+=> Profit calculation Error completed --> Problem is symbol filtered but records not filtered  
+   that current date
+
+
+Finished on 07/01/2026 -->Planned Works

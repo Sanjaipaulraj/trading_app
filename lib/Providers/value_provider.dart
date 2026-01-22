@@ -31,7 +31,7 @@ class ValueProvider extends ChangeNotifier {
   Future<void> _loadVolume(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    volume = prefs.getDouble('volume') ?? 1.03;
+    volume = prefs.getDouble('volume') ?? 0.01;
     volumeController.text = volume.toString();
     final decoded = jsonDecode(prefs.getString('currentOpening') ?? '[]') as List;
 
@@ -97,10 +97,11 @@ class ValueProvider extends ChangeNotifier {
     }
   }
 
-  void updateFlags(String symbol, bool r, bool s, bool t) {
+  void updateFlags(String symbol, bool rp, bool r, bool s, bool t) {
     final open = getOpenBySymbol(symbol);
     if (open != null) {
-      open.reversalPlus = r;
+      open.reversalPlus = rp;
+      open.reversal = r;
       open.signalExit = s;
       open.tcChange = t;
       notifyListeners();

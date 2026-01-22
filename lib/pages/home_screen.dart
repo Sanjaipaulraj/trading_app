@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -9,11 +10,9 @@ import 'package:trading_app/Providers/checked_box_provider.dart';
 import 'package:trading_app/Providers/value_provider.dart';
 import 'package:trading_app/drawer_widget.dart';
 import 'package:trading_app/intent.dart';
-import 'package:trading_app/sections/automatic_closing_section.dart';
-import 'package:trading_app/sections/conditon_title_section.dart';
-import 'package:trading_app/sections/long_button_section.dart';
-import 'package:trading_app/sections/short_button_section.dart';
-import 'package:trading_app/sections/status_section.dart';
+import 'package:trading_app/sections/method1_section.dart';
+import 'package:trading_app/sections/method2_section.dart';
+import 'package:trading_app/sections/method3_section.dart';
 import 'package:trading_app/Providers/token_provider.dart';
 
 import '../api_methods/api_methods.dart';
@@ -156,7 +155,8 @@ class HomeScreenState extends State<HomeScreen> {
             child: DrawerWidget(),
           ),
           appBar: AppBar(
-            backgroundColor: Color.fromRGBO(101, 101, 255, 1),
+            iconTheme: IconThemeData(color: Colors.white),
+            backgroundColor: Color.fromRGBO(24, 55, 69, 1),
             actions: <Widget>[
               GestureDetector(
                 onTap: () => showDialog<String>(
@@ -192,14 +192,16 @@ class HomeScreenState extends State<HomeScreen> {
                 child: Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.settings)),
               ),
             ],
-            title: Text('Auditplus Fx'),
+            title: Text('Auditplus Fx', style: TextStyle(color: Colors.white)),
           ),
           body: Shortcuts(
             shortcuts: {
               LogicalKeySet(LogicalKeyboardKey.keyL, LogicalKeyboardKey.control): const LongIntent(
+                method: 'method1',
                 actionType: "ORDER_TYPE_BUY",
               ),
               LogicalKeySet(LogicalKeyboardKey.keyS, LogicalKeyboardKey.control): const ShortIntent(
+                method: 'method1',
                 actionType: "ORDER_TYPE_SELL",
               ),
               LogicalKeySet(LogicalKeyboardKey.keyC, LogicalKeyboardKey.control): CloseIntent(
@@ -210,15 +212,13 @@ class HomeScreenState extends State<HomeScreen> {
               actions: {
                 LongIntent: CallbackAction<LongIntent>(
                   onInvoke: (intent) {
-                    // _openPosition('ORDER_TYPE_BUY', null);
-                    openPosition('ORDER_TYPE_BUY', null, context);
+                    openPosition(intent.method, 'ORDER_TYPE_BUY', null, context);
                     return null;
                   },
                 ),
                 ShortIntent: CallbackAction<ShortIntent>(
                   onInvoke: (intent) {
-                    // _openPosition('ORDER_TYPE_SELL', null);
-                    openPosition('ORDER_TYPE_SELL', null, context);
+                    openPosition(intent.method, 'ORDER_TYPE_SELL', null, context);
                     return null;
                   },
                 ),
@@ -233,70 +233,66 @@ class HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(height: 15),
                     Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 2),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Consumer<ValueProvider>(
-                                builder: (context, drop, child) {
-                                  return SizedBox(
-                                    width: 150,
-                                    child: SearchField<String>(
-                                      focusNode: _symbolFocusNode,
-                                      suggestions: symbols,
-                                      suggestionState: Suggestion.hidden,
-                                      selectedValue: drop.selectedItem,
-                                      searchInputDecoration: SearchInputDecoration(
-                                        hintText: 'Symbols',
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      maxSuggestionsInViewPort: 6,
-                                      onSearchTextChanged: (searchText) {
-                                        if (searchText.isEmpty) {
-                                          return List<SearchFieldListItem<String>>.from(symbols);
-                                        }
-                                        context.read<ValueProvider>().clearSelectedValue();
-                                        context.read<CheckedBoxProvider>().clearState();
+                          Consumer<ValueProvider>(
+                            builder: (context, drop, child) {
+                              return SizedBox(
+                                width: 150,
+                                height: 35,
+                                child: SearchField<String>(
+                                  focusNode: _symbolFocusNode,
+                                  suggestions: symbols,
+                                  suggestionState: Suggestion.hidden,
+                                  selectedValue: drop.selectedItem,
+                                  searchInputDecoration: SearchInputDecoration(
+                                    hintText: 'Symbols',
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                  maxSuggestionsInViewPort: 6,
+                                  onSearchTextChanged: (searchText) {
+                                    if (searchText.isEmpty) {
+                                      return List<SearchFieldListItem<String>>.from(symbols);
+                                    }
+                                    context.read<ValueProvider>().clearSelectedValue();
+                                    context.read<CheckedBoxProvider>().clearState();
 
-                                        final query = searchText.toUpperCase();
-                                        return symbols.where((s) {
-                                          final key = s.searchKey.toUpperCase();
-                                          final value = (s.value ?? '').toUpperCase();
-                                          return key.contains(query) || value.contains(query);
-                                        }).toList();
-                                      },
-                                      onSuggestionTap: (SearchFieldListItem<String> item) {
-                                        _symbolFocusNode.unfocus();
+                                    final query = searchText.toUpperCase();
+                                    return symbols.where((s) {
+                                      final key = s.searchKey.toUpperCase();
+                                      final value = (s.value ?? '').toUpperCase();
+                                      return key.contains(query) || value.contains(query);
+                                    }).toList();
+                                  },
+                                  onSuggestionTap: (SearchFieldListItem<String> item) {
+                                    _symbolFocusNode.unfocus();
 
-                                        context.read<ValueProvider>().setSelectedItem(item, context);
-                                        context.read<CheckedBoxProvider>().loadForSymbol(item.value!);
-                                      },
-                                      onSubmit: (item) {
-                                        Provider.of<ValueProvider>(
-                                          context,
-                                          listen: false,
-                                        ).setSelectedItem(SearchFieldListItem(item), context);
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+                                    context.read<ValueProvider>().setSelectedItem(item, context);
+                                    context.read<CheckedBoxProvider>().loadForSymbol(item.value!);
+                                  },
+                                  onSubmit: (item) {
+                                    Provider.of<ValueProvider>(
+                                      context,
+                                      listen: false,
+                                    ).setSelectedItem(SearchFieldListItem(item), context);
+                                  },
+                                ),
+                              );
+                            },
                           ),
                           Consumer<ValueProvider>(
                             builder: (context, drop, child) {
                               return Container(
-                                height: 55,
+                                height: 35,
                                 width: 90,
-                                alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8.0),
-                                  border: Border.all(color: const Color.fromRGBO(128, 128, 128, 1), width: 2.0),
+                                  border: Border.all(color: const Color.fromRGBO(128, 128, 128, 1), width: 1.0),
                                 ),
                                 child: TextFormField(
                                   controller: drop.volumeController,
@@ -307,7 +303,13 @@ class HomeScreenState extends State<HomeScreen> {
                                       drop.setVolume(parsedValue);
                                     }
                                   },
-                                  decoration: const InputDecoration(border: OutlineInputBorder()),
+                                  textAlign: TextAlign.center,
+                                  textAlignVertical: TextAlignVertical.center,
+                                  decoration: const InputDecoration(
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.symmetric(vertical: 8),
+                                    border: InputBorder.none,
+                                  ),
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -319,18 +321,16 @@ class HomeScreenState extends State<HomeScreen> {
                           ),
                           Consumer<MytokenProvider>(
                             builder: (context, myToken, child) {
-                              return ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  fixedSize: Size(100, 55),
-                                  backgroundColor: Color.fromRGBO(101, 101, 255, 1),
+                              return OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  fixedSize: Size(100, 25),
+                                  backgroundColor: Color.fromRGBO(24, 55, 69, 1),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     side: BorderSide(color: Color.fromRGBO(27, 29, 29, 1), width: 2),
                                   ),
-                                  elevation: 8.0,
-                                  foregroundColor: Colors.black,
+                                  foregroundColor: Colors.white,
                                   textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                                 ),
                                 onPressed: () {
                                   final token = Provider.of<MytokenProvider>(listen: false, context).token;
@@ -367,18 +367,12 @@ class HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [ConditonTitleSection(), LongButtonSection(), ShortButtonSection()],
-                      ),
-                    ),
-                    Divider(),
-                    StatusScreen(),
-                    Divider(),
-                    AutomaticClosingSection(),
+                    Method1Section(),
+                    DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
+                    Method2Section(),
+                    DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
+                    Method3Section(),
+                    DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
                   ],
                 ),
               ),

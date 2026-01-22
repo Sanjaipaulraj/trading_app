@@ -16,11 +16,12 @@ dependencies:
   json_annotation: ^4.9.0
   searchfield:
     git:
-      url: https://github.com/maheshj01/searchfield.git
-      ref: 2045cd8
+      url: https://github.com/Sanjaipaulraj/searchfield.git
+      ref: master
   intl: ^0.20.2
   excel: ^4.0.6
   file_picker: ^10.3.8
+  dotted_line: ^3.2.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

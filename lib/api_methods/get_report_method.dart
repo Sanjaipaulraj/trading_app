@@ -10,7 +10,6 @@ import '../models/models.dart';
 
 Future<void> getReport(BuildContext context, String symbol, String startDate, String endDate) async {
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
-
   if (token == null) {
     toastification.show(
       backgroundColor: Color.fromRGBO(242, 186, 185, 1),
