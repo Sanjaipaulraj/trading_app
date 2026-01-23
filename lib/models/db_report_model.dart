@@ -7,6 +7,7 @@ class DbReportModel {
   DateTime? openedAt;
   DateTime? closedAt;
   String symbol;
+  String method;
   num openPrice;
   num closePrice;
   num profit;
@@ -20,6 +21,7 @@ class DbReportModel {
     required this.openedAt,
     required this.closedAt,
     required this.symbol,
+    required this.method,
     required this.openPrice,
     required this.closePrice,
     required this.profit,
@@ -34,6 +36,7 @@ class DbReportModel {
     'openedAt': openedAt,
     'closedAt': closedAt,
     'symbol': symbol,
+    'method': method,
     'openPrice': openPrice,
     'closePrice': closePrice,
     'profit': profit,
@@ -50,6 +53,6 @@ class DbReportModel {
 
   @override
   String toString() {
-    return "DbReportModel{Opened Time : $openedAt,Closed Time : $closedAt,Symbol : $symbol,Open Price : $openPrice,Close Price : $closePrice,Profit: $profit,Action Type : $actionType,Volume : $volume,Postion Id : $positionId, Status : $status, Description : $description}";
+    return "DbReportModel{Opened Time : $openedAt,Closed Time : $closedAt,Symbol : $symbol,Method : $method,Open Price : $openPrice,Close Price : $closePrice,Profit: $profit,Action Type : $actionType,Volume : $volume,Postion Id : $positionId, Status : $status, Description : $description}";
   }
 }

@@ -65,12 +65,7 @@ class HomeScreenState extends State<HomeScreen> {
     list = await getList(context);
 
     symbols = list.map((el) {
-      return SearchFieldListItem<String>(
-        //  search will be performed on this value
-        el,
-        // value to set in input on click, defaults to searchKey (optional)
-        value: el.toString(),
-      );
+      return SearchFieldListItem<String>(el, value: el.toString());
     }).toList();
 
     if (list.isNotEmpty) {}
@@ -148,9 +143,9 @@ class HomeScreenState extends State<HomeScreen> {
 
         //  Case 5: Everything ready → show your main UI
         return Scaffold(
-          backgroundColor: Color.fromRGBO(230, 230, 250, 1),
+          backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
           drawer: Drawer(
-            backgroundColor: const Color.fromRGBO(230, 230, 250, 1),
+            backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
             width: MediaQuery.of(context).size.width * 0.6,
             child: DrawerWidget(),
           ),
@@ -232,11 +227,13 @@ class HomeScreenState extends State<HomeScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 2),
+                      padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 2, bottom: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Consumer<ValueProvider>(
                             builder: (context, drop, child) {
@@ -321,16 +318,18 @@ class HomeScreenState extends State<HomeScreen> {
                           ),
                           Consumer<MytokenProvider>(
                             builder: (context, myToken, child) {
-                              return OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  fixedSize: Size(100, 25),
+                              return ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  fixedSize: Size(100, 22),
                                   backgroundColor: Color.fromRGBO(24, 55, 69, 1),
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  elevation: 0.0,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     side: BorderSide(color: Color.fromRGBO(27, 29, 29, 1), width: 2),
                                   ),
                                   foregroundColor: Colors.white,
-                                  textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                  textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                                 onPressed: () {
                                   final token = Provider.of<MytokenProvider>(listen: false, context).token;
