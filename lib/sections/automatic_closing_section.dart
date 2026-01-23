@@ -64,7 +64,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                     style: _getCheckboxValue(reversalPlus, checkedbox)
                         ? ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            // minimumSize: Size(0, 0),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
@@ -77,7 +76,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           )
                         : ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            // minimumSize: Size(0, 0),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
@@ -110,7 +108,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                     style: _getCheckboxValue(reversal, checkedbox)
                         ? ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-                            // minimumSize: Size(50, 30),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
@@ -123,7 +120,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           )
                         : ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-                            // minimumSize: Size(50, 30),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
@@ -143,7 +139,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                     style: _getCheckboxValue(signal, checkedbox)
                         ? ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            // minimumSize: Size(50, 30),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
@@ -156,7 +151,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           )
                         : ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            // minimumSize: Size(50, 30),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
@@ -187,7 +181,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                     style: _getCheckboxValue(tc, checkedbox)
                         ? ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            // minimumSize: Size(50, 30),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
@@ -200,7 +193,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           )
                         : ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            // minimumSize: Size(50, 30),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
