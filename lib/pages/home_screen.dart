@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,6 +38,7 @@ class HomeScreenState extends State<HomeScreen> {
   final FocusNode _longButtonFocusNode = FocusNode();
   final FocusNode _shortButtonFocusNode = FocusNode();
   final FocusNode _closeButtonFocusNode = FocusNode();
+  Timer? _timer;
 
   @override
   void initState() {
@@ -69,6 +72,10 @@ class HomeScreenState extends State<HomeScreen> {
     }).toList();
 
     if (list.isNotEmpty) {}
+
+    if (mounted) {
+      _timer = Timer.periodic(const Duration(seconds: 10), (Timer t) => liveUpdation(context));
+    }
   }
 
   @override
@@ -77,6 +84,7 @@ class HomeScreenState extends State<HomeScreen> {
     _longButtonFocusNode.dispose();
     _shortButtonFocusNode.dispose();
     _closeButtonFocusNode.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
