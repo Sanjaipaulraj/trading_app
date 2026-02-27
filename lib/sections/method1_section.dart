@@ -17,9 +17,8 @@ class _Method1SectionState extends State<Method1Section> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 5, top: 5),
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 5, top: 10),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
@@ -27,7 +26,7 @@ class _Method1SectionState extends State<Method1Section> {
             children: [
               Text(
                 "Method 1",
-                style: TextStyle(color: const Color.fromRGBO(4, 46, 124, 1), fontSize: 16, fontWeight: FontWeight.w600),
+                style: TextStyle(color: const Color.fromRGBO(4, 46, 124, 1), fontSize: 18, fontWeight: FontWeight.w600),
               ),
               Consumer2<MytokenProvider, CheckedBoxProvider>(
                 builder: (context, myToken, checkedBox, child) {
@@ -37,7 +36,7 @@ class _Method1SectionState extends State<Method1Section> {
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(100, 32),
+                          minimumSize: Size(100, 40),
                           maximumSize: Size(100, 50),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           shape: RoundedRectangleBorder(
@@ -74,7 +73,7 @@ class _Method1SectionState extends State<Method1Section> {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(100, 32),
+                          minimumSize: Size(100, 40),
                           maximumSize: Size(100, 50),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           backgroundColor: checkedBox.isM1ShortAllChecked ? Colors.red : Colors.grey,
@@ -125,43 +124,43 @@ class _Method1SectionState extends State<Method1Section> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(5),
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
                     child: Text(
                       'Catcher',
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(5),
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
                     child: Text(
                       'Tracer',
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(5),
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
                     child: Text(
                       'NEO Cloud',
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(5),
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
                     child: Text(
                       'Confirmation',
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(5),
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
                     child: Text(
                       'OSC',
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
@@ -224,7 +223,7 @@ class _Method1SectionState extends State<Method1Section> {
           activeColor: method == 'long' ? Colors.green : Colors.red,
           checkColor: Colors.white,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          visualDensity: const VisualDensity(horizontal: -2, vertical: -2),
+          // visualDensity: const VisualDensity(horizontal: -1, vertical: -1),
         ),
       ],
     );

@@ -14,20 +14,26 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
   String get reversalPlus => {
     'method1': 'M1ReversalPlusChecked',
     'method2': 'M2ReversalPlusChecked',
-    'method3': 'M3ReversalPlusChecked',
+    // 'method3': 'M3ReversalPlusChecked',
   }[widget.method]!;
 
-  String get reversal =>
-      {'method1': 'M1ReversalChecked', 'method2': 'M2ReversalChecked', 'method3': 'M3ReversalChecked'}[widget.method]!;
+  String get reversal => {
+    'method1': 'M1ReversalChecked',
+    'method2': 'M2ReversalChecked',
+    // 'method3': 'M3ReversalChecked'
+  }[widget.method]!;
 
   String get signal => {
     'method1': 'M1SignalExitChecked',
     'method2': 'M2SignalExitChecked',
-    'method3': 'M3SignalExitChecked',
+    // 'method3': 'M3SignalExitChecked',
   }[widget.method]!;
 
-  String get tc =>
-      {'method1': 'M1TcChangeChecked', 'method2': 'M2TcChangeChecked', 'method3': 'M3TcChangeChecked'}[widget.method]!;
+  String get tc => {
+    'method1': 'M1TcChangeChecked',
+    'method2': 'M2TcChangeChecked',
+    // 'method3': 'M3TcChangeChecked'
+  }[widget.method]!;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +55,7 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                       "Automatic Closing",
                       style: TextStyle(
                         color: const Color.fromRGBO(4, 46, 124, 1),
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -65,7 +71,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                         ? ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -77,7 +82,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                         : ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -109,7 +113,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                         ? ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
                             minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -121,7 +124,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                         : ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
                             minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -140,7 +142,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                         ? ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -152,7 +153,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                         : ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -182,7 +182,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                         ? ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -194,7 +193,6 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                         : ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),

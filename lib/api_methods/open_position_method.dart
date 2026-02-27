@@ -43,7 +43,8 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     for (final model in crntOpen) {
       if (model.symbol != symbol) continue;
 
-      if (model.method == 'method2' || model.method == 'method3') {
+      // if (model.method == 'method2' || model.method == 'method3') {
+      if (model.method == 'method2') {
         if (model.actionType != actionType) {
           await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
           break;
@@ -61,7 +62,8 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     for (final model in crntOpen) {
       if (model.symbol != symbol) continue;
 
-      if (model.method == 'method1' || model.method == 'method3') {
+      // if (model.method == 'method1' || model.method == 'method3') {
+      if (model.method == 'method1') {
         if (model.actionType != actionType) {
           await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
           break;
@@ -72,25 +74,26 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     reversal = checkedProv.isM2ReversalChecked;
     signal = checkedProv.isM2SignalExitChecked;
     tc = checkedProv.isM2TcChangeChecked;
-  } else if (method == 'method3') {
-    final prov = Provider.of<ValueProvider>(context, listen: false);
-    final symbol = prov.selectedValue;
-    final Set<CurrentOpenModel> crntOpen = prov.currentOpening;
-    for (final model in crntOpen) {
-      if (model.symbol != symbol) continue;
-
-      if (model.method == 'method1' || model.method == 'method2') {
-        if (model.actionType != actionType) {
-          await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
-          break;
-        }
-      }
-    }
-    reversalPlus = checkedProv.isM3ReversalPlusChecked;
-    reversal = checkedProv.isM3ReversalChecked;
-    signal = checkedProv.isM3SignalExitChecked;
-    tc = checkedProv.isM3TcChangeChecked;
   }
+  // else if (method == 'method3') {
+  //   final prov = Provider.of<ValueProvider>(context, listen: false);
+  //   final symbol = prov.selectedValue;
+  //   final Set<CurrentOpenModel> crntOpen = prov.currentOpening;
+  //   for (final model in crntOpen) {
+  //     if (model.symbol != symbol) continue;
+
+  //     if (model.method == 'method1' || model.method == 'method2') {
+  //       if (model.actionType != actionType) {
+  //         await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
+  //         break;
+  //       }
+  //     }
+  //   }
+  //   reversalPlus = checkedProv.isM3ReversalPlusChecked;
+  //   reversal = checkedProv.isM3ReversalChecked;
+  //   signal = checkedProv.isM3SignalExitChecked;
+  //   tc = checkedProv.isM3TcChangeChecked;
+  // }
 
   final data = OpenRequestModel(
     actionType: actionType,
@@ -126,12 +129,13 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
       reversal = checkedProv.isM2ReversalChecked;
       signal = checkedProv.isM2SignalExitChecked;
       tc = checkedProv.isM2TcChangeChecked;
-    } else if (method == 'method3') {
-      reversalPlus = checkedProv.isM3ReversalPlusChecked;
-      reversal = checkedProv.isM3ReversalChecked;
-      signal = checkedProv.isM3SignalExitChecked;
-      tc = checkedProv.isM3TcChangeChecked;
     }
+    // else if (method == 'method3') {
+    //   reversalPlus = checkedProv.isM3ReversalPlusChecked;
+    //   reversal = checkedProv.isM3ReversalChecked;
+    //   signal = checkedProv.isM3SignalExitChecked;
+    //   tc = checkedProv.isM3TcChangeChecked;
+    // }
 
     final mod = CurrentOpenModel(
       symbol: symbol!,

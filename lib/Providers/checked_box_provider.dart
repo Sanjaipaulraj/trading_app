@@ -23,6 +23,7 @@ class CheckedBoxProvider extends ChangeNotifier {
     'LongDivergenceChecked': false,
     'LongRevChecked': false,
     'LongCatcherChecked': false,
+    'LongOscChecked': false,
     'LongGretTcChecked': false,
     'LongSigCrTtChecked': false,
     'ShortTcChecked': false,
@@ -33,6 +34,7 @@ class CheckedBoxProvider extends ChangeNotifier {
     'ShortDivergenceChecked': false,
     'ShortRevChecked': false,
     'ShortCatcherChecked': false,
+    'ShortOscChecked': false,
     'ShortGretTcChecked': false,
     'ShortSigCrTtChecked': false,
     'M1ReversalPlusChecked': false,
@@ -57,6 +59,7 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isLongDivergenceChecked => _values['LongDivergenceChecked']!;
   bool get isLongRevChecked => _values['LongRevChecked']!;
   bool get isLongCatcherChecked => _values['LongCatcherChecked']!;
+  bool get isLongOscChecked => _values['LongOscChecked']!;
   bool get isLongGretTcChecked => _values['LongGretTcChecked']!;
   bool get isLongSigCrTtChecked => _values['LongSigCrTtChecked']!;
 
@@ -68,6 +71,7 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isShortDivergenceChecked => _values['ShortDivergenceChecked']!;
   bool get isShortRevChecked => _values['ShortRevChecked']!;
   bool get isShortCatcherChecked => _values['ShortCatcherChecked']!;
+  bool get isShortOscChecked => _values['ShortOscChecked']!;
   bool get isShortGretTcChecked => _values['ShortGretTcChecked']!;
   bool get isShortSigCrTtChecked => _values['ShortSigCrTtChecked']!;
 
@@ -90,9 +94,11 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isM1ShortAllChecked =>
       isShortTcChecked && isShortTtChecked && isShortNeoChecked && isShortHwoChecked && isShortConfChecked;
 
-  bool get isM2LongAllChecked => (isLongDivergenceChecked || isLongRevChecked) && isLongCatcherChecked;
+  bool get isM2LongAllChecked =>
+      (isLongDivergenceChecked || isLongRevChecked) && isLongCatcherChecked && isLongOscChecked;
 
-  bool get isM2ShortAllChecked => (isShortDivergenceChecked || isShortRevChecked) && isShortCatcherChecked;
+  bool get isM2ShortAllChecked =>
+      (isShortDivergenceChecked || isShortRevChecked) && isShortCatcherChecked && isShortOscChecked;
 
   bool get isM3LongAllChecked => isLongGretTcChecked && isLongSigCrTtChecked;
 

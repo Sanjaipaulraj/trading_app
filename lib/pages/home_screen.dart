@@ -14,7 +14,7 @@ import 'package:trading_app/drawer_widget.dart';
 import 'package:trading_app/intent.dart';
 import 'package:trading_app/sections/method1_section.dart';
 import 'package:trading_app/sections/method2_section.dart';
-import 'package:trading_app/sections/method3_section.dart';
+// import 'package:trading_app/sections/method3_section.dart';
 import 'package:trading_app/Providers/token_provider.dart';
 
 import '../api_methods/api_methods.dart';
@@ -235,10 +235,10 @@ class HomeScreenState extends State<HomeScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 2, bottom: 5),
+                      padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 10, bottom: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -377,9 +377,9 @@ class HomeScreenState extends State<HomeScreen> {
                     Method1Section(),
                     DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
                     Method2Section(),
-                    DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
-                    Method3Section(),
-                    DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
+                    // DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
+                    // Method3Section(),
+                    // DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
                   ],
                 ),
               ),

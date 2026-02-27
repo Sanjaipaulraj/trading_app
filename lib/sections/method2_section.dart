@@ -17,9 +17,8 @@ class _Method2SectionState extends State<Method2Section> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 5, bottom: 5),
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 10, bottom: 5),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
@@ -27,7 +26,7 @@ class _Method2SectionState extends State<Method2Section> {
             children: [
               Text(
                 "Method 2",
-                style: TextStyle(color: Color.fromRGBO(4, 46, 124, 1), fontSize: 16, fontWeight: FontWeight.w600),
+                style: TextStyle(color: Color.fromRGBO(4, 46, 124, 1), fontSize: 18, fontWeight: FontWeight.w600),
               ),
               Consumer2<MytokenProvider, CheckedBoxProvider>(
                 builder: (context, myToken, checkedBox, child) {
@@ -37,7 +36,7 @@ class _Method2SectionState extends State<Method2Section> {
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(100, 32),
+                          minimumSize: Size(100, 40),
                           maximumSize: Size(100, 50),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           shape: RoundedRectangleBorder(
@@ -74,7 +73,7 @@ class _Method2SectionState extends State<Method2Section> {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(100, 32),
+                          minimumSize: Size(100, 40),
                           maximumSize: Size(100, 50),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           backgroundColor: checkedBox.isM2ShortAllChecked ? Colors.red : Colors.grey,
@@ -117,7 +116,7 @@ class _Method2SectionState extends State<Method2Section> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -125,15 +124,15 @@ class _Method2SectionState extends State<Method2Section> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    padding: const EdgeInsets.symmetric(vertical: 6),
                     child: Text(
                       'Divergence',
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 8, right: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
                     child: Text(
                       '(OR)',
                       textAlign: TextAlign.end,
@@ -141,19 +140,27 @@ class _Method2SectionState extends State<Method2Section> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    padding: const EdgeInsets.only(bottom: 5),
                     child: Text(
                       'Reversal Plus',
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    padding: const EdgeInsets.symmetric(vertical: 6),
                     child: Text(
                       'Catcher',
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Text(
+                      'OSC',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
@@ -168,6 +175,7 @@ class _Method2SectionState extends State<Method2Section> {
                       _buildCheckboxRow('long', 'LongDivergenceChecked', checkedBox),
                       _buildCheckboxRow('long', 'LongRevChecked', checkedBox),
                       _buildCheckboxRow('long', 'LongCatcherChecked', checkedBox),
+                      _buildCheckboxRow('long', 'LongOscChecked', checkedBox),
                     ],
                   );
                 },
@@ -182,6 +190,7 @@ class _Method2SectionState extends State<Method2Section> {
                       _buildCheckboxRow('short', 'ShortDivergenceChecked', checkedBox),
                       _buildCheckboxRow('short', 'ShortRevChecked', checkedBox),
                       _buildCheckboxRow('short', 'ShortCatcherChecked', checkedBox),
+                      _buildCheckboxRow('short', 'ShortOscChecked', checkedBox),
                     ],
                   );
                 },
@@ -212,7 +221,7 @@ class _Method2SectionState extends State<Method2Section> {
           activeColor: method == 'long' ? Colors.green : Colors.red,
           checkColor: Colors.white,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          visualDensity: VisualDensity.compact,
+          // visualDensity: const VisualDensity(horizontal: -1, vertical: -1),
         ),
       ],
     );
@@ -226,12 +235,16 @@ class _Method2SectionState extends State<Method2Section> {
         return checkedBox.isLongRevChecked;
       case 'LongCatcherChecked':
         return checkedBox.isLongCatcherChecked;
+      case 'LongOscChecked':
+        return checkedBox.isLongOscChecked;
       case 'ShortDivergenceChecked':
         return checkedBox.isShortDivergenceChecked;
       case 'ShortRevChecked':
         return checkedBox.isShortRevChecked;
       case 'ShortCatcherChecked':
         return checkedBox.isShortCatcherChecked;
+      case 'ShortOscChecked':
+        return checkedBox.isShortOscChecked;
       default:
         return false;
     }
