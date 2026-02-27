@@ -17,7 +17,7 @@ class _Method3SectionState extends State<Method3Section> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 5, bottom: 5),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -37,8 +37,9 @@ class _Method3SectionState extends State<Method3Section> {
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(100, 35),
+                          minimumSize: Size(100, 32),
                           maximumSize: Size(100, 50),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
                             side: BorderSide(color: Colors.black, width: 2),
@@ -73,8 +74,9 @@ class _Method3SectionState extends State<Method3Section> {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(100, 35),
+                          minimumSize: Size(100, 32),
                           maximumSize: Size(100, 50),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           backgroundColor: checkedBox.isM3ShortAllChecked ? Colors.red : Colors.grey,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
@@ -122,19 +124,19 @@ class _Method3SectionState extends State<Method3Section> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(14),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                     child: Text(
                       'TC',
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(14),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                     child: Text(
                       'Sig.Cr.TT',
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
@@ -178,9 +180,9 @@ class _Method3SectionState extends State<Method3Section> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         if (method == 'long')
-          Icon(Icons.arrow_upward_rounded, color: Colors.green, size: 22.0)
+          Icon(Icons.arrow_upward_rounded, color: Colors.green, size: 18)
         else
-          Icon(Icons.arrow_downward_rounded, color: Colors.red, size: 22.0),
+          Icon(Icons.arrow_downward_rounded, color: Colors.red, size: 18),
         Checkbox(
           value: _getCheckboxValue(checkboxField, checkedBox),
           onChanged: (bool? newValue) {
@@ -210,12 +212,12 @@ class _Method3SectionState extends State<Method3Section> {
           activeColor: Colors.green,
           checkColor: Colors.white,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          visualDensity: VisualDensity.comfortable,
+          visualDensity: VisualDensity.compact,
         ),
         if (method == 'long')
-          Text("> TT", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold))
+          Text("> TT", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))
         else
-          Text("< TT", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+          Text("< TT", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
       ],
     );
   }

@@ -34,7 +34,7 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
     return Consumer<CheckedBoxProvider>(
       builder: (context, checkedbox, child) {
         return Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 1, bottom: 1),
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -43,6 +43,7 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Automatic Closing",
@@ -63,7 +64,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                     style: _getCheckboxValue(reversalPlus, checkedbox)
                         ? ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            minimumSize: Size(0, 0),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -74,7 +76,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           )
                         : ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            minimumSize: Size(0, 0),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -105,7 +108,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                     style: _getCheckboxValue(reversal, checkedbox)
                         ? ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-                            minimumSize: Size(50, 30),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -116,7 +120,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           )
                         : ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-                            minimumSize: Size(50, 30),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -134,7 +139,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                     style: _getCheckboxValue(signal, checkedbox)
                         ? ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            minimumSize: Size(50, 30),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -145,7 +151,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           )
                         : ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            minimumSize: Size(50, 30),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -174,7 +181,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                     style: _getCheckboxValue(tc, checkedbox)
                         ? ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            minimumSize: Size(50, 30),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -185,7 +193,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           )
                         : ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            minimumSize: Size(50, 30),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),

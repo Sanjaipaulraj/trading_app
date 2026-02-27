@@ -144,14 +144,14 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     );
     Provider.of<ValueProvider>(context, listen: false).addCurrentOpen(mod);
     // Only 2xx responses reach here
-    toastification.show(
-      backgroundColor: const Color.fromARGB(55, 172, 221, 159),
-      title: const Text('Success!'),
-      description: const Text('Send successfully'),
-      type: ToastificationType.success,
-      alignment: Alignment.center,
-      autoCloseDuration: Duration(seconds: 1),
-    );
+    // toastification.show(
+    //   backgroundColor: const Color.fromARGB(55, 172, 221, 159),
+    //   title: const Text('Success!'),
+    //   description: const Text('Send successfully'),
+    //   type: ToastificationType.success,
+    //   alignment: Alignment.center,
+    //   autoCloseDuration: Duration(seconds: 1),
+    // );
   } on DioException catch (e) {
     final statusCode = e.response?.statusCode;
 
