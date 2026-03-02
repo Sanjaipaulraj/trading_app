@@ -22,22 +22,26 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
   late bool reversal;
   late bool signal;
   late bool tc;
+  late bool hw;
 
   if (mod.method == 'method1') {
     reversalPlus = checked.isM1ReversalPlusChecked;
     reversal = checked.isM1ReversalChecked;
     signal = checked.isM1SignalExitChecked;
     tc = checked.isM1TcChangeChecked;
+    hw = checked.isM1HwChecked;
   } else if (mod.method == 'method2') {
     reversalPlus = checked.isM2ReversalPlusChecked;
     reversal = checked.isM2ReversalChecked;
     signal = checked.isM2SignalExitChecked;
     tc = checked.isM2TcChangeChecked;
+    hw = checked.isM2HwChecked;
   } else if (mod.method == 'method3') {
     reversalPlus = checked.isM3ReversalPlusChecked;
     reversal = checked.isM3ReversalChecked;
     signal = checked.isM3SignalExitChecked;
     tc = checked.isM3TcChangeChecked;
+    hw = checked.isM3HwChecked;
   }
 
   final data = {
@@ -47,6 +51,7 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
     'reversal': reversal,
     'signalExit': signal,
     'tcChange': tc,
+    'hyperWave': hw,
   };
 
   print(data);
@@ -62,5 +67,5 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
   );
 
   // update local cache
-  valueProv.updateFlags(symbol, reversalPlus, reversal, signal, tc);
+  valueProv.updateFlags(symbol, reversalPlus, reversal, signal, tc, hw);
 }

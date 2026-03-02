@@ -13,6 +13,7 @@ class OpenRequestModel {
   bool reversal;
   bool signalExit;
   bool tcChange;
+  bool hyperWave;
 
   OpenRequestModel({
     required this.actionType,
@@ -24,6 +25,7 @@ class OpenRequestModel {
     required this.reversal,
     required this.signalExit,
     required this.tcChange,
+    required this.hyperWave,
   });
 
   factory OpenRequestModel.fromJson(Map<String, dynamic> json) => _$OpenRequestModelFromJson(json);

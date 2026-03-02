@@ -35,6 +35,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
   late bool reversal;
   late bool signal;
   late bool tc;
+  late bool hw;
 
   if (method == 'method1') {
     final prov = Provider.of<ValueProvider>(context, listen: false);
@@ -55,6 +56,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     reversal = checkedProv.isM1ReversalChecked;
     signal = checkedProv.isM1SignalExitChecked;
     tc = checkedProv.isM1TcChangeChecked;
+    hw = checkedProv.isM1HwChecked;
   } else if (method == 'method2') {
     final prov = Provider.of<ValueProvider>(context, listen: false);
     final symbol = prov.selectedValue;
@@ -74,6 +76,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     reversal = checkedProv.isM2ReversalChecked;
     signal = checkedProv.isM2SignalExitChecked;
     tc = checkedProv.isM2TcChangeChecked;
+    hw = checkedProv.isM2HwChecked;
   }
   // else if (method == 'method3') {
   //   final prov = Provider.of<ValueProvider>(context, listen: false);
@@ -93,6 +96,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
   //   reversal = checkedProv.isM3ReversalChecked;
   //   signal = checkedProv.isM3SignalExitChecked;
   //   tc = checkedProv.isM3TcChangeChecked;
+  //   hw = checkedProv.isM3HwChecked;
   // }
 
   final data = OpenRequestModel(
@@ -105,6 +109,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     reversal: reversal,
     signalExit: signal,
     tcChange: tc,
+    hyperWave: hw,
   );
   try {
     final _ = await dio.post(
@@ -118,23 +123,27 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     late bool reversal;
     late bool signal;
     late bool tc;
+    late bool hw;
 
     if (method == 'method1') {
       reversalPlus = checkedProv.isM1ReversalPlusChecked;
       reversal = checkedProv.isM1ReversalChecked;
       signal = checkedProv.isM1SignalExitChecked;
       tc = checkedProv.isM1TcChangeChecked;
+      hw = checkedProv.isM1HwChecked;
     } else if (method == 'method2') {
       reversalPlus = checkedProv.isM2ReversalPlusChecked;
       reversal = checkedProv.isM2ReversalChecked;
       signal = checkedProv.isM2SignalExitChecked;
       tc = checkedProv.isM2TcChangeChecked;
+      hw = checkedProv.isM2HwChecked;
     }
     // else if (method == 'method3') {
     //   reversalPlus = checkedProv.isM3ReversalPlusChecked;
     //   reversal = checkedProv.isM3ReversalChecked;
     //   signal = checkedProv.isM3SignalExitChecked;
     //   tc = checkedProv.isM3TcChangeChecked;
+    //   hw = checkedProv.isM3HwChecked;
     // }
 
     final mod = CurrentOpenModel(
@@ -145,6 +154,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
       reversal: reversal,
       signalExit: signal,
       tcChange: tc,
+      hyperWave: hw,
     );
     Provider.of<ValueProvider>(context, listen: false).addCurrentOpen(mod);
     // Only 2xx responses reach here

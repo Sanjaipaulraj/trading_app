@@ -17,6 +17,7 @@ OpenRequestModel _$OpenRequestModelFromJson(Map<String, dynamic> json) =>
       reversal: json['reversal'] as bool,
       signalExit: json['signalExit'] as bool,
       tcChange: json['tcChange'] as bool,
+      hyperWave: json['hyperWave'] as bool,
     );
 
 Map<String, dynamic> _$OpenRequestModelToJson(OpenRequestModel instance) =>
@@ -30,4 +31,5 @@ Map<String, dynamic> _$OpenRequestModelToJson(OpenRequestModel instance) =>
       'reversal': instance.reversal,
       'signalExit': instance.signalExit,
       'tcChange': instance.tcChange,
+      'hyperWave': instance.hyperWave,
     };
