@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trading_app/Providers/checked_box_provider.dart';
+import 'package:auditplus_fx/Providers/checked_box_provider.dart';
 import '../models/models.dart';
 
 class ValueProvider extends ChangeNotifier {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
-import 'package:trading_app/Providers/checked_box_provider.dart';
-import 'package:trading_app/Providers/token_provider.dart';
-import 'package:trading_app/intent.dart';
-import 'package:trading_app/sections/automatic_closing_section.dart';
+import 'package:auditplus_fx/Providers/checked_box_provider.dart';
+import 'package:auditplus_fx/Providers/token_provider.dart';
+import 'package:auditplus_fx/intent.dart';
+import 'package:auditplus_fx/sections/automatic_closing_section.dart';
 
 class Method2Section extends StatefulWidget {
   const Method2Section({super.key});

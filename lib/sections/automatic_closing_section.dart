@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:trading_app/Providers/checked_box_provider.dart';
+import 'package:auditplus_fx/Providers/checked_box_provider.dart';
 
 class AutomaticClosingSection extends StatefulWidget {
   final String method;

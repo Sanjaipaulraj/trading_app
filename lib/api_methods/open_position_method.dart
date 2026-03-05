@@ -6,10 +6,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
-import 'package:trading_app/Providers/checked_box_provider.dart';
-import 'package:trading_app/Providers/token_provider.dart';
-import 'package:trading_app/Providers/value_provider.dart';
-import 'package:trading_app/api_methods/api_methods.dart';
+import 'package:auditplus_fx/Providers/checked_box_provider.dart';
+import 'package:auditplus_fx/Providers/token_provider.dart';
+import 'package:auditplus_fx/Providers/value_provider.dart';
+import 'package:auditplus_fx/api_methods/api_methods.dart';
 import '../models/models.dart';
 
 Future<void> openPosition(String method, String actionType, num? takeProfit, BuildContext context) async {

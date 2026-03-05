@@ -8,14 +8,14 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:toastification/toastification.dart';
-import 'package:trading_app/Providers/checked_box_provider.dart';
-import 'package:trading_app/Providers/value_provider.dart';
-import 'package:trading_app/drawer_widget.dart';
-import 'package:trading_app/intent.dart';
-import 'package:trading_app/sections/method1_section.dart';
-import 'package:trading_app/sections/method2_section.dart';
-// import 'package:trading_app/sections/method3_section.dart';
-import 'package:trading_app/Providers/token_provider.dart';
+import 'package:auditplus_fx/Providers/checked_box_provider.dart';
+import 'package:auditplus_fx/Providers/value_provider.dart';
+import 'package:auditplus_fx/drawer_widget.dart';
+import 'package:auditplus_fx/intent.dart';
+import 'package:auditplus_fx/sections/method1_section.dart';
+import 'package:auditplus_fx/sections/method2_section.dart';
+// import 'package:auditplus_fx/sections/method3_section.dart';
+import 'package:auditplus_fx/Providers/token_provider.dart';
 
 import '../api_methods/api_methods.dart';
 
@@ -151,7 +151,6 @@ class HomeScreenState extends State<HomeScreen> {
 
         //  Case 5: Everything ready → show your main UI
         return Scaffold(
-          backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
           drawer: Drawer(
             backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
             width: MediaQuery.of(context).size.width * 0.6,
@@ -237,7 +236,9 @@ class HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Padding(
+                    Container(
+                      constraints: BoxConstraints(maxWidth: double.infinity),
+                      decoration: BoxDecoration(color: Color.fromRGBO(245, 166, 35, 1)),
                       padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 10, bottom: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -374,12 +375,10 @@ class HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
+                    DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
                     Method1Section(),
                     DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
                     Method2Section(),
-                    // DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
-                    // Method3Section(),
-                    // DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
                   ],
                 ),
               ),

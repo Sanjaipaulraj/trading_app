@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trading_app/Providers/value_provider.dart';
+import 'package:auditplus_fx/Providers/value_provider.dart';
 
 import '../api_methods/api_methods.dart';
 
