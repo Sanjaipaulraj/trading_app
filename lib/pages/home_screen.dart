@@ -238,7 +238,7 @@ class HomeScreenState extends State<HomeScreen> {
                   children: [
                     Container(
                       constraints: BoxConstraints(maxWidth: double.infinity),
-                      decoration: BoxDecoration(color: Color.fromRGBO(245, 166, 35, 1)),
+                      decoration: BoxDecoration(color: Colors.grey[100]),
                       padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 10, bottom: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
