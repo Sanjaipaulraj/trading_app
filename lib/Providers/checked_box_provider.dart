@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trading_app/Providers/value_provider.dart';
+import 'package:auditplus_fx/Providers/value_provider.dart';
 
 import '../api_methods/api_methods.dart';
 
@@ -23,6 +23,7 @@ class CheckedBoxProvider extends ChangeNotifier {
     'LongDivergenceChecked': false,
     'LongRevChecked': false,
     'LongCatcherChecked': false,
+    'LongOscChecked': false,
     'LongGretTcChecked': false,
     'LongSigCrTtChecked': false,
     'ShortTcChecked': false,
@@ -33,20 +34,24 @@ class CheckedBoxProvider extends ChangeNotifier {
     'ShortDivergenceChecked': false,
     'ShortRevChecked': false,
     'ShortCatcherChecked': false,
+    'ShortOscChecked': false,
     'ShortGretTcChecked': false,
     'ShortSigCrTtChecked': false,
     'M1ReversalPlusChecked': false,
     'M1ReversalChecked': false,
     'M1SignalExitChecked': false,
     'M1TcChangeChecked': false,
+    'M1HwChecked': false,
     'M2ReversalPlusChecked': false,
     'M2ReversalChecked': false,
     'M2SignalExitChecked': false,
     'M2TcChangeChecked': false,
+    'M2HwChecked': false,
     'M3ReversalPlusChecked': false,
     'M3ReversalChecked': false,
     'M3SignalExitChecked': false,
     'M3TcChangeChecked': false,
+    'M3HwChecked': false,
   };
 
   bool get isLongTcChecked => _values['LongTcChecked']!;
@@ -57,6 +62,7 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isLongDivergenceChecked => _values['LongDivergenceChecked']!;
   bool get isLongRevChecked => _values['LongRevChecked']!;
   bool get isLongCatcherChecked => _values['LongCatcherChecked']!;
+  bool get isLongOscChecked => _values['LongOscChecked']!;
   bool get isLongGretTcChecked => _values['LongGretTcChecked']!;
   bool get isLongSigCrTtChecked => _values['LongSigCrTtChecked']!;
 
@@ -68,6 +74,7 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isShortDivergenceChecked => _values['ShortDivergenceChecked']!;
   bool get isShortRevChecked => _values['ShortRevChecked']!;
   bool get isShortCatcherChecked => _values['ShortCatcherChecked']!;
+  bool get isShortOscChecked => _values['ShortOscChecked']!;
   bool get isShortGretTcChecked => _values['ShortGretTcChecked']!;
   bool get isShortSigCrTtChecked => _values['ShortSigCrTtChecked']!;
 
@@ -75,14 +82,17 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isM1ReversalChecked => _values['M1ReversalChecked']!;
   bool get isM1SignalExitChecked => _values['M1SignalExitChecked']!;
   bool get isM1TcChangeChecked => _values['M1TcChangeChecked']!;
+  bool get isM1HwChecked => _values['M1HwChecked']!;
   bool get isM2ReversalPlusChecked => _values['M2ReversalPlusChecked']!;
   bool get isM2ReversalChecked => _values['M2ReversalChecked']!;
   bool get isM2SignalExitChecked => _values['M2SignalExitChecked']!;
   bool get isM2TcChangeChecked => _values['M2TcChangeChecked']!;
+  bool get isM2HwChecked => _values['M2HwChecked']!;
   bool get isM3ReversalPlusChecked => _values['M3ReversalPlusChecked']!;
   bool get isM3ReversalChecked => _values['M3ReversalChecked']!;
   bool get isM3SignalExitChecked => _values['M3SignalExitChecked']!;
   bool get isM3TcChangeChecked => _values['M3TcChangeChecked']!;
+  bool get isM3HwChecked => _values['M3HwChecked']!;
 
   bool get isM1LongAllChecked =>
       isLongTcChecked && isLongTtChecked && isLongNeoChecked && isLongHwoChecked && isLongConfChecked;
@@ -90,9 +100,11 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isM1ShortAllChecked =>
       isShortTcChecked && isShortTtChecked && isShortNeoChecked && isShortHwoChecked && isShortConfChecked;
 
-  bool get isM2LongAllChecked => (isLongDivergenceChecked || isLongRevChecked) && isLongCatcherChecked;
+  bool get isM2LongAllChecked =>
+      (isLongDivergenceChecked || isLongRevChecked) && isLongCatcherChecked && isLongOscChecked;
 
-  bool get isM2ShortAllChecked => (isShortDivergenceChecked || isShortRevChecked) && isShortCatcherChecked;
+  bool get isM2ShortAllChecked =>
+      (isShortDivergenceChecked || isShortRevChecked) && isShortCatcherChecked && isShortOscChecked;
 
   bool get isM3LongAllChecked => isLongGretTcChecked && isLongSigCrTtChecked;
 
@@ -138,7 +150,8 @@ class CheckedBoxProvider extends ChangeNotifier {
     if (field == 'M1ReversalPlusChecked' ||
         field == 'M1ReversalChecked' ||
         field == 'M1SignalExitChecked' ||
-        field == 'M1TcChangeChecked') {
+        field == 'M1TcChangeChecked' ||
+        field == 'M1HwChecked') {
       final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
       final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
       var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
@@ -146,7 +159,8 @@ class CheckedBoxProvider extends ChangeNotifier {
     } else if (field == 'M2ReversalPlusChecked' ||
         field == 'M2ReversalChecked' ||
         field == 'M2SignalExitChecked' ||
-        field == 'M2TcChangeChecked') {
+        field == 'M2TcChangeChecked' ||
+        field == 'M2HwChecked') {
       final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
       final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
       var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
@@ -154,7 +168,8 @@ class CheckedBoxProvider extends ChangeNotifier {
     } else if (field == 'M3ReversalPlusChecked' ||
         field == 'M3ReversalChecked' ||
         field == 'M3SignalExitChecked' ||
-        field == 'M3TcChangeChecked') {
+        field == 'M3TcChangeChecked' ||
+        field == 'M3HwChecked') {
       final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
       final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
       var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);

@@ -6,10 +6,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
-import 'package:trading_app/Providers/checked_box_provider.dart';
-import 'package:trading_app/Providers/token_provider.dart';
-import 'package:trading_app/Providers/value_provider.dart';
-import 'package:trading_app/api_methods/api_methods.dart';
+import 'package:auditplus_fx/Providers/checked_box_provider.dart';
+import 'package:auditplus_fx/Providers/token_provider.dart';
+import 'package:auditplus_fx/Providers/value_provider.dart';
+import 'package:auditplus_fx/api_methods/api_methods.dart';
 import '../models/models.dart';
 
 Future<void> openPosition(String method, String actionType, num? takeProfit, BuildContext context) async {
@@ -35,6 +35,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
   late bool reversal;
   late bool signal;
   late bool tc;
+  late bool hw;
 
   if (method == 'method1') {
     final prov = Provider.of<ValueProvider>(context, listen: false);
@@ -43,7 +44,8 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     for (final model in crntOpen) {
       if (model.symbol != symbol) continue;
 
-      if (model.method == 'method2' || model.method == 'method3') {
+      // if (model.method == 'method2' || model.method == 'method3') {
+      if (model.method == 'method2') {
         if (model.actionType != actionType) {
           await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
           break;
@@ -54,6 +56,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     reversal = checkedProv.isM1ReversalChecked;
     signal = checkedProv.isM1SignalExitChecked;
     tc = checkedProv.isM1TcChangeChecked;
+    hw = checkedProv.isM1HwChecked;
   } else if (method == 'method2') {
     final prov = Provider.of<ValueProvider>(context, listen: false);
     final symbol = prov.selectedValue;
@@ -61,7 +64,8 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     for (final model in crntOpen) {
       if (model.symbol != symbol) continue;
 
-      if (model.method == 'method1' || model.method == 'method3') {
+      // if (model.method == 'method1' || model.method == 'method3') {
+      if (model.method == 'method1') {
         if (model.actionType != actionType) {
           await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
           break;
@@ -72,25 +76,28 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     reversal = checkedProv.isM2ReversalChecked;
     signal = checkedProv.isM2SignalExitChecked;
     tc = checkedProv.isM2TcChangeChecked;
-  } else if (method == 'method3') {
-    final prov = Provider.of<ValueProvider>(context, listen: false);
-    final symbol = prov.selectedValue;
-    final Set<CurrentOpenModel> crntOpen = prov.currentOpening;
-    for (final model in crntOpen) {
-      if (model.symbol != symbol) continue;
-
-      if (model.method == 'method1' || model.method == 'method2') {
-        if (model.actionType != actionType) {
-          await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
-          break;
-        }
-      }
-    }
-    reversalPlus = checkedProv.isM3ReversalPlusChecked;
-    reversal = checkedProv.isM3ReversalChecked;
-    signal = checkedProv.isM3SignalExitChecked;
-    tc = checkedProv.isM3TcChangeChecked;
+    hw = checkedProv.isM2HwChecked;
   }
+  // else if (method == 'method3') {
+  //   final prov = Provider.of<ValueProvider>(context, listen: false);
+  //   final symbol = prov.selectedValue;
+  //   final Set<CurrentOpenModel> crntOpen = prov.currentOpening;
+  //   for (final model in crntOpen) {
+  //     if (model.symbol != symbol) continue;
+
+  //     if (model.method == 'method1' || model.method == 'method2') {
+  //       if (model.actionType != actionType) {
+  //         await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
+  //         break;
+  //       }
+  //     }
+  //   }
+  //   reversalPlus = checkedProv.isM3ReversalPlusChecked;
+  //   reversal = checkedProv.isM3ReversalChecked;
+  //   signal = checkedProv.isM3SignalExitChecked;
+  //   tc = checkedProv.isM3TcChangeChecked;
+  //   hw = checkedProv.isM3HwChecked;
+  // }
 
   final data = OpenRequestModel(
     actionType: actionType,
@@ -102,6 +109,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     reversal: reversal,
     signalExit: signal,
     tcChange: tc,
+    hyperWave: hw,
   );
   try {
     final _ = await dio.post(
@@ -115,23 +123,28 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     late bool reversal;
     late bool signal;
     late bool tc;
+    late bool hw;
 
     if (method == 'method1') {
       reversalPlus = checkedProv.isM1ReversalPlusChecked;
       reversal = checkedProv.isM1ReversalChecked;
       signal = checkedProv.isM1SignalExitChecked;
       tc = checkedProv.isM1TcChangeChecked;
+      hw = checkedProv.isM1HwChecked;
     } else if (method == 'method2') {
       reversalPlus = checkedProv.isM2ReversalPlusChecked;
       reversal = checkedProv.isM2ReversalChecked;
       signal = checkedProv.isM2SignalExitChecked;
       tc = checkedProv.isM2TcChangeChecked;
-    } else if (method == 'method3') {
-      reversalPlus = checkedProv.isM3ReversalPlusChecked;
-      reversal = checkedProv.isM3ReversalChecked;
-      signal = checkedProv.isM3SignalExitChecked;
-      tc = checkedProv.isM3TcChangeChecked;
+      hw = checkedProv.isM2HwChecked;
     }
+    // else if (method == 'method3') {
+    //   reversalPlus = checkedProv.isM3ReversalPlusChecked;
+    //   reversal = checkedProv.isM3ReversalChecked;
+    //   signal = checkedProv.isM3SignalExitChecked;
+    //   tc = checkedProv.isM3TcChangeChecked;
+    //   hw = checkedProv.isM3HwChecked;
+    // }
 
     final mod = CurrentOpenModel(
       symbol: symbol!,
@@ -141,6 +154,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
       reversal: reversal,
       signalExit: signal,
       tcChange: tc,
+      hyperWave: hw,
     );
     Provider.of<ValueProvider>(context, listen: false).addCurrentOpen(mod);
     // Only 2xx responses reach here

@@ -1,6 +1,6 @@
 {
-    "name": "trading_app",
-    "short_name": "trading_app",
+    "name": "auditplus_fx",
+    "short_name": "auditplus_fx",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

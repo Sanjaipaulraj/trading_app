@@ -1,5 +1,5 @@
-name: trading_app
-description: "A trading app in Flutter."
+name: auditplus_fx
+description: "A tool for metatrader."
 publish_to: 'none'
 version: 0.1.0
 

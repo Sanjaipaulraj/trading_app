@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
-import 'package:trading_app/Providers/token_provider.dart';
+import 'package:auditplus_fx/Providers/token_provider.dart';
 
 Future<List<String>> getList(BuildContext context) async {
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
