@@ -98,11 +98,15 @@ class HomeScreenState extends State<HomeScreen> {
         //  Case 1: Still waiting (either token or list)
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
+            backgroundColor: Color.fromRGBO(209, 238, 250, 1),
+            // backgroundColor: Color.fromARGB(255, 231, 231, 217),
             body: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               spacing: 15,
               children: [
-                Center(child: Text("Token getting...")),
+                Center(
+                  child: Text("Token getting...", style: TextStyle(fontSize: 16, color: Colors.black)),
+                ),
                 CircularProgressIndicator(),
               ],
             ),
@@ -111,7 +115,11 @@ class HomeScreenState extends State<HomeScreen> {
 
         //  Case 2: Error (optional)
         if (snapshot.hasError) {
-          return Scaffold(body: Center(child: Text("Error: ${snapshot.error}")));
+          return Scaffold(
+            backgroundColor: Color.fromRGBO(209, 238, 250, 1),
+            // backgroundColor: const Color.fromARGB(255, 231, 231, 217),
+            body: Center(child: Text("Error: ${snapshot.error}")),
+          );
         }
 
         //Case 3: If the value provider loading - show CircularprogressIndicator
@@ -123,25 +131,34 @@ class HomeScreenState extends State<HomeScreen> {
         final token = myTokenProvider.token;
         if (token == null || token.isEmpty) {
           return Scaffold(
-            body: Container(
-              color: const Color.fromRGBO(206, 194, 235, 1),
+            backgroundColor: const Color.fromRGBO(209, 238, 250, 1),
+            // backgroundColor: const Color.fromARGB(255, 231, 231, 217),
+            body: Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 15,
                 children: [
-                  const Text('Enter the token'),
+                  const Text('Enter the token', style: TextStyle(fontSize: 16, color: Colors.black)),
                   const SizedBox(height: 10),
                   TextField(
                     controller: _tokenController,
                     decoration: const InputDecoration(border: OutlineInputBorder(), labelText: 'Token'),
                   ),
                   TextButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadiusGeometry.circular(10),
+                        side: BorderSide(color: Colors.black, width: 1.2),
+                      ),
+                      backgroundColor: Color.fromRGBO(33, 52, 72, 1),
+                    ),
                     onPressed: () {
                       myTokenProvider.setToken(_tokenController.text);
                       setState(() {});
                     },
-                    child: const Text('Submit'),
+                    child: const Text('Submit', style: TextStyle(fontSize: 16)),
                   ),
                 ],
               ),
@@ -151,20 +168,24 @@ class HomeScreenState extends State<HomeScreen> {
 
         //  Case 5: Everything ready → show your main UI
         return Scaffold(
+          backgroundColor: const Color.fromRGBO(209, 238, 250, 1),
+          // backgroundColor: const Color.fromARGB(255, 231, 231, 217),
           drawer: Drawer(
-            backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+            backgroundColor: const Color.fromRGBO(209, 238, 250, 1),
+            // backgroundColor: const Color.fromARGB(255, 231, 231, 217),
             width: MediaQuery.of(context).size.width * 0.6,
             child: DrawerWidget(),
           ),
           appBar: AppBar(
             iconTheme: IconThemeData(color: Colors.white),
-            backgroundColor: Color.fromRGBO(24, 55, 69, 1),
+            backgroundColor: Color.fromRGBO(33, 52, 72, 1),
             actions: <Widget>[
               GestureDetector(
                 onTap: () => showDialog<String>(
                   context: context,
                   builder: (BuildContext context) => Dialog(
-                    child: Padding(
+                    child: Container(
+                      color: Color.fromRGBO(189, 232, 245, 1),
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -176,7 +197,10 @@ class HomeScreenState extends State<HomeScreen> {
                             keyboardType: TextInputType.text,
                             autofocus: true,
                             controller: _tokenController,
-                            decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Token'),
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                              labelText: 'Token',
+                            ),
                           ),
                           TextButton(
                             onPressed: () {
@@ -238,7 +262,7 @@ class HomeScreenState extends State<HomeScreen> {
                   children: [
                     Container(
                       constraints: BoxConstraints(maxWidth: double.infinity),
-                      decoration: BoxDecoration(color: Colors.grey[100]),
+                      decoration: BoxDecoration(color: Color.fromRGBO(84, 119, 146, 1)),
                       padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 10, bottom: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -255,10 +279,21 @@ class HomeScreenState extends State<HomeScreen> {
                                   suggestionState: Suggestion.hidden,
                                   selectedValue: drop.selectedItem,
                                   searchInputDecoration: SearchInputDecoration(
-                                    hintText: 'Symbols',
+                                    hintText: "Symbols",
+                                    filled: true,
+                                    fillColor: Colors.white,
                                     isDense: true,
-                                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: const BorderSide(color: Colors.grey, width: 1),
+                                    ),
+
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: const BorderSide(color: Color.fromRGBO(33, 52, 72, 1), width: 1.5),
+                                    ),
                                   ),
                                   maxSuggestionsInViewPort: 6,
                                   onSearchTextChanged: (searchText) {
@@ -293,29 +328,37 @@ class HomeScreenState extends State<HomeScreen> {
                           ),
                           Consumer<ValueProvider>(
                             builder: (context, drop, child) {
-                              return Container(
+                              return SizedBox(
                                 height: 35,
                                 width: 90,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  border: Border.all(color: const Color.fromRGBO(128, 128, 128, 1), width: 1.0),
-                                ),
                                 child: TextFormField(
                                   controller: drop.volumeController,
                                   keyboardType: TextInputType.number,
+                                  textAlign: TextAlign.center,
                                   onChanged: (newValue) {
                                     final parsedValue = double.tryParse(newValue);
                                     if (parsedValue != null) {
                                       drop.setVolume(parsedValue);
                                     }
                                   },
-                                  textAlign: TextAlign.center,
                                   textAlignVertical: TextAlignVertical.center,
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
                                     isDense: true,
-                                    contentPadding: EdgeInsets.symmetric(vertical: 8),
-                                    border: InputBorder.none,
+                                    contentPadding: const EdgeInsets.symmetric(vertical: 6),
+
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: const BorderSide(color: Colors.grey),
+                                    ),
+
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: const BorderSide(color: Color.fromRGBO(33, 52, 72, 1), width: 1.5),
+                                    ),
                                   ),
+
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -330,7 +373,8 @@ class HomeScreenState extends State<HomeScreen> {
                               return ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   fixedSize: Size(100, 22),
-                                  backgroundColor: Color.fromRGBO(24, 55, 69, 1),
+                                  // backgroundColor: Color.fromRGBO(24, 55, 69, 1),
+                                  backgroundColor: Color.fromRGBO(33, 52, 72, 1),
                                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   elevation: 0.0,
                                   shape: RoundedRectangleBorder(
@@ -375,9 +419,8 @@ class HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
                     Method1Section(),
-                    DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(4, 46, 124, 1)),
+                    DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(33, 52, 72, 1)),
                     Method2Section(),
                   ],
                 ),
