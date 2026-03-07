@@ -11,6 +11,7 @@ import 'package:auditplus_fx/Providers/token_provider.dart';
 import 'package:auditplus_fx/Providers/value_provider.dart';
 import 'package:auditplus_fx/api_methods/api_methods.dart';
 import '../models/models.dart';
+import 'contants.dart';
 
 Future<void> openPosition(String method, String actionType, num? takeProfit, BuildContext context) async {
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
@@ -113,8 +114,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
   );
   try {
     final _ = await dio.post(
-      // 'http://13.201.225.85/trade/open',
-      'http://localhost:4000/trade/open',
+      '$url/trade/open',
       data: jsonEncode(data),
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );

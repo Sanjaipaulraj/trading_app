@@ -10,6 +10,7 @@ import 'package:auditplus_fx/Providers/token_provider.dart';
 import 'package:auditplus_fx/Providers/value_provider.dart';
 
 import '../models/models.dart';
+import 'contants.dart';
 
 Future<void> onClosePosition(BuildContext context, String actionType) async {
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
@@ -31,20 +32,11 @@ Future<void> onClosePosition(BuildContext context, String actionType) async {
   final data = CloseRequestModel(actionType: actionType, symbol: symbol, description: description);
   try {
     await dio.post(
-      // 'http://13.201.225.85/trade/close',
-      'http://localhost:4000/trade/close',
+      '$url/close',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
       data: jsonEncode(data),
     );
     Provider.of<ValueProvider>(context, listen: false).clearCurrentOpenBySymbol(symbol!);
-    // toastification.show(
-    //   backgroundColor: Color.fromRGBO(199, 226, 201, 1),
-    //   title: const Text('Success!'),
-    //   description: const Text('Send successfully'),
-    //   type: ToastificationType.success,
-    //   alignment: Alignment.center,
-    //   autoCloseDuration: const Duration(seconds: 1),
-    // );
   } on DioException catch (e) {
     final statusCode = e.response?.statusCode;
 

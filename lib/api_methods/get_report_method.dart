@@ -7,6 +7,7 @@ import 'package:toastification/toastification.dart';
 import 'package:auditplus_fx/Providers/token_provider.dart';
 import 'package:auditplus_fx/create_report.dart';
 import '../models/models.dart';
+import 'contants.dart';
 
 Future<void> getReport(BuildContext context, String symbol, String startDate, String endDate) async {
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
@@ -24,12 +25,7 @@ Future<void> getReport(BuildContext context, String symbol, String startDate, St
   final dio = Dio();
   final data = GetReportModel(symbol: symbol, startDate: startDate, endDate: endDate);
   try {
-    final response = await dio.post(
-      // 'http://13.201.225.85/trade/report',
-      'http://localhost:4000/trade/report',
-      data: jsonEncode(data),
-    );
-    // print(response);
+    final response = await dio.post('$url/report', data: jsonEncode(data));
     final List<DbReportModel> reportList = (response.data as List).map((e) => DbReportModel.fromJson(e)).toList();
 
     await createExcelFile(reportList);

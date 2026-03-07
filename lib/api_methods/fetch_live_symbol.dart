@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 import '../models/models.dart';
+import 'contants.dart';
 
 Future<List<ActiveSymbolModel>> fetchLiveSymbols() async {
   Dio dio = Dio(
@@ -11,10 +12,7 @@ Future<List<ActiveSymbolModel>> fetchLiveSymbols() async {
   );
 
   try {
-    final response = await dio.get(
-      // 'http://13.201.225.85/trade/active-symbol',
-      'http://localhost:4000/trade/active-symbol',
-    );
+    final response = await dio.get('$url/active-symbol');
 
     final List<ActiveSymbolModel> models = (response.data as List).map((e) => ActiveSymbolModel.fromJson(e)).toList();
 
