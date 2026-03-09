@@ -26,7 +26,7 @@ class _Method2SectionState extends State<Method2Section> {
             children: [
               Text(
                 "Method 2",
-                style: TextStyle(color: Color.fromRGBO(4, 46, 124, 1), fontSize: 18, fontWeight: FontWeight.w600),
+                style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
               ),
               Consumer2<MytokenProvider, CheckedBoxProvider>(
                 builder: (context, myToken, checkedBox, child) {

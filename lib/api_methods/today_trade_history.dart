@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 import '../models/models.dart';
+import 'contants.dart';
 
 Future<List<TradeHistoryModel>> fetchTradeHistory() async {
   Dio dio = Dio(
@@ -11,10 +12,7 @@ Future<List<TradeHistoryModel>> fetchTradeHistory() async {
   );
 
   try {
-    final response = await dio.get(
-      // 'http://13.201.225.85/trade/history',
-      'http://localhost:4000/trade/history',
-    );
+    final response = await dio.get('$url/history');
 
     final List<TradeHistoryModel> models = (response.data as List).map((e) => TradeHistoryModel.fromJson(e)).toList();
 

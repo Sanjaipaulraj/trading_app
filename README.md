@@ -1,3 +1,3 @@
 # auditplus_fx
 
-A Flutter project for a trading platform.
+A Flutter project for a auditplus forex platform.

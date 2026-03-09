@@ -16,7 +16,9 @@ class Method1Section extends StatefulWidget {
 class _Method1SectionState extends State<Method1Section> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      constraints: BoxConstraints(maxWidth: double.infinity),
+      color: Color.fromRGBO(189, 232, 245, 1),
       padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 5, top: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -26,7 +28,7 @@ class _Method1SectionState extends State<Method1Section> {
             children: [
               Text(
                 "Method 1",
-                style: TextStyle(color: const Color.fromRGBO(4, 46, 124, 1), fontSize: 18, fontWeight: FontWeight.w600),
+                style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
               ),
               Consumer2<MytokenProvider, CheckedBoxProvider>(
                 builder: (context, myToken, checkedBox, child) {

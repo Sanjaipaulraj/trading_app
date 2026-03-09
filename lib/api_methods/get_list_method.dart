@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:auditplus_fx/Providers/token_provider.dart';
 
+import 'contants.dart';
+
 Future<List<String>> getList(BuildContext context) async {
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
   Dio dio = Dio(
@@ -13,8 +15,7 @@ Future<List<String>> getList(BuildContext context) async {
   );
   try {
     final response = await dio.get(
-      // 'http://13.201.225.85/trade/list',
-      'http://localhost:4000/trade/list',
+      '$url/list',
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );
     if (response.statusCode == 200) {

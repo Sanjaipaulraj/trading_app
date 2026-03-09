@@ -5,6 +5,7 @@ import 'package:auditplus_fx/Providers/checked_box_provider.dart';
 import 'package:auditplus_fx/Providers/token_provider.dart';
 import 'package:auditplus_fx/Providers/value_provider.dart';
 import '../models/models.dart';
+import 'contants.dart';
 
 Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async {
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
@@ -54,14 +55,11 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
     'hyperWave': hw,
   };
 
-  print(data);
-
   final dio = Dio(
     BaseOptions(connectTimeout: const Duration(seconds: 60), receiveTimeout: const Duration(seconds: 60)),
   );
   await dio.post(
-    // 'http://13.201.225.85/trade/update-flags',
-    'http://localhost:4000/trade/update-flags',
+    '$url/update-flags',
     data: data,
     options: Options(headers: {'auth-token': token}),
   );
