@@ -114,7 +114,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
   );
   try {
     final _ = await dio.post(
-      '$url/trade/open',
+      "$url/open",
       data: jsonEncode(data),
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );
