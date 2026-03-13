@@ -47,11 +47,8 @@ class CheckedBoxProvider extends ChangeNotifier {
     'M2SignalExitChecked': false,
     'M2TcChangeChecked': false,
     'M2HwChecked': false,
-    'M3ReversalPlusChecked': false,
-    'M3ReversalChecked': false,
-    'M3SignalExitChecked': false,
-    'M3TcChangeChecked': false,
-    'M3HwChecked': false,
+    //Auto Booking & Closing
+    'M3Checked': false,
   };
 
   bool get isLongTcChecked => _values['LongTcChecked']!;
@@ -88,11 +85,15 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isM2SignalExitChecked => _values['M2SignalExitChecked']!;
   bool get isM2TcChangeChecked => _values['M2TcChangeChecked']!;
   bool get isM2HwChecked => _values['M2HwChecked']!;
-  bool get isM3ReversalPlusChecked => _values['M3ReversalPlusChecked']!;
-  bool get isM3ReversalChecked => _values['M3ReversalChecked']!;
-  bool get isM3SignalExitChecked => _values['M3SignalExitChecked']!;
-  bool get isM3TcChangeChecked => _values['M3TcChangeChecked']!;
-  bool get isM3HwChecked => _values['M3HwChecked']!;
+
+  //Auto Booking & Closing
+  bool get isM3Checked => _values['M3Checked']!;
+
+  // bool get isM3ReversalPlusChecked => _values['M3ReversalPlusChecked']!;
+  // bool get isM3ReversalChecked => _values['M3ReversalChecked']!;
+  // bool get isM3SignalExitChecked => _values['M3SignalExitChecked']!;
+  // bool get isM3TcChangeChecked => _values['M3TcChangeChecked']!;
+  // bool get isM3HwChecked => _values['M3HwChecked']!;
 
   bool get isM1LongAllChecked =>
       isLongTcChecked && isLongTtChecked && isLongNeoChecked && isLongHwoChecked && isLongConfChecked;
@@ -106,9 +107,9 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isM2ShortAllChecked =>
       (isShortDivergenceChecked || isShortRevChecked) && isShortCatcherChecked && isShortOscChecked;
 
-  bool get isM3LongAllChecked => isLongGretTcChecked && isLongSigCrTtChecked;
+  // bool get isM3LongAllChecked => isLongGretTcChecked && isLongSigCrTtChecked;
 
-  bool get isM3ShortAllChecked => isShortGretTcChecked && isShortSigCrTtChecked;
+  // bool get isM3ShortAllChecked => isShortGretTcChecked && isShortSigCrTtChecked;
 
   Future<void> loadForSymbol(String symbol) async {
     _isLoading = true;
@@ -165,16 +166,20 @@ class CheckedBoxProvider extends ChangeNotifier {
       final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
       var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
       updateTradeFlags(crntMod, context);
-    } else if (field == 'M3ReversalPlusChecked' ||
-        field == 'M3ReversalChecked' ||
-        field == 'M3SignalExitChecked' ||
-        field == 'M3TcChangeChecked' ||
-        field == 'M3HwChecked') {
-      final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
-      final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
-      var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
-      updateTradeFlags(crntMod, context);
-    } else {
+    } else if (field == 'M3Checked') {
+      automaticTrading(context);
+    }
+    //  else if (field == 'M3ReversalPlusChecked' ||
+    //     field == 'M3ReversalChecked' ||
+    //     field == 'M3SignalExitChecked' ||
+    //     field == 'M3TcChangeChecked' ||
+    //     field == 'M3HwChecked') {
+    //   final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+    //   final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
+    //   var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
+    //   updateTradeFlags(crntMod, context);
+    // }
+    else {
       return;
     }
   }

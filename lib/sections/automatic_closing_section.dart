@@ -286,16 +286,16 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
         return checkedBox.isM2TcChangeChecked;
       case 'M2HwChecked':
         return checkedBox.isM2HwChecked;
-      case 'M3ReversalPlusChecked':
-        return checkedBox.isM3ReversalPlusChecked;
-      case 'M3ReversalChecked':
-        return checkedBox.isM3ReversalChecked;
-      case 'M3SignalExitChecked':
-        return checkedBox.isM3SignalExitChecked;
-      case 'M3TcChangeChecked':
-        return checkedBox.isM3TcChangeChecked;
-      case 'M3HwChecked':
-        return checkedBox.isM3HwChecked;
+      // case 'M3ReversalPlusChecked':
+      //   return checkedBox.isM3ReversalPlusChecked;
+      // case 'M3ReversalChecked':
+      //   return checkedBox.isM3ReversalChecked;
+      // case 'M3SignalExitChecked':
+      //   return checkedBox.isM3SignalExitChecked;
+      // case 'M3TcChangeChecked':
+      //   return checkedBox.isM3TcChangeChecked;
+      // case 'M3HwChecked':
+      //   return checkedBox.isM3HwChecked;
       default:
         return false;
     }

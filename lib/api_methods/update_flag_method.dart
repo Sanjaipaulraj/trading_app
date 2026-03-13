@@ -1,9 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:auditplus_fx/Providers/checked_box_provider.dart';
-import 'package:auditplus_fx/Providers/token_provider.dart';
-import 'package:auditplus_fx/Providers/value_provider.dart';
+import 'package:auditplus_fx/Providers/providers.dart';
 import '../models/models.dart';
 import 'contants.dart';
 
@@ -37,13 +35,14 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
     signal = checked.isM2SignalExitChecked;
     tc = checked.isM2TcChangeChecked;
     hw = checked.isM2HwChecked;
-  } else if (mod.method == 'method3') {
-    reversalPlus = checked.isM3ReversalPlusChecked;
-    reversal = checked.isM3ReversalChecked;
-    signal = checked.isM3SignalExitChecked;
-    tc = checked.isM3TcChangeChecked;
-    hw = checked.isM3HwChecked;
   }
+  // else if (mod.method == 'method3') {
+  //   reversalPlus = checked.isM3ReversalPlusChecked;
+  //   reversal = checked.isM3ReversalChecked;
+  //   signal = checked.isM3SignalExitChecked;
+  //   tc = checked.isM3TcChangeChecked;
+  //   hw = checked.isM3HwChecked;
+  // }
 
   final data = {
     'symbol': symbol,

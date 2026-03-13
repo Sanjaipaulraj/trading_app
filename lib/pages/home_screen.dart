@@ -14,7 +14,7 @@ import 'package:auditplus_fx/drawer_widget.dart';
 import 'package:auditplus_fx/intent.dart';
 import 'package:auditplus_fx/sections/method1_section.dart';
 import 'package:auditplus_fx/sections/method2_section.dart';
-// import 'package:auditplus_fx/sections/method3_section.dart';
+import 'package:auditplus_fx/sections/method3_section.dart';
 import 'package:auditplus_fx/Providers/token_provider.dart';
 
 import '../api_methods/api_methods.dart';
@@ -422,6 +422,8 @@ class HomeScreenState extends State<HomeScreen> {
                     Method1Section(),
                     DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(33, 52, 72, 1)),
                     Method2Section(),
+                    DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(33, 52, 72, 1)),
+                    Method3Section(),
                   ],
                 ),
               ),
