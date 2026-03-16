@@ -9,13 +9,18 @@ import '../models/models.dart';
 
 class ValueProvider extends ChangeNotifier {
   String? selectedValue;
+  String? m3SelectedValue;
   SearchFieldListItem<String>? selectedItem;
+  SearchFieldListItem<String>? m3SelectedItem;
   num volume = 0.01;
+  num m3Volume = 0.01;
   final TextEditingController volumeController = TextEditingController();
+  final TextEditingController m3VolumeController = TextEditingController();
 
   bool _isLoading = true;
   Set<CurrentOpenModel> currentOpening = {};
   SearchFieldListItem<String>? lastActiveSymbol;
+  CurrentMethod3Model? lastM3Open;
   bool get isLoading => _isLoading;
 
   ValueProvider(BuildContext context) {
@@ -33,6 +38,7 @@ class ValueProvider extends ChangeNotifier {
 
     volume = prefs.getDouble('volume') ?? 0.01;
     volumeController.text = volume.toString();
+
     final decoded = jsonDecode(prefs.getString('currentOpening') ?? '[]') as List;
 
     currentOpening = decoded.map((e) => CurrentOpenModel.fromJson(e)).toSet();
@@ -56,9 +62,21 @@ class ValueProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setM3Volume(double newVolume) async {
+    m3Volume = newVolume;
+    m3VolumeController.text = newVolume.toString();
+    notifyListeners();
+  }
+
   void clearSelectedValue() {
     selectedValue = null;
     selectedItem = null;
+    notifyListeners();
+  }
+
+  void m3ClearSelectedValue() {
+    m3SelectedValue = null;
+    m3SelectedItem = null;
     notifyListeners();
   }
 
@@ -68,6 +86,13 @@ class ValueProvider extends ChangeNotifier {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('lastActiveSymbol', item.searchKey);
+
+    notifyListeners();
+  }
+
+  void setM3SelectedItem(SearchFieldListItem<String> item, BuildContext context) async {
+    m3SelectedItem = item;
+    m3SelectedValue = item.searchKey;
 
     notifyListeners();
   }

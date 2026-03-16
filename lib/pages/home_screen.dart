@@ -8,15 +8,13 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:toastification/toastification.dart';
-import 'package:auditplus_fx/Providers/checked_box_provider.dart';
-import 'package:auditplus_fx/Providers/value_provider.dart';
 import 'package:auditplus_fx/drawer_widget.dart';
 import 'package:auditplus_fx/intent.dart';
 import 'package:auditplus_fx/sections/method1_section.dart';
 import 'package:auditplus_fx/sections/method2_section.dart';
 import 'package:auditplus_fx/sections/method3_section.dart';
-import 'package:auditplus_fx/Providers/token_provider.dart';
 
+import '../Providers/providers.dart';
 import '../api_methods/api_methods.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -32,6 +30,7 @@ class HomeScreenState extends State<HomeScreen> {
   List<String> list = [];
   List<SearchFieldListItem<String>> symbols = [];
   bool isLoading = true;
+  // late Future _initFuture;
 
   late TextEditingController _tokenController;
   late FocusNode _symbolFocusNode;
@@ -50,6 +49,7 @@ class HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeApp(context);
     });
+    // _initFuture = _initializeApp(context);
   }
 
   Future<void> _initializeApp(BuildContext context) async {
@@ -71,10 +71,15 @@ class HomeScreenState extends State<HomeScreen> {
       return SearchFieldListItem<String>(el, value: el.toString());
     }).toList();
 
+    context.read<CheckedBoxProvider>().loadForM3Values(context);
+
     if (list.isNotEmpty) {}
 
     if (mounted) {
-      _timer = Timer.periodic(const Duration(seconds: 10), (Timer t) => liveUpdation(context));
+      _timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+        if (!mounted) return;
+        liveUpdation(context);
+      });
     }
   }
 
@@ -99,7 +104,6 @@ class HomeScreenState extends State<HomeScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             backgroundColor: Color.fromRGBO(209, 238, 250, 1),
-            // backgroundColor: Color.fromARGB(255, 231, 231, 217),
             body: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               spacing: 15,
@@ -117,7 +121,6 @@ class HomeScreenState extends State<HomeScreen> {
         if (snapshot.hasError) {
           return Scaffold(
             backgroundColor: Color.fromRGBO(209, 238, 250, 1),
-            // backgroundColor: const Color.fromARGB(255, 231, 231, 217),
             body: Center(child: Text("Error: ${snapshot.error}")),
           );
         }
@@ -132,7 +135,6 @@ class HomeScreenState extends State<HomeScreen> {
         if (token == null || token.isEmpty) {
           return Scaffold(
             backgroundColor: const Color.fromRGBO(209, 238, 250, 1),
-            // backgroundColor: const Color.fromARGB(255, 231, 231, 217),
             body: Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -169,10 +171,8 @@ class HomeScreenState extends State<HomeScreen> {
         //  Case 5: Everything ready → show your main UI
         return Scaffold(
           backgroundColor: const Color.fromRGBO(209, 238, 250, 1),
-          // backgroundColor: const Color.fromARGB(255, 231, 231, 217),
           drawer: Drawer(
             backgroundColor: const Color.fromRGBO(209, 238, 250, 1),
-            // backgroundColor: const Color.fromARGB(255, 231, 231, 217),
             width: MediaQuery.of(context).size.width * 0.6,
             child: DrawerWidget(),
           ),
@@ -373,7 +373,6 @@ class HomeScreenState extends State<HomeScreen> {
                               return ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   fixedSize: Size(100, 22),
-                                  // backgroundColor: Color.fromRGBO(24, 55, 69, 1),
                                   backgroundColor: Color.fromRGBO(33, 52, 72, 1),
                                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   elevation: 0.0,
@@ -423,7 +422,7 @@ class HomeScreenState extends State<HomeScreen> {
                     DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(33, 52, 72, 1)),
                     Method2Section(),
                     DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(33, 52, 72, 1)),
-                    Method3Section(),
+                    Method3Section(symbols: symbols),
                   ],
                 ),
               ),

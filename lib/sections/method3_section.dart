@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:toastification/toastification.dart';
 import 'package:auditplus_fx/Providers/providers.dart';
-// import 'package:auditplus_fx/Providers/token_provider.dart';
-// import 'package:auditplus_fx/intent.dart';
-// import 'package:auditplus_fx/sections/automatic_closing_section.dart';
+import 'package:searchfield/searchfield.dart';
+
+// import '../api_methods/api_methods.dart';
 
 class Method3Section extends StatefulWidget {
-  const Method3Section({super.key});
+  final List<SearchFieldListItem<String>> symbols;
+  const Method3Section({super.key, required this.symbols});
 
   @override
   State<Method3Section> createState() => _Method3SectionState();
@@ -29,6 +29,101 @@ class _Method3SectionState extends State<Method3Section> {
                 "Method 3",
                 style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
               ),
+              Consumer<ValueProvider>(
+                builder: (context, drop, child) {
+                  return SizedBox(
+                    width: 130,
+                    height: 35,
+                    child: SearchField<String>(
+                      suggestionDirection: SuggestionDirection.up,
+                      suggestions: widget.symbols,
+                      suggestionState: Suggestion.hidden,
+                      selectedValue: widget.symbols.any((e) => e.searchKey == drop.m3SelectedItem?.searchKey)
+                          ? drop.m3SelectedItem
+                          : null,
+                      searchInputDecoration: SearchInputDecoration(
+                        hintText: "Symbols",
+                        filled: true,
+                        fillColor: Colors.white,
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: Colors.black, width: 1),
+                        ),
+
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: Color.fromRGBO(33, 52, 72, 1), width: 1.5),
+                        ),
+                      ),
+                      maxSuggestionsInViewPort: 3,
+                      onSearchTextChanged: (searchText) {
+                        if (searchText.isEmpty) {
+                          return List<SearchFieldListItem<String>>.from(widget.symbols);
+                        }
+                        context.read<ValueProvider>().m3ClearSelectedValue();
+                        // context.read<CheckedBoxProvider>().clearState();
+
+                        final query = searchText.toUpperCase();
+                        return widget.symbols.where((s) {
+                          final key = s.searchKey.toUpperCase();
+                          final value = (s.value ?? '').toUpperCase();
+                          return key.contains(query) || value.contains(query);
+                        }).toList();
+                      },
+                      onSuggestionTap: (SearchFieldListItem<String> item) {
+                        context.read<ValueProvider>().setM3SelectedItem(item, context);
+                      },
+                      onSubmit: (item) {
+                        Provider.of<ValueProvider>(
+                          context,
+                          listen: false,
+                        ).setM3SelectedItem(SearchFieldListItem(item), context);
+                      },
+                    ),
+                  );
+                },
+              ),
+              Consumer<ValueProvider>(
+                builder: (context, drop, child) {
+                  return SizedBox(
+                    height: 35,
+                    width: 70,
+                    child: TextFormField(
+                      controller: drop.m3VolumeController,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      onChanged: (newValue) {
+                        final parsedValue = double.tryParse(newValue);
+                        if (parsedValue != null) {
+                          drop.setM3Volume(parsedValue);
+                        }
+                      },
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 6),
+
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: Color.fromRGBO(33, 52, 72, 1), width: 1.5),
+                        ),
+                      ),
+
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                  );
+                },
+              ),
               Consumer<CheckedBoxProvider>(
                 builder: (context, checkedBox, child) {
                   return Checkbox(
@@ -43,90 +138,6 @@ class _Method3SectionState extends State<Method3Section> {
                   );
                 },
               ),
-              // Consumer2<MytokenProvider, CheckedBoxProvider>(
-              //   builder: (context, myToken, checkedBox, child) {
-              //     return Row(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       spacing: 5,
-              //       children: [
-              //         ElevatedButton(
-              //           style: ElevatedButton.styleFrom(
-              //             minimumSize: Size(100, 32),
-              //             maximumSize: Size(100, 50),
-              //             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              //             shape: RoundedRectangleBorder(
-              //               borderRadius: BorderRadius.circular(5),
-              //               side: BorderSide(color: Colors.black, width: 2),
-              //             ),
-              //             elevation: 8.0,
-              //             foregroundColor: Colors.black,
-              //             backgroundColor: checkedBox.isM3LongAllChecked ? Colors.lightGreen : Colors.grey,
-              //             textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              //           ),
-              //           onPressed: checkedBox.isM3LongAllChecked
-              //               ? () {
-              //                   final token = Provider.of<MytokenProvider>(context, listen: false).token;
-              //                   if (token != null) {
-              //                     Actions.invoke(
-              //                       context,
-              //                       const LongIntent(method: 'method3', actionType: "ORDER_TYPE_BUY"),
-              //                     );
-              //                   } else {
-              //                     toastification.show(
-              //                       backgroundColor: Color.fromRGBO(242, 186, 185, 1),
-              //                       context: context,
-              //                       title: const Text('Error!'),
-              //                       description: const Text('Your token is empty'),
-              //                       type: ToastificationType.error,
-              //                       alignment: Alignment.center,
-              //                       autoCloseDuration: const Duration(seconds: 2),
-              //                     );
-              //                   }
-              //                 }
-              //               : null,
-              //           child: Text('Long'),
-              //         ),
-              //         ElevatedButton(
-              //           style: ElevatedButton.styleFrom(
-              //             minimumSize: Size(100, 32),
-              //             maximumSize: Size(100, 50),
-              //             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              //             backgroundColor: checkedBox.isM3ShortAllChecked ? Colors.red : Colors.grey,
-              //             shape: RoundedRectangleBorder(
-              //               borderRadius: BorderRadius.circular(5),
-              //               side: BorderSide(color: Colors.black, width: 2),
-              //             ),
-              //             elevation: 8.0,
-              //             foregroundColor: Colors.black,
-              //             textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              //           ),
-              //           onPressed: checkedBox.isM3ShortAllChecked
-              //               ? () {
-              //                   final token = Provider.of<MytokenProvider>(context, listen: false).token;
-              //                   if (token != null) {
-              //                     Actions.invoke(
-              //                       context,
-              //                       const ShortIntent(method: 'method3', actionType: "ORDER_TYPE_SELL"),
-              //                     );
-              //                   } else {
-              //                     toastification.show(
-              //                       backgroundColor: Color.fromRGBO(242, 186, 185, 1),
-              //                       context: context,
-              //                       title: const Text('Error!'),
-              //                       description: const Text('Your token is empty'),
-              //                       type: ToastificationType.error,
-              //                       alignment: Alignment.center,
-              //                       autoCloseDuration: const Duration(seconds: 2),
-              //                     );
-              //                   }
-              //                 }
-              //               : null,
-              //           child: Text('Short'),
-              //         ),
-              //       ],
-              //     );
-              //   },
-              // ),
             ],
           ),
           // Row(

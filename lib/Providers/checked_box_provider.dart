@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:searchfield/searchfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auditplus_fx/Providers/value_provider.dart';
 
 import '../api_methods/api_methods.dart';
+import '../models/models.dart';
 
 class CheckedBoxProvider extends ChangeNotifier {
   String? _currentSymbol;
@@ -89,12 +91,6 @@ class CheckedBoxProvider extends ChangeNotifier {
   //Auto Booking & Closing
   bool get isM3Checked => _values['M3Checked']!;
 
-  // bool get isM3ReversalPlusChecked => _values['M3ReversalPlusChecked']!;
-  // bool get isM3ReversalChecked => _values['M3ReversalChecked']!;
-  // bool get isM3SignalExitChecked => _values['M3SignalExitChecked']!;
-  // bool get isM3TcChangeChecked => _values['M3TcChangeChecked']!;
-  // bool get isM3HwChecked => _values['M3HwChecked']!;
-
   bool get isM1LongAllChecked =>
       isLongTcChecked && isLongTtChecked && isLongNeoChecked && isLongHwoChecked && isLongConfChecked;
 
@@ -106,10 +102,6 @@ class CheckedBoxProvider extends ChangeNotifier {
 
   bool get isM2ShortAllChecked =>
       (isShortDivergenceChecked || isShortRevChecked) && isShortCatcherChecked && isShortOscChecked;
-
-  // bool get isM3LongAllChecked => isLongGretTcChecked && isLongSigCrTtChecked;
-
-  // bool get isM3ShortAllChecked => isShortGretTcChecked && isShortSigCrTtChecked;
 
   Future<void> loadForSymbol(String symbol) async {
     _isLoading = true;
@@ -124,6 +116,31 @@ class CheckedBoxProvider extends ChangeNotifier {
     } else {
       final decoded = Map<String, dynamic>.from(jsonDecode(data));
       _values = decoded.map((k, v) => MapEntry(k, v as bool));
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> loadForM3Values(BuildContext context) async {
+    _isLoading = true;
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    final String? data = prefs.getString('m3CurrentOpening');
+
+    if (data != null) {
+      final Map<String, dynamic> m3Decoded = jsonDecode(data);
+
+      if (!context.mounted) return;
+      final prov = Provider.of<ValueProvider>(context, listen: false);
+
+      prov.lastM3Open = CurrentMethod3Model.fromJson(m3Decoded);
+      prov.m3SelectedValue = prov.lastM3Open!.symbol;
+      prov.m3SelectedItem = SearchFieldListItem(prov.m3SelectedValue!, item: prov.m3SelectedValue);
+
+      prov.m3VolumeController.text = prov.lastM3Open!.volume.toString();
+      _values['M3Checked'] = prov.lastM3Open!.m3Checked;
     }
 
     _isLoading = false;
