@@ -44,11 +44,13 @@ class CheckedBoxProvider extends ChangeNotifier {
     'M1SignalExitChecked': false,
     'M1TcChangeChecked': false,
     'M1HwChecked': false,
+    'M1MfChecked': false,
     'M2ReversalPlusChecked': false,
     'M2ReversalChecked': false,
     'M2SignalExitChecked': false,
     'M2TcChangeChecked': false,
     'M2HwChecked': false,
+    'M2MfChecked': false,
     //Auto Booking & Closing
     'M3Checked': false,
   };
@@ -82,11 +84,13 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isM1SignalExitChecked => _values['M1SignalExitChecked']!;
   bool get isM1TcChangeChecked => _values['M1TcChangeChecked']!;
   bool get isM1HwChecked => _values['M1HwChecked']!;
+  bool get isM1MfChecked => _values['M1MfChecked']!;
   bool get isM2ReversalPlusChecked => _values['M2ReversalPlusChecked']!;
   bool get isM2ReversalChecked => _values['M2ReversalChecked']!;
   bool get isM2SignalExitChecked => _values['M2SignalExitChecked']!;
   bool get isM2TcChangeChecked => _values['M2TcChangeChecked']!;
   bool get isM2HwChecked => _values['M2HwChecked']!;
+  bool get isM2MfChecked => _values['M2MfChecked']!;
 
   //Auto Booking & Closing
   bool get isM3Checked => _values['M3Checked']!;
@@ -169,7 +173,8 @@ class CheckedBoxProvider extends ChangeNotifier {
         field == 'M1ReversalChecked' ||
         field == 'M1SignalExitChecked' ||
         field == 'M1TcChangeChecked' ||
-        field == 'M1HwChecked') {
+        field == 'M1HwChecked' ||
+        field == 'M1MfChecked') {
       final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
       final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
       var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
@@ -178,7 +183,8 @@ class CheckedBoxProvider extends ChangeNotifier {
         field == 'M2ReversalChecked' ||
         field == 'M2SignalExitChecked' ||
         field == 'M2TcChangeChecked' ||
-        field == 'M2HwChecked') {
+        field == 'M2HwChecked' ||
+        field == 'M2MfChecked') {
       final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
       final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
       var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);

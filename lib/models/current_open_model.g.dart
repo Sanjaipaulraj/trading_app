@@ -16,6 +16,7 @@ CurrentOpenModel _$CurrentOpenModelFromJson(Map<String, dynamic> json) =>
       signalExit: json['signalExit'] as bool,
       tcChange: json['tcChange'] as bool,
       hyperWave: json['hyperWave'] as bool,
+      moneyFlow: json['moneyFlow'] as bool,
     );
 
 Map<String, dynamic> _$CurrentOpenModelToJson(CurrentOpenModel instance) =>
@@ -28,4 +29,5 @@ Map<String, dynamic> _$CurrentOpenModelToJson(CurrentOpenModel instance) =>
       'signalExit': instance.signalExit,
       'tcChange': instance.tcChange,
       'hyperWave': instance.hyperWave,
+      'moneyFlow': instance.moneyFlow,
     };

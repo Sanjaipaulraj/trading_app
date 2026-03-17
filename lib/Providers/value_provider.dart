@@ -10,6 +10,7 @@ import '../models/models.dart';
 class ValueProvider extends ChangeNotifier {
   String? selectedValue;
   String? m3SelectedValue;
+  bool isAutomaticEnabled = false;
   SearchFieldListItem<String>? selectedItem;
   SearchFieldListItem<String>? m3SelectedItem;
   num volume = 0.01;
@@ -51,6 +52,11 @@ class ValueProvider extends ChangeNotifier {
       Provider.of<CheckedBoxProvider>(context, listen: false).loadForSymbol(selectedValue!);
     }
     _isLoading = false;
+    notifyListeners();
+  }
+
+  void setAutomaticEnable() {
+    isAutomaticEnabled = !isAutomaticEnabled;
     notifyListeners();
   }
 

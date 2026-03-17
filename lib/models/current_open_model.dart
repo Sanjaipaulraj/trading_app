@@ -12,6 +12,7 @@ class CurrentOpenModel {
   bool signalExit;
   bool tcChange;
   bool hyperWave;
+  bool moneyFlow;
 
   CurrentOpenModel({
     required this.symbol,
@@ -22,6 +23,7 @@ class CurrentOpenModel {
     required this.signalExit,
     required this.tcChange,
     required this.hyperWave,
+    required this.moneyFlow,
   });
 
   factory CurrentOpenModel.fromJson(Map<String, dynamic> json) => _$CurrentOpenModelFromJson(json);
@@ -30,6 +32,6 @@ class CurrentOpenModel {
 
   @override
   String toString() {
-    return "CurrentOpenModel{Symbol : $symbol,Method : $method,Action Type : $actionType, Reversal Plus: $reversalPlus,Reversal: $reversal,Signal Exit: $signalExit,Tc Change: $tcChange,Hyper Wave: $hyperWave}";
+    return "CurrentOpenModel{Symbol : $symbol,Method : $method,Action Type : $actionType, Reversal Plus: $reversalPlus,Reversal: $reversal,Signal Exit: $signalExit,Tc Change: $tcChange,Hyper Wave: $hyperWave,Money Flow: $moneyFlow}";
   }
 }

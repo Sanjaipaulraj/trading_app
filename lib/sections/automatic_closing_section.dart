@@ -41,6 +41,12 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
     // 'method3': 'M3HwChecked'
   }[widget.method]!;
 
+  String get mf => {
+    'method1': 'M1MfChecked',
+    'method2': 'M2MfChecked',
+    // 'method3': 'M3MfChecked'
+  }[widget.method]!;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CheckedBoxProvider>(
@@ -255,6 +261,48 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                       ],
                     ),
                   ),
+                  ElevatedButton(
+                    style: _getCheckboxValue(mf, checkedbox)
+                        ? ElevatedButton.styleFrom(
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(),
+                              borderRadius: BorderRadiusGeometry.circular(10),
+                            ),
+                            foregroundColor: Colors.white,
+                            backgroundColor: Color.fromRGBO(33, 52, 72, 1),
+                          )
+                        : ElevatedButton.styleFrom(
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(),
+                              borderRadius: BorderRadiusGeometry.circular(10),
+                            ),
+                            foregroundColor: Colors.black,
+                            backgroundColor: Color.fromRGBO(190, 190, 190, 1),
+                          ),
+                    onPressed: () {
+                      checkedbox.changeValue(widget.method, mf, context);
+                    },
+                    child: Row(
+                      spacing: 3,
+                      children: [
+                        Text("MF", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                        Icon(
+                          Icons.arrow_upward_rounded,
+                          color: _getCheckboxValue(hw, checkedbox)
+                              ? Color.fromRGBO(6, 255, 14, 1)
+                              : Color.fromRGBO(0, 57, 2, 1),
+                          size: 20.0,
+                        ),
+                        Icon(
+                          Icons.arrow_downward_rounded,
+                          color: _getCheckboxValue(mf, checkedbox) ? Colors.red : Color.fromRGBO(102, 7, 0, 1),
+                          size: 20.0,
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -276,6 +324,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
         return checkedBox.isM1TcChangeChecked;
       case 'M1HwChecked':
         return checkedBox.isM1HwChecked;
+      case 'M1MfChecked':
+        return checkedBox.isM1MfChecked;
       case 'M2ReversalPlusChecked':
         return checkedBox.isM2ReversalPlusChecked;
       case 'M2ReversalChecked':
@@ -286,6 +336,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
         return checkedBox.isM2TcChangeChecked;
       case 'M2HwChecked':
         return checkedBox.isM2HwChecked;
+      case 'M2MfChecked':
+        return checkedBox.isM2MfChecked;
       // case 'M3ReversalPlusChecked':
       //   return checkedBox.isM3ReversalPlusChecked;
       // case 'M3ReversalChecked':

@@ -35,6 +35,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
   late bool signal;
   late bool tc;
   late bool hw;
+  late bool mf;
 
   if (method == 'method1') {
     final prov = Provider.of<ValueProvider>(context, listen: false);
@@ -46,7 +47,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
       // if (model.method == 'method2' || model.method == 'method3') {
       if (model.method == 'method2') {
         if (model.actionType != actionType) {
-          await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
+          await onClosePosition(context, "POSITION_CLOSE_ID");
           break;
         }
       }
@@ -56,6 +57,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     signal = checkedProv.isM1SignalExitChecked;
     tc = checkedProv.isM1TcChangeChecked;
     hw = checkedProv.isM1HwChecked;
+    mf = checkedProv.isM1MfChecked;
   } else if (method == 'method2') {
     final prov = Provider.of<ValueProvider>(context, listen: false);
     final symbol = prov.selectedValue;
@@ -66,7 +68,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
       // if (model.method == 'method1' || model.method == 'method3') {
       if (model.method == 'method1') {
         if (model.actionType != actionType) {
-          await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
+          await onClosePosition(context, "POSITION_CLOSE_ID");
           break;
         }
       }
@@ -76,6 +78,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     signal = checkedProv.isM2SignalExitChecked;
     tc = checkedProv.isM2TcChangeChecked;
     hw = checkedProv.isM2HwChecked;
+    mf = checkedProv.isM2MfChecked;
   }
   // else if (method == 'method3') {
   //   final prov = Provider.of<ValueProvider>(context, listen: false);
@@ -86,7 +89,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
 
   //     if (model.method == 'method1' || model.method == 'method2') {
   //       if (model.actionType != actionType) {
-  //         await onClosePosition(context, "POSITIONS_CLOSE_SYMBOL");
+  //         await onClosePosition(context, "POSITION_CLOSE_ID");
   //         break;
   //       }
   //     }
@@ -109,6 +112,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     signalExit: signal,
     tcChange: tc,
     hyperWave: hw,
+    moneyFlow: mf,
   );
   try {
     final _ = await dio.post(
@@ -153,6 +157,7 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
       signalExit: signal,
       tcChange: tc,
       hyperWave: hw,
+      moneyFlow: mf,
     );
     Provider.of<ValueProvider>(context, listen: false).addCurrentOpen(mod);
     // Only 2xx responses reach here
