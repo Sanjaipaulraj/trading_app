@@ -180,6 +180,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                   ElevatedButton(
                     style: _getCheckboxValue(tc, checkedbox)
                         ? ElevatedButton.styleFrom(
+                            minimumSize: Size.zero,
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -189,6 +191,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                             backgroundColor: Color.fromRGBO(33, 52, 72, 1),
                           )
                         : ElevatedButton.styleFrom(
+                            minimumSize: Size.zero,
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -222,6 +226,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                   ElevatedButton(
                     style: _getCheckboxValue(hw, checkedbox)
                         ? ElevatedButton.styleFrom(
+                            minimumSize: Size.zero,
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -231,6 +237,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                             backgroundColor: Color.fromRGBO(33, 52, 72, 1),
                           )
                         : ElevatedButton.styleFrom(
+                            minimumSize: Size.zero,
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -264,6 +272,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                   ElevatedButton(
                     style: _getCheckboxValue(mf, checkedbox)
                         ? ElevatedButton.styleFrom(
+                            minimumSize: Size.zero,
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),
@@ -273,6 +283,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                             backgroundColor: Color.fromRGBO(33, 52, 72, 1),
                           )
                         : ElevatedButton.styleFrom(
+                            minimumSize: Size.zero,
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(),

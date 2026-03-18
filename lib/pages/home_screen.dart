@@ -2,7 +2,7 @@
 
 import 'dart:async';
 
-import 'package:auditplus_fx/pages/method3_screen.dart';
+import 'package:auditplus_fx/pages/automation_screen.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,12 +11,10 @@ import 'package:searchfield/searchfield.dart';
 import 'package:toastification/toastification.dart';
 import 'package:auditplus_fx/drawer_widget.dart';
 import 'package:auditplus_fx/intent.dart';
-import 'package:auditplus_fx/sections/method1_section.dart';
-import 'package:auditplus_fx/sections/method2_section.dart';
-import 'package:auditplus_fx/sections/method3_section.dart';
 
 import '../Providers/providers.dart';
 import '../api_methods/api_methods.dart';
+import '../sections/sections.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -186,7 +184,7 @@ class HomeScreenState extends State<HomeScreen> {
                   return TextButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: auto.isAutomaticEnabled
-                          ? Color.fromRGBO(112, 247, 168, 1)
+                          ? Color.fromRGBO(44, 187, 104, 1)
                           : Color.fromRGBO(189, 232, 245, 1),
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
@@ -277,7 +275,7 @@ class HomeScreenState extends State<HomeScreen> {
                     ),
                   },
                   child: auto.isAutomaticEnabled
-                      ? Method3Screen()
+                      ? AutomationScreen(symbols: symbols)
                       : SingleChildScrollView(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -451,7 +449,6 @@ class HomeScreenState extends State<HomeScreen> {
                               DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(33, 52, 72, 1)),
                               Method2Section(),
                               DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(33, 52, 72, 1)),
-                              Method3Section(symbols: symbols),
                             ],
                           ),
                         ),

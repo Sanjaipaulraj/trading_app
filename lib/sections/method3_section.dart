@@ -23,122 +23,132 @@ class _Method3SectionState extends State<Method3Section> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                 "Method 3",
                 style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
               ),
-              Consumer<ValueProvider>(
-                builder: (context, drop, child) {
-                  return SizedBox(
-                    width: 130,
-                    height: 35,
-                    child: SearchField<String>(
-                      suggestionDirection: SuggestionDirection.up,
-                      suggestions: widget.symbols,
-                      suggestionState: Suggestion.hidden,
-                      selectedValue: widget.symbols.any((e) => e.searchKey == drop.m3SelectedItem?.searchKey)
-                          ? drop.m3SelectedItem
-                          : null,
-                      searchInputDecoration: SearchInputDecoration(
-                        hintText: "Symbols",
-                        filled: true,
-                        fillColor: Colors.white,
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(color: Colors.black, width: 1),
-                        ),
-
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(color: Color.fromRGBO(33, 52, 72, 1), width: 1.5),
-                        ),
-                      ),
-                      maxSuggestionsInViewPort: 3,
-                      onSearchTextChanged: (searchText) {
-                        if (searchText.isEmpty) {
-                          return List<SearchFieldListItem<String>>.from(widget.symbols);
-                        }
-                        context.read<ValueProvider>().m3ClearSelectedValue();
-                        // context.read<CheckedBoxProvider>().clearState();
-
-                        final query = searchText.toUpperCase();
-                        return widget.symbols.where((s) {
-                          final key = s.searchKey.toUpperCase();
-                          final value = (s.value ?? '').toUpperCase();
-                          return key.contains(query) || value.contains(query);
-                        }).toList();
-                      },
-                      onSuggestionTap: (SearchFieldListItem<String> item) {
-                        context.read<ValueProvider>().setM3SelectedItem(item, context);
-                      },
-                      onSubmit: (item) {
-                        Provider.of<ValueProvider>(
-                          context,
-                          listen: false,
-                        ).setM3SelectedItem(SearchFieldListItem(item), context);
-                      },
-                    ),
-                  );
-                },
-              ),
-              Consumer<ValueProvider>(
-                builder: (context, drop, child) {
-                  return SizedBox(
-                    height: 35,
-                    width: 70,
-                    child: TextFormField(
-                      controller: drop.m3VolumeController,
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      onChanged: (newValue) {
-                        final parsedValue = double.tryParse(newValue);
-                        if (parsedValue != null) {
-                          drop.setM3Volume(parsedValue);
-                        }
-                      },
-                      textAlignVertical: TextAlignVertical.center,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 6),
-
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(color: Colors.black),
-                        ),
-
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(color: Color.fromRGBO(33, 52, 72, 1), width: 1.5),
-                        ),
-                      ),
-
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                  );
-                },
-              ),
-              Consumer<CheckedBoxProvider>(
-                builder: (context, checkedBox, child) {
-                  return Checkbox(
-                    value: checkedBox.isM3Checked,
-                    onChanged: (bool? newValue) {
-                      setState(() {
-                        checkedBox.changeValue('method3', 'M3Checked', context);
-                      });
-                    },
-                    activeColor: Colors.green,
-                    checkColor: Colors.white,
-                  );
-                },
-              ),
             ],
+          ),
+          SizedBox(height: 15),
+          Container(
+            constraints: BoxConstraints(maxWidth: double.infinity),
+            decoration: BoxDecoration(border: BoxBorder.all()),
+            padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 10, bottom: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Consumer<ValueProvider>(
+                  builder: (context, drop, child) {
+                    return SizedBox(
+                      width: 150,
+                      height: 35,
+                      child: SearchField<String>(
+                        suggestions: widget.symbols,
+                        suggestionState: Suggestion.hidden,
+                        selectedValue: widget.symbols.any((e) => e.searchKey == drop.m3SelectedItem?.searchKey)
+                            ? drop.m3SelectedItem
+                            : null,
+                        searchInputDecoration: SearchInputDecoration(
+                          hintText: "Symbols",
+                          filled: true,
+                          fillColor: Colors.white,
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(color: Colors.black, width: 1),
+                          ),
+
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(color: Color.fromRGBO(33, 52, 72, 1), width: 1.5),
+                          ),
+                        ),
+                        maxSuggestionsInViewPort: 6,
+                        onSearchTextChanged: (searchText) {
+                          if (searchText.isEmpty) {
+                            return List<SearchFieldListItem<String>>.from(widget.symbols);
+                          }
+                          context.read<ValueProvider>().m3ClearSelectedValue();
+                          // context.read<CheckedBoxProvider>().clearState();
+
+                          final query = searchText.toUpperCase();
+                          return widget.symbols.where((s) {
+                            final key = s.searchKey.toUpperCase();
+                            final value = (s.value ?? '').toUpperCase();
+                            return key.contains(query) || value.contains(query);
+                          }).toList();
+                        },
+                        onSuggestionTap: (SearchFieldListItem<String> item) {
+                          context.read<ValueProvider>().setM3SelectedItem(item, context);
+                        },
+                        onSubmit: (item) {
+                          Provider.of<ValueProvider>(
+                            context,
+                            listen: false,
+                          ).setM3SelectedItem(SearchFieldListItem(item), context);
+                        },
+                      ),
+                    );
+                  },
+                ),
+                Consumer<ValueProvider>(
+                  builder: (context, drop, child) {
+                    return SizedBox(
+                      height: 35,
+                      width: 90,
+                      child: TextFormField(
+                        controller: drop.m3VolumeController,
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        onChanged: (newValue) {
+                          final parsedValue = double.tryParse(newValue);
+                          if (parsedValue != null) {
+                            drop.setM3Volume(parsedValue);
+                          }
+                        },
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 6),
+
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(color: Colors.black),
+                          ),
+
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(color: Color.fromRGBO(33, 52, 72, 1), width: 1.5),
+                          ),
+                        ),
+
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                    );
+                  },
+                ),
+                Consumer<CheckedBoxProvider>(
+                  builder: (context, checkedBox, child) {
+                    return Checkbox(
+                      value: checkedBox.isM3Checked,
+                      onChanged: (bool? newValue) {
+                        setState(() {
+                          checkedBox.changeValue('method3', 'M3Checked', context);
+                        });
+                      },
+                      activeColor: Colors.green,
+                      checkColor: Colors.white,
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
           // Row(
           //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
