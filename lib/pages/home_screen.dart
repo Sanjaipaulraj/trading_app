@@ -240,11 +240,11 @@ class HomeScreenState extends State<HomeScreen> {
           body: Shortcuts(
             shortcuts: {
               LogicalKeySet(LogicalKeyboardKey.keyL, LogicalKeyboardKey.control): const LongIntent(
-                method: 'method1',
+                method: 'MM1',
                 actionType: "ORDER_TYPE_BUY",
               ),
               LogicalKeySet(LogicalKeyboardKey.keyS, LogicalKeyboardKey.control): const ShortIntent(
-                method: 'method1',
+                method: 'MM1',
                 actionType: "ORDER_TYPE_SELL",
               ),
               LogicalKeySet(LogicalKeyboardKey.keyC, LogicalKeyboardKey.control): CloseIntent(
@@ -445,9 +445,9 @@ class HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
                               ),
-                              Method1Section(),
+                              ManualMethod1Section(),
                               DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(33, 52, 72, 1)),
-                              Method2Section(),
+                              ManualMethod2Section(),
                               DottedLine(lineThickness: 1.5, dashColor: Color.fromRGBO(33, 52, 72, 1)),
                             ],
                           ),

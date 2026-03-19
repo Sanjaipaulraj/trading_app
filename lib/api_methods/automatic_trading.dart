@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:auditplus_fx/models/current_method3_model.dart';
+import 'package:auditplus_fx/models/current_automation_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:auditplus_fx/Providers/providers.dart';
@@ -10,17 +10,11 @@ import 'package:toastification/toastification.dart';
 
 import 'contants.dart';
 
-Future<void> automaticTrading(BuildContext context) async {
+Future<void> automaticTrading(BuildContext context, CurrentAutomationModel data) async {
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
-  final m3Checked = Provider.of<CheckedBoxProvider>(context, listen: false).isM3Checked;
-  final valProv = Provider.of<ValueProvider>(context, listen: false);
-  final symbol = valProv.m3SelectedValue;
-  final volume = valProv.m3Volume;
-  //Set a M3Checked in shared preference
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  CurrentMethod3Model m3current = CurrentMethod3Model(symbol: symbol!, volume: volume, m3Checked: m3Checked);
-  final encoded = jsonEncode(m3current.toJson());
-  await prefs.setString('m3CurrentOpening', encoded);
+  final encoded = jsonEncode(data.toJson());
+  await prefs.setString('AutomateCurrentOpening', encoded);
 
   if (token == null) {
     toastification.show(
@@ -37,8 +31,8 @@ Future<void> automaticTrading(BuildContext context) async {
   Dio dio = Dio();
   try {
     final _ = dio.post(
-      "$url/automatic/$m3Checked",
-      data: m3current,
+      "$url/automatic",
+      data: data,
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );
   } catch (e) {

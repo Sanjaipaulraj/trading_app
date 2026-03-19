@@ -37,69 +37,47 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
   late bool hw;
   late bool mf;
 
-  if (method == 'method1') {
+  if (method == 'MM1') {
     final prov = Provider.of<ValueProvider>(context, listen: false);
     final symbol = prov.selectedValue;
     final Set<CurrentOpenModel> crntOpen = prov.currentOpening;
     for (final model in crntOpen) {
       if (model.symbol != symbol) continue;
 
-      // if (model.method == 'method2' || model.method == 'method3') {
-      if (model.method == 'method2') {
+      if (model.method == 'MM2') {
         if (model.actionType != actionType) {
           await onClosePosition(context, "POSITION_CLOSE_ID");
           break;
         }
       }
     }
-    reversalPlus = checkedProv.isM1ReversalPlusChecked;
-    reversal = checkedProv.isM1ReversalChecked;
-    signal = checkedProv.isM1SignalExitChecked;
-    tc = checkedProv.isM1TcChangeChecked;
-    hw = checkedProv.isM1HwChecked;
-    mf = checkedProv.isM1MfChecked;
-  } else if (method == 'method2') {
+    reversalPlus = checkedProv.isMM1ReversalPlusChecked;
+    reversal = checkedProv.isMM1ReversalChecked;
+    signal = checkedProv.isMM1SignalExitChecked;
+    tc = checkedProv.isMM1TcChangeChecked;
+    hw = checkedProv.isMM1HwChecked;
+    mf = checkedProv.isMM1MfChecked;
+  } else if (method == 'MM2') {
     final prov = Provider.of<ValueProvider>(context, listen: false);
     final symbol = prov.selectedValue;
     final Set<CurrentOpenModel> crntOpen = prov.currentOpening;
     for (final model in crntOpen) {
       if (model.symbol != symbol) continue;
 
-      // if (model.method == 'method1' || model.method == 'method3') {
-      if (model.method == 'method1') {
+      if (model.method == 'MM1') {
         if (model.actionType != actionType) {
           await onClosePosition(context, "POSITION_CLOSE_ID");
           break;
         }
       }
     }
-    reversalPlus = checkedProv.isM2ReversalPlusChecked;
-    reversal = checkedProv.isM2ReversalChecked;
-    signal = checkedProv.isM2SignalExitChecked;
-    tc = checkedProv.isM2TcChangeChecked;
-    hw = checkedProv.isM2HwChecked;
-    mf = checkedProv.isM2MfChecked;
+    reversalPlus = checkedProv.isMM2ReversalPlusChecked;
+    reversal = checkedProv.isMM2ReversalChecked;
+    signal = checkedProv.isMM2SignalExitChecked;
+    tc = checkedProv.isMM2TcChangeChecked;
+    hw = checkedProv.isMM2HwChecked;
+    mf = checkedProv.isMM2MfChecked;
   }
-  // else if (method == 'method3') {
-  //   final prov = Provider.of<ValueProvider>(context, listen: false);
-  //   final symbol = prov.selectedValue;
-  //   final Set<CurrentOpenModel> crntOpen = prov.currentOpening;
-  //   for (final model in crntOpen) {
-  //     if (model.symbol != symbol) continue;
-
-  //     if (model.method == 'method1' || model.method == 'method2') {
-  //       if (model.actionType != actionType) {
-  //         await onClosePosition(context, "POSITION_CLOSE_ID");
-  //         break;
-  //       }
-  //     }
-  //   }
-  //   reversalPlus = checkedProv.isM3ReversalPlusChecked;
-  //   reversal = checkedProv.isM3ReversalChecked;
-  //   signal = checkedProv.isM3SignalExitChecked;
-  //   tc = checkedProv.isM3TcChangeChecked;
-  //   hw = checkedProv.isM3HwChecked;
-  // }
 
   final data = OpenRequestModel(
     actionType: actionType,
@@ -127,26 +105,19 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     late bool tc;
     late bool hw;
 
-    if (method == 'method1') {
-      reversalPlus = checkedProv.isM1ReversalPlusChecked;
-      reversal = checkedProv.isM1ReversalChecked;
-      signal = checkedProv.isM1SignalExitChecked;
-      tc = checkedProv.isM1TcChangeChecked;
-      hw = checkedProv.isM1HwChecked;
-    } else if (method == 'method2') {
-      reversalPlus = checkedProv.isM2ReversalPlusChecked;
-      reversal = checkedProv.isM2ReversalChecked;
-      signal = checkedProv.isM2SignalExitChecked;
-      tc = checkedProv.isM2TcChangeChecked;
-      hw = checkedProv.isM2HwChecked;
+    if (method == 'MM1') {
+      reversalPlus = checkedProv.isMM1ReversalPlusChecked;
+      reversal = checkedProv.isMM1ReversalChecked;
+      signal = checkedProv.isMM1SignalExitChecked;
+      tc = checkedProv.isMM1TcChangeChecked;
+      hw = checkedProv.isMM1HwChecked;
+    } else if (method == 'MM2') {
+      reversalPlus = checkedProv.isMM2ReversalPlusChecked;
+      reversal = checkedProv.isMM2ReversalChecked;
+      signal = checkedProv.isMM2SignalExitChecked;
+      tc = checkedProv.isMM2TcChangeChecked;
+      hw = checkedProv.isMM2HwChecked;
     }
-    // else if (method == 'method3') {
-    //   reversalPlus = checkedProv.isM3ReversalPlusChecked;
-    //   reversal = checkedProv.isM3ReversalChecked;
-    //   signal = checkedProv.isM3SignalExitChecked;
-    //   tc = checkedProv.isM3TcChangeChecked;
-    //   hw = checkedProv.isM3HwChecked;
-    // }
 
     final mod = CurrentOpenModel(
       symbol: symbol!,
@@ -160,15 +131,6 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
       moneyFlow: mf,
     );
     Provider.of<ValueProvider>(context, listen: false).addCurrentOpen(mod);
-    // Only 2xx responses reach here
-    // toastification.show(
-    //   backgroundColor: const Color.fromARGB(55, 172, 221, 159),
-    //   title: const Text('Success!'),
-    //   description: const Text('Send successfully'),
-    //   type: ToastificationType.success,
-    //   alignment: Alignment.center,
-    //   autoCloseDuration: Duration(seconds: 1),
-    // );
   } on DioException catch (e) {
     final statusCode = e.response?.statusCode;
 

@@ -9,19 +9,21 @@ import '../models/models.dart';
 
 class ValueProvider extends ChangeNotifier {
   String? selectedValue;
-  String? m3SelectedValue;
+  String? amSelectedValue;
   bool isAutomaticEnabled = false;
   SearchFieldListItem<String>? selectedItem;
-  SearchFieldListItem<String>? m3SelectedItem;
+  SearchFieldListItem<String>? amSelectedItem;
   num volume = 0.01;
-  num m3Volume = 0.01;
+  num am1Volume = 0.01;
+  num am2Volume = 0.01;
   final TextEditingController volumeController = TextEditingController();
-  final TextEditingController m3VolumeController = TextEditingController();
+  final TextEditingController am1VolumeController = TextEditingController();
+  final TextEditingController am2VolumeController = TextEditingController();
 
   bool _isLoading = true;
   Set<CurrentOpenModel> currentOpening = {};
   SearchFieldListItem<String>? lastActiveSymbol;
-  CurrentMethod3Model? lastM3Open;
+  CurrentAutomationModel? lastAMOpen;
   bool get isLoading => _isLoading;
 
   ValueProvider(BuildContext context) {
@@ -68,10 +70,16 @@ class ValueProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setM3Volume(double newVolume) async {
-    m3Volume = newVolume;
-    m3VolumeController.text = newVolume.toString();
-    notifyListeners();
+  void setAMVolume(String method, double newVolume) async {
+    if (method == 'AM1') {
+      am1Volume = newVolume;
+      am1VolumeController.text = newVolume.toString();
+      notifyListeners();
+    } else {
+      am2Volume = newVolume;
+      am2VolumeController.text = newVolume.toString();
+      notifyListeners();
+    }
   }
 
   void clearSelectedValue() {
@@ -80,9 +88,9 @@ class ValueProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void m3ClearSelectedValue() {
-    m3SelectedValue = null;
-    m3SelectedItem = null;
+  void amClearSelectedValue() {
+    amSelectedValue = null;
+    amSelectedItem = null;
     notifyListeners();
   }
 
@@ -96,9 +104,9 @@ class ValueProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setM3SelectedItem(SearchFieldListItem<String> item, BuildContext context) async {
-    m3SelectedItem = item;
-    m3SelectedValue = item.searchKey;
+  void setAMSelectedItem(SearchFieldListItem<String> item, BuildContext context) async {
+    amSelectedItem = item;
+    amSelectedValue = item.searchKey;
 
     notifyListeners();
   }

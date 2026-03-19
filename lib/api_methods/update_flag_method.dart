@@ -23,18 +23,18 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
   late bool tc;
   late bool hw;
 
-  if (mod.method == 'method1') {
-    reversalPlus = checked.isM1ReversalPlusChecked;
-    reversal = checked.isM1ReversalChecked;
-    signal = checked.isM1SignalExitChecked;
-    tc = checked.isM1TcChangeChecked;
-    hw = checked.isM1HwChecked;
-  } else if (mod.method == 'method2') {
-    reversalPlus = checked.isM2ReversalPlusChecked;
-    reversal = checked.isM2ReversalChecked;
-    signal = checked.isM2SignalExitChecked;
-    tc = checked.isM2TcChangeChecked;
-    hw = checked.isM2HwChecked;
+  if (mod.method == 'MM1') {
+    reversalPlus = checked.isMM1ReversalPlusChecked;
+    reversal = checked.isMM1ReversalChecked;
+    signal = checked.isMM1SignalExitChecked;
+    tc = checked.isMM1TcChangeChecked;
+    hw = checked.isMM1HwChecked;
+  } else if (mod.method == 'MM2') {
+    reversalPlus = checked.isMM2ReversalPlusChecked;
+    reversal = checked.isMM2ReversalChecked;
+    signal = checked.isMM2SignalExitChecked;
+    tc = checked.isMM2TcChangeChecked;
+    hw = checked.isMM2HwChecked;
   }
   // else if (mod.method == 'method3') {
   //   reversalPlus = checked.isM3ReversalPlusChecked;

@@ -13,7 +13,7 @@ Future<void> liveUpdation(BuildContext context) async {
   }
   Dio dio = Dio();
   try {
-    final _ = await dio.post('$url/live_status', data: symbol);
+    final _ = await dio.post('$url/live_status/$symbol');
   } on DioException catch (e) {
     final statusCode = e.response?.statusCode;
     if (statusCode == 409) {

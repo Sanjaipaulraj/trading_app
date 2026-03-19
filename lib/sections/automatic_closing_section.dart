@@ -11,41 +11,17 @@ class AutomaticClosingSection extends StatefulWidget {
 }
 
 class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
-  String get reversalPlus => {
-    'method1': 'M1ReversalPlusChecked',
-    'method2': 'M2ReversalPlusChecked',
-    // 'method3': 'M3ReversalPlusChecked',
-  }[widget.method]!;
+  String get reversalPlus => {'MM1': 'MM1ReversalPlusChecked', 'MM2': 'MM2ReversalPlusChecked'}[widget.method]!;
 
-  String get reversal => {
-    'method1': 'M1ReversalChecked',
-    'method2': 'M2ReversalChecked',
-    // 'method3': 'M3ReversalChecked'
-  }[widget.method]!;
+  String get reversal => {'MM1': 'MM1ReversalChecked', 'MM2': 'MM2ReversalChecked'}[widget.method]!;
 
-  String get signal => {
-    'method1': 'M1SignalExitChecked',
-    'method2': 'M2SignalExitChecked',
-    // 'method3': 'M3SignalExitChecked',
-  }[widget.method]!;
+  String get signal => {'MM1': 'MM1SignalExitChecked', 'MM2': 'MM2SignalExitChecked'}[widget.method]!;
 
-  String get tc => {
-    'method1': 'M1TcChangeChecked',
-    'method2': 'M2TcChangeChecked',
-    // 'method3': 'M3TcChangeChecked'
-  }[widget.method]!;
+  String get tc => {'MM1': 'MM1TcChangeChecked', 'MM2': 'MM2TcChangeChecked'}[widget.method]!;
 
-  String get hw => {
-    'method1': 'M1HwChecked',
-    'method2': 'M2HwChecked',
-    // 'method3': 'M3HwChecked'
-  }[widget.method]!;
+  String get hw => {'MM1': 'MM1HwChecked', 'MM2': 'MM2HwChecked'}[widget.method]!;
 
-  String get mf => {
-    'method1': 'M1MfChecked',
-    'method2': 'M2MfChecked',
-    // 'method3': 'M3MfChecked'
-  }[widget.method]!;
+  String get mf => {'MM1': 'MM1MfChecked', 'MM2': 'MM2MfChecked'}[widget.method]!;
 
   @override
   Widget build(BuildContext context) {
@@ -326,30 +302,30 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
 
   bool _getCheckboxValue(String checkboxField, CheckedBoxProvider checkedBox) {
     switch (checkboxField) {
-      case 'M1ReversalPlusChecked':
-        return checkedBox.isM1ReversalPlusChecked;
-      case 'M1ReversalChecked':
-        return checkedBox.isM1ReversalChecked;
-      case 'M1SignalExitChecked':
-        return checkedBox.isM1SignalExitChecked;
-      case 'M1TcChangeChecked':
-        return checkedBox.isM1TcChangeChecked;
-      case 'M1HwChecked':
-        return checkedBox.isM1HwChecked;
-      case 'M1MfChecked':
-        return checkedBox.isM1MfChecked;
-      case 'M2ReversalPlusChecked':
-        return checkedBox.isM2ReversalPlusChecked;
-      case 'M2ReversalChecked':
-        return checkedBox.isM2ReversalChecked;
-      case 'M2SignalExitChecked':
-        return checkedBox.isM2SignalExitChecked;
-      case 'M2TcChangeChecked':
-        return checkedBox.isM2TcChangeChecked;
-      case 'M2HwChecked':
-        return checkedBox.isM2HwChecked;
-      case 'M2MfChecked':
-        return checkedBox.isM2MfChecked;
+      case 'MM1ReversalPlusChecked':
+        return checkedBox.isMM1ReversalPlusChecked;
+      case 'MM1ReversalChecked':
+        return checkedBox.isMM1ReversalChecked;
+      case 'MM1SignalExitChecked':
+        return checkedBox.isMM1SignalExitChecked;
+      case 'MM1TcChangeChecked':
+        return checkedBox.isMM1TcChangeChecked;
+      case 'MM1HwChecked':
+        return checkedBox.isMM1HwChecked;
+      case 'MM1MfChecked':
+        return checkedBox.isMM1MfChecked;
+      case 'MM2ReversalPlusChecked':
+        return checkedBox.isMM2ReversalPlusChecked;
+      case 'MM2ReversalChecked':
+        return checkedBox.isMM2ReversalChecked;
+      case 'MM2SignalExitChecked':
+        return checkedBox.isMM2SignalExitChecked;
+      case 'MM2TcChangeChecked':
+        return checkedBox.isMM2TcChangeChecked;
+      case 'MM2HwChecked':
+        return checkedBox.isMM2HwChecked;
+      case 'MM2MfChecked':
+        return checkedBox.isMM2MfChecked;
       // case 'M3ReversalPlusChecked':
       //   return checkedBox.isM3ReversalPlusChecked;
       // case 'M3ReversalChecked':

@@ -6,14 +6,14 @@ import 'package:auditplus_fx/Providers/token_provider.dart';
 import 'package:auditplus_fx/intent.dart';
 import 'package:auditplus_fx/sections/automatic_closing_section.dart';
 
-class Method1Section extends StatefulWidget {
-  const Method1Section({super.key});
+class ManualMethod1Section extends StatefulWidget {
+  const ManualMethod1Section({super.key});
 
   @override
-  State<Method1Section> createState() => _Method1SectionState();
+  State<ManualMethod1Section> createState() => _ManualMethod1SectionState();
 }
 
-class _Method1SectionState extends State<Method1Section> {
+class _ManualMethod1SectionState extends State<ManualMethod1Section> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -56,7 +56,7 @@ class _Method1SectionState extends State<Method1Section> {
                                 if (token != null) {
                                   Actions.invoke(
                                     context,
-                                    const LongIntent(method: 'method1', actionType: "ORDER_TYPE_BUY"),
+                                    const LongIntent(method: 'MM1', actionType: "ORDER_TYPE_BUY"),
                                   );
                                 } else {
                                   toastification.show(
@@ -93,7 +93,7 @@ class _Method1SectionState extends State<Method1Section> {
                                 if (token != null) {
                                   Actions.invoke(
                                     context,
-                                    const ShortIntent(method: 'method1', actionType: "ORDER_TYPE_SELL"),
+                                    const ShortIntent(method: 'MM1', actionType: "ORDER_TYPE_SELL"),
                                   );
                                 } else {
                                   toastification.show(
@@ -201,7 +201,7 @@ class _Method1SectionState extends State<Method1Section> {
               ),
             ],
           ),
-          AutomaticClosingSection(method: 'method1'),
+          AutomaticClosingSection(method: 'MM1'),
         ],
       ),
     );
@@ -219,7 +219,7 @@ class _Method1SectionState extends State<Method1Section> {
           value: _getCheckboxValue(checkboxField, checkedBox),
           onChanged: (bool? newValue) {
             setState(() {
-              checkedBox.changeValue('method1', checkboxField, context);
+              checkedBox.changeValue('MM1', checkboxField, context);
             });
           },
           activeColor: method == 'long' ? Colors.green : Colors.red,
