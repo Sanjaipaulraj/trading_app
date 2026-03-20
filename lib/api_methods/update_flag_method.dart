@@ -22,6 +22,7 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
   late bool signal;
   late bool tc;
   late bool hw;
+  late bool mf;
 
   if (mod.method == 'MM1') {
     reversalPlus = checked.isMM1ReversalPlusChecked;
@@ -29,20 +30,15 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
     signal = checked.isMM1SignalExitChecked;
     tc = checked.isMM1TcChangeChecked;
     hw = checked.isMM1HwChecked;
+    mf = checked.isMM1MfChecked;
   } else if (mod.method == 'MM2') {
     reversalPlus = checked.isMM2ReversalPlusChecked;
     reversal = checked.isMM2ReversalChecked;
     signal = checked.isMM2SignalExitChecked;
     tc = checked.isMM2TcChangeChecked;
     hw = checked.isMM2HwChecked;
+    mf = checked.isMM2MfChecked;
   }
-  // else if (mod.method == 'method3') {
-  //   reversalPlus = checked.isM3ReversalPlusChecked;
-  //   reversal = checked.isM3ReversalChecked;
-  //   signal = checked.isM3SignalExitChecked;
-  //   tc = checked.isM3TcChangeChecked;
-  //   hw = checked.isM3HwChecked;
-  // }
 
   final data = {
     'symbol': symbol,
@@ -52,6 +48,7 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
     'signalExit': signal,
     'tcChange': tc,
     'hyperWave': hw,
+    'moneyFlow': mf,
   };
 
   final dio = Dio(
