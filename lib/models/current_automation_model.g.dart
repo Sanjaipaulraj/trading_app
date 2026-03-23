@@ -12,7 +12,8 @@ CurrentAutomationModel _$CurrentAutomationModelFromJson(
   method: json['method'] as String,
   symbol: json['symbol'] as String,
   volume: json['volume'] as num,
-  isChecked: json['isChecked'] as bool,
+  isEnabled: json['isEnabled'] as bool,
+  action: json['action'] as String,
 );
 
 Map<String, dynamic> _$CurrentAutomationModelToJson(
@@ -21,5 +22,6 @@ Map<String, dynamic> _$CurrentAutomationModelToJson(
   'method': instance.method,
   'symbol': instance.symbol,
   'volume': instance.volume,
-  'isChecked': instance.isChecked,
+  'isEnabled': instance.isEnabled,
+  'action': instance.action,
 };

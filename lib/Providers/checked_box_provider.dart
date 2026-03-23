@@ -146,7 +146,8 @@ class CheckedBoxProvider extends ChangeNotifier {
       prov.amSelectedItem = SearchFieldListItem(prov.amSelectedValue!, item: prov.amSelectedValue);
 
       prov.am1VolumeController.text = prov.lastAMOpen!.volume.toString();
-      _values['AM1Checked'] = prov.lastAMOpen!.isChecked;
+      // _values['AM1Checked'] = prov.lastAMOpen!.isChecked;
+      _values['AM1Checked'] = prov.lastAMOpen!.isEnabled;
     }
 
     _isLoading = false;
@@ -159,7 +160,7 @@ class CheckedBoxProvider extends ChangeNotifier {
     await prefs.setString('checkbox_state:$_currentSymbol', jsonEncode(_values));
   }
 
-  void changeValue(String method, String field, BuildContext context) {
+  void changeValue(String? action, String method, String field, BuildContext context) {
     _values[field] = !(_values[field] ?? false);
 
     if (field.startsWith('Long')) {
@@ -203,11 +204,25 @@ class CheckedBoxProvider extends ChangeNotifier {
       print(field);
       if (field == 'AM1Checked') {
         final volume = valProv.am1Volume;
-        final data = CurrentAutomationModel(method: method, symbol: symbol!, volume: volume, isChecked: isAM1Checked);
+        // final data = CurrentAutomationModel(method: method, symbol: symbol!, volume: volume, isChecked: isAM1Checked);
+        final data = CurrentAutomationModel(
+          method: method,
+          symbol: symbol!,
+          volume: volume,
+          isEnabled: isAM1Checked,
+          action: action!,
+        );
         automaticTrading(context, data);
       } else {
         final volume = valProv.am2Volume;
-        final data = CurrentAutomationModel(method: method, symbol: symbol!, volume: volume, isChecked: isAM2Checked);
+        // final data = CurrentAutomationModel(method: method, symbol: symbol!, volume: volume, isChecked: isAM2Checked);
+        final data = CurrentAutomationModel(
+          method: method,
+          symbol: symbol!,
+          volume: volume,
+          isEnabled: isAM2Checked,
+          action: action!,
+        );
         automaticTrading(context, data);
       }
     } else {

@@ -71,7 +71,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                             backgroundColor: Color.fromRGBO(190, 190, 190, 1),
                           ),
                     onPressed: () {
-                      checkedbox.changeValue(widget.method, reversalPlus, context);
+                      // checkedbox.changeValue(widget.method, reversalPlus, context);
+                      checkedbox.changeValue(null, widget.method, reversalPlus, context);
                     },
                     child: Row(
                       spacing: 3,
@@ -108,7 +109,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                             backgroundColor: Color.fromRGBO(190, 190, 190, 1),
                           ),
                     onPressed: () {
-                      checkedbox.changeValue(widget.method, reversal, context);
+                      // checkedbox.changeValue(widget.method, reversal, context);
+                      checkedbox.changeValue(null, widget.method, reversal, context);
                     },
                     child: Text("Rev", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   ),
@@ -133,7 +135,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                             backgroundColor: Color.fromRGBO(190, 190, 190, 1),
                           ),
                     onPressed: () {
-                      checkedbox.changeValue(widget.method, signal, context);
+                      // checkedbox.changeValue(widget.method, signal, context);
+                      checkedbox.changeValue(null, widget.method, signal, context);
                     },
                     child: Row(
                       spacing: 3,
@@ -178,7 +181,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                             backgroundColor: Color.fromRGBO(190, 190, 190, 1),
                           ),
                     onPressed: () {
-                      checkedbox.changeValue(widget.method, tc, context);
+                      // checkedbox.changeValue(widget.method, tc, context);
+                      checkedbox.changeValue(null, widget.method, tc, context);
                     },
                     child: Row(
                       spacing: 3,
@@ -224,7 +228,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                             backgroundColor: Color.fromRGBO(190, 190, 190, 1),
                           ),
                     onPressed: () {
-                      checkedbox.changeValue(widget.method, hw, context);
+                      // checkedbox.changeValue(widget.method, hw, context);
+                      checkedbox.changeValue(null, widget.method, hw, context);
                     },
                     child: Row(
                       spacing: 3,
@@ -270,7 +275,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                             backgroundColor: Color.fromRGBO(190, 190, 190, 1),
                           ),
                     onPressed: () {
-                      checkedbox.changeValue(widget.method, mf, context);
+                      // checkedbox.changeValue(widget.method, mf, context);
+                      checkedbox.changeValue(null, widget.method, mf, context);
                     },
                     child: Row(
                       spacing: 3,
