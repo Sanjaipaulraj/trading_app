@@ -70,7 +70,7 @@ class HomeScreenState extends State<HomeScreen> {
       return SearchFieldListItem<String>(el, value: el.toString());
     }).toList();
 
-    context.read<CheckedBoxProvider>().loadForM3Values(context);
+    // context.read<CheckedBoxProvider>().loadForM3Values(context);
 
     if (list.isNotEmpty) {}
 
@@ -338,7 +338,9 @@ class HomeScreenState extends State<HomeScreen> {
                                               _symbolFocusNode.unfocus();
 
                                               context.read<ValueProvider>().setSelectedItem(item, context);
-                                              context.read<CheckedBoxProvider>().loadForSymbol(item.value!);
+                                              // context.read<CheckedBoxProvider>().loadForSymbol(item.value!);
+                                              context.read<CheckedBoxProvider>().loadFromApi(item.value!,'MM1');
+                                              context.read<CheckedBoxProvider>().loadFromApi(item.value!,'MM2');
                                             },
                                             onSubmit: (item) {
                                               Provider.of<ValueProvider>(

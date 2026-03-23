@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:searchfield/searchfield.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auditplus_fx/Providers/value_provider.dart';
 
 import '../api_methods/api_methods.dart';
@@ -98,69 +95,105 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isAM2Checked => _values['AM2Checked']!;
 
   bool get isM1LongAllChecked =>
-      isLongTcChecked && isLongTtChecked && isLongNeoChecked && isLongHwoChecked && isLongConfChecked;
+      isLongTcChecked &&
+      isLongTtChecked &&
+      isLongNeoChecked &&
+      isLongHwoChecked &&
+      isLongConfChecked;
 
   bool get isM1ShortAllChecked =>
-      isShortTcChecked && isShortTtChecked && isShortNeoChecked && isShortHwoChecked && isShortConfChecked;
+      isShortTcChecked &&
+      isShortTtChecked &&
+      isShortNeoChecked &&
+      isShortHwoChecked &&
+      isShortConfChecked;
 
   bool get isM2LongAllChecked =>
-      (isLongDivergenceChecked || isLongRevChecked) && isLongCatcherChecked && isLongOscChecked;
+      (isLongDivergenceChecked || isLongRevChecked) &&
+      isLongCatcherChecked &&
+      isLongOscChecked;
 
   bool get isM2ShortAllChecked =>
-      (isShortDivergenceChecked || isShortRevChecked) && isShortCatcherChecked && isShortOscChecked;
+      (isShortDivergenceChecked || isShortRevChecked) &&
+      isShortCatcherChecked &&
+      isShortOscChecked;
 
-  Future<void> loadForSymbol(String symbol) async {
-    _isLoading = true;
-    notifyListeners();
+  // Future<void> loadForSymbol(String symbol) async {
+  //   _isLoading = true;
+  //   notifyListeners();
+  //   _currentSymbol = symbol;
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final data = prefs.getString('checkbox_state:$symbol');
+  //   if (data == null) {
+  //     _values = _emptyValues();
+  //   } else {
+  //     final decoded = Map<String, dynamic>.from(jsonDecode(data));
+  //     _values = decoded.map((k, v) => MapEntry(k, v as bool));
+  //   }
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
+  // Future<void> loadForM3Values(BuildContext context) async {
+  //   _isLoading = true;
+  //   notifyListeners();
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final String? data = prefs.getString('AutomateCurrentOpening');
+  //   if (data != null) {
+  //     final Map<String, dynamic> am1Decoded = jsonDecode(data);
+  //     if (!context.mounted) return;
+  //     final prov = Provider.of<ValueProvider>(context, listen: false);
+  //     prov.lastAMOpen = CurrentAutomationModel.fromJson(am1Decoded);
+  //     prov.amSelectedValue = prov.lastAMOpen!.symbol;
+  //     prov.amSelectedItem = SearchFieldListItem(
+  //       prov.amSelectedValue!,
+  //       item: prov.amSelectedValue,
+  //     );
+  //     prov.am1VolumeController.text = prov.lastAMOpen!.volume.toString();
+  //     // _values['AM1Checked'] = prov.lastAMOpen!.isChecked;
+  //     _values['AM1Checked'] = prov.lastAMOpen!.isEnabled;
+  //   }
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
+  Future<void> loadFromApi(String symbol, String section) async {
+  _isLoading = true;
+  notifyListeners();
 
-    _currentSymbol = symbol;
-    final prefs = await SharedPreferences.getInstance();
+  _currentSymbol = symbol;
 
-    final data = prefs.getString('checkbox_state:$symbol');
-    if (data == null) {
-      _values = _emptyValues();
-    } else {
-      final decoded = Map<String, dynamic>.from(jsonDecode(data));
-      _values = decoded.map((k, v) => MapEntry(k, v as bool));
-    }
+  try {
+    final result = await getSymbolSetting(
+      symbol: symbol,
+      section: section,
+    );
 
-    _isLoading = false;
-    notifyListeners();
+    // ✅ FIX: merge instead of overwrite
+    result.forEach((key, value) {
+      _values[key] = value;
+    });
+
+  } catch (e) {
+    _values = _emptyValues();
   }
 
-  Future<void> loadForM3Values(BuildContext context) async {
-    _isLoading = true;
-    notifyListeners();
+  _isLoading = false;
+  notifyListeners();
+}
+  // Future<void> _persist() async {
+  //   if (_currentSymbol == null) return;
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString(
+  //     'checkbox_state:$_currentSymbol',
+  //     jsonEncode(_values),
+  //   );
+  // }
 
-    final prefs = await SharedPreferences.getInstance();
-    final String? data = prefs.getString('AutomateCurrentOpening');
-
-    if (data != null) {
-      final Map<String, dynamic> am1Decoded = jsonDecode(data);
-
-      if (!context.mounted) return;
-      final prov = Provider.of<ValueProvider>(context, listen: false);
-
-      prov.lastAMOpen = CurrentAutomationModel.fromJson(am1Decoded);
-      prov.amSelectedValue = prov.lastAMOpen!.symbol;
-      prov.amSelectedItem = SearchFieldListItem(prov.amSelectedValue!, item: prov.amSelectedValue);
-
-      prov.am1VolumeController.text = prov.lastAMOpen!.volume.toString();
-      // _values['AM1Checked'] = prov.lastAMOpen!.isChecked;
-      _values['AM1Checked'] = prov.lastAMOpen!.isEnabled;
-    }
-
-    _isLoading = false;
-    notifyListeners();
-  }
-
-  Future<void> _persist() async {
-    if (_currentSymbol == null) return;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('checkbox_state:$_currentSymbol', jsonEncode(_values));
-  }
-
-  void changeValue(String? action, String method, String field, BuildContext context) {
+  void changeValue(
+    String? action,
+    String method,
+    String field,
+    BuildContext context,
+  ) {
     _values[field] = !(_values[field] ?? false);
 
     if (field.startsWith('Long')) {
@@ -176,7 +209,13 @@ class CheckedBoxProvider extends ChangeNotifier {
       _values[field] = _values[field]!;
     }
 
-    _persist();
+    symbolSetting(
+      symbol: _currentSymbol!,
+      section: method, // MM1 / MM2
+      checkedValues: _values,
+    );
+
+    // _persist();
     notifyListeners();
     if (field == 'MM1ReversalPlusChecked' ||
         field == 'MM1ReversalChecked' ||
@@ -184,9 +223,17 @@ class CheckedBoxProvider extends ChangeNotifier {
         field == 'MM1TcChangeChecked' ||
         field == 'MM1HwChecked' ||
         field == 'MM1MfChecked') {
-      final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
-      final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
-      var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
+      final symbol = Provider.of<ValueProvider>(
+        context,
+        listen: false,
+      ).selectedValue;
+      final crnt = Provider.of<ValueProvider>(
+        context,
+        listen: false,
+      ).currentOpening;
+      var crntMod = crnt.firstWhere(
+        (el) => el.symbol == symbol && el.method == method,
+      );
       updateTradeFlags(crntMod, context);
     } else if (field == 'MM2ReversalPlusChecked' ||
         field == 'MM2ReversalChecked' ||
@@ -194,9 +241,17 @@ class CheckedBoxProvider extends ChangeNotifier {
         field == 'MM2TcChangeChecked' ||
         field == 'MM2HwChecked' ||
         field == 'MM2MfChecked') {
-      final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
-      final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
-      var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
+      final symbol = Provider.of<ValueProvider>(
+        context,
+        listen: false,
+      ).selectedValue;
+      final crnt = Provider.of<ValueProvider>(
+        context,
+        listen: false,
+      ).currentOpening;
+      var crntMod = crnt.firstWhere(
+        (el) => el.symbol == symbol && el.method == method,
+      );
       updateTradeFlags(crntMod, context);
     } else if (field == 'AM1Checked' || field == 'AM2Checked') {
       final valProv = Provider.of<ValueProvider>(context, listen: false);

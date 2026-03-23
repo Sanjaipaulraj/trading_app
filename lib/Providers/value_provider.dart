@@ -50,8 +50,9 @@ class ValueProvider extends ChangeNotifier {
     if (lastSymbol != null) {
       selectedValue = lastSymbol;
       selectedItem = SearchFieldListItem<String>(lastSymbol, item: lastSymbol);
+      // Provider.of<CheckedBoxProvider>(context, listen: false).loadForSymbol(selectedValue!);
       // ignore: use_build_context_synchronously
-      Provider.of<CheckedBoxProvider>(context, listen: false).loadForSymbol(selectedValue!);
+      Provider.of<CheckedBoxProvider>(context, listen: false).loadFromApi(selectedValue!,'MM');
     }
     _isLoading = false;
     notifyListeners();
