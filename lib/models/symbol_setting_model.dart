@@ -6,7 +6,7 @@ part 'symbol_setting_model.g.dart';
 class SymbolSettingModel {
   String symbol;
   String section;
-Map<String,dynamic> checkedValues;
+  Map<String, dynamic> checkedValues;
 
   SymbolSettingModel({required this.symbol, required this.section, required this.checkedValues});
 

@@ -95,28 +95,16 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isAM2Checked => _values['AM2Checked']!;
 
   bool get isM1LongAllChecked =>
-      isLongTcChecked &&
-      isLongTtChecked &&
-      isLongNeoChecked &&
-      isLongHwoChecked &&
-      isLongConfChecked;
+      isLongTcChecked && isLongTtChecked && isLongNeoChecked && isLongHwoChecked && isLongConfChecked;
 
   bool get isM1ShortAllChecked =>
-      isShortTcChecked &&
-      isShortTtChecked &&
-      isShortNeoChecked &&
-      isShortHwoChecked &&
-      isShortConfChecked;
+      isShortTcChecked && isShortTtChecked && isShortNeoChecked && isShortHwoChecked && isShortConfChecked;
 
   bool get isM2LongAllChecked =>
-      (isLongDivergenceChecked || isLongRevChecked) &&
-      isLongCatcherChecked &&
-      isLongOscChecked;
+      (isLongDivergenceChecked || isLongRevChecked) && isLongCatcherChecked && isLongOscChecked;
 
   bool get isM2ShortAllChecked =>
-      (isShortDivergenceChecked || isShortRevChecked) &&
-      isShortCatcherChecked &&
-      isShortOscChecked;
+      (isShortDivergenceChecked || isShortRevChecked) && isShortCatcherChecked && isShortOscChecked;
 
   // Future<void> loadForSymbol(String symbol) async {
   //   _isLoading = true;
@@ -156,29 +144,25 @@ class CheckedBoxProvider extends ChangeNotifier {
   //   notifyListeners();
   // }
   Future<void> loadFromApi(String symbol, String section) async {
-  _isLoading = true;
-  notifyListeners();
+    _isLoading = true;
+    notifyListeners();
 
-  _currentSymbol = symbol;
+    _currentSymbol = symbol;
 
-  try {
-    final result = await getSymbolSetting(
-      symbol: symbol,
-      section: section,
-    );
+    try {
+      final result = await getSymbolSetting(symbol: symbol, section: section);
 
-    // ✅ FIX: merge instead of overwrite
-    result.forEach((key, value) {
-      _values[key] = value;
-    });
+      // ✅ FIX: merge instead of overwrite
+      result.forEach((key, value) {
+        _values[key] = value;
+      });
+    } catch (e) {
+      _values = _emptyValues();
+    }
 
-  } catch (e) {
-    _values = _emptyValues();
+    _isLoading = false;
+    notifyListeners();
   }
-
-  _isLoading = false;
-  notifyListeners();
-}
   // Future<void> _persist() async {
   //   if (_currentSymbol == null) return;
   //   final prefs = await SharedPreferences.getInstance();
@@ -188,12 +172,7 @@ class CheckedBoxProvider extends ChangeNotifier {
   //   );
   // }
 
-  void changeValue(
-    String? action,
-    String method,
-    String field,
-    BuildContext context,
-  ) {
+  void changeValue(String? action, String method, String field, BuildContext context) {
     _values[field] = !(_values[field] ?? false);
 
     if (field.startsWith('Long')) {
@@ -223,17 +202,9 @@ class CheckedBoxProvider extends ChangeNotifier {
         field == 'MM1TcChangeChecked' ||
         field == 'MM1HwChecked' ||
         field == 'MM1MfChecked') {
-      final symbol = Provider.of<ValueProvider>(
-        context,
-        listen: false,
-      ).selectedValue;
-      final crnt = Provider.of<ValueProvider>(
-        context,
-        listen: false,
-      ).currentOpening;
-      var crntMod = crnt.firstWhere(
-        (el) => el.symbol == symbol && el.method == method,
-      );
+      final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+      final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
+      var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
       updateTradeFlags(crntMod, context);
     } else if (field == 'MM2ReversalPlusChecked' ||
         field == 'MM2ReversalChecked' ||
@@ -241,46 +212,40 @@ class CheckedBoxProvider extends ChangeNotifier {
         field == 'MM2TcChangeChecked' ||
         field == 'MM2HwChecked' ||
         field == 'MM2MfChecked') {
-      final symbol = Provider.of<ValueProvider>(
-        context,
-        listen: false,
-      ).selectedValue;
-      final crnt = Provider.of<ValueProvider>(
-        context,
-        listen: false,
-      ).currentOpening;
-      var crntMod = crnt.firstWhere(
-        (el) => el.symbol == symbol && el.method == method,
-      );
+      final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+      final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
+      var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
       updateTradeFlags(crntMod, context);
-    } else if (field == 'AM1Checked' || field == 'AM2Checked') {
-      final valProv = Provider.of<ValueProvider>(context, listen: false);
-      final symbol = valProv.amSelectedValue;
-      print(field);
-      if (field == 'AM1Checked') {
-        final volume = valProv.am1Volume;
-        // final data = CurrentAutomationModel(method: method, symbol: symbol!, volume: volume, isChecked: isAM1Checked);
-        final data = CurrentAutomationModel(
-          method: method,
-          symbol: symbol!,
-          volume: volume,
-          isEnabled: isAM1Checked,
-          action: action!,
-        );
-        automaticTrading(context, data);
-      } else {
-        final volume = valProv.am2Volume;
-        // final data = CurrentAutomationModel(method: method, symbol: symbol!, volume: volume, isChecked: isAM2Checked);
-        final data = CurrentAutomationModel(
-          method: method,
-          symbol: symbol!,
-          volume: volume,
-          isEnabled: isAM2Checked,
-          action: action!,
-        );
-        automaticTrading(context, data);
-      }
-    } else {
+    }
+    // else if (field == 'AM1Checked' || field == 'AM2Checked') {
+    //   final valProv = Provider.of<ValueProvider>(context, listen: false);
+    //   final symbol = valProv.amSelectedValue;
+    //   print(field);
+    //   if (field == 'AM1Checked') {
+    //     final volume = valProv.am1Volume;
+    //     // final data = CurrentAutomationModel(method: method, symbol: symbol!, volume: volume, isChecked: isAM1Checked);
+    //     final data = CurrentAutomationModel(
+    //       method: method,
+    //       symbol: symbol!,
+    //       volume: volume,
+    //       isEnabled: isAM1Checked,
+    //       action: action!,
+    //     );
+    //     automaticTrading(context, data);
+    //   } else {
+    //     final volume = valProv.am2Volume;
+    //     // final data = CurrentAutomationModel(method: method, symbol: symbol!, volume: volume, isChecked: isAM2Checked);
+    //     final data = CurrentAutomationModel(
+    //       method: method,
+    //       symbol: symbol!,
+    //       volume: volume,
+    //       isEnabled: isAM2Checked,
+    //       action: action!,
+    //     );
+    //     automaticTrading(context, data);
+    //   }
+    // }
+    else {
       return;
     }
   }

@@ -7,3 +7,5 @@ export 'db_report_model.dart';
 export 'get_report_model.dart';
 export 'open_response_model.dart';
 export 'trade_history_model.dart';
+export 'local_values_model.dart';
+export 'symbol_setting_model.dart';
