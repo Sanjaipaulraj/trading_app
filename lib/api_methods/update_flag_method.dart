@@ -7,7 +7,8 @@ import 'contants.dart';
 
 Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async {
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
-  final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+  // final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+  final symbol = Provider.of<ValueProvider>(context, listen: false).manualSelectedValue;
 
   if (symbol == null) return;
 

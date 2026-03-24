@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class MytokenProvider extends ChangeNotifier {
   String? token;
@@ -12,22 +12,22 @@ class MytokenProvider extends ChangeNotifier {
   }
 
   Future<void> _loadToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // token = prefs.getString('token');
     _isLoading = false;
     notifyListeners();
   }
 
   void setToken(String tok) async {
     token = tok;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', tok);
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // await prefs.setString('token', tok);
     notifyListeners();
   }
 
   void clearToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('token');
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // await prefs.remove('token');
     token = null;
     notifyListeners();
   }

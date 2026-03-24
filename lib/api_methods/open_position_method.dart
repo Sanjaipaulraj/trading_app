@@ -28,8 +28,10 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
   Dio dio = Dio();
   final valueProv = Provider.of<ValueProvider>(context, listen: false);
   final checkedProv = Provider.of<CheckedBoxProvider>(context, listen: false);
-  final symbol = valueProv.selectedValue;
-  final volume = valueProv.volume;
+  // final symbol = valueProv.selectedValue;
+  final symbol = valueProv.manualSelectedValue;
+  // final volume = valueProv.volume;
+  final volume = valueProv.manualVolume;
   late bool reversalPlus;
   late bool reversal;
   late bool signal;
@@ -39,7 +41,8 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
 
   if (method == 'MM1') {
     final prov = Provider.of<ValueProvider>(context, listen: false);
-    final symbol = prov.selectedValue;
+    // final symbol = prov.selectedValue;
+    final symbol = prov.manualSelectedValue;
     final Set<CurrentOpenModel> crntOpen = prov.currentOpening;
     for (final model in crntOpen) {
       if (model.symbol != symbol) continue;
@@ -59,7 +62,8 @@ Future<void> openPosition(String method, String actionType, num? takeProfit, Bui
     mf = checkedProv.isMM1MfChecked;
   } else if (method == 'MM2') {
     final prov = Provider.of<ValueProvider>(context, listen: false);
-    final symbol = prov.selectedValue;
+    // final symbol = prov.selectedValue;
+    final symbol = prov.manualSelectedValue;
     final Set<CurrentOpenModel> crntOpen = prov.currentOpening;
     for (final model in crntOpen) {
       if (model.symbol != symbol) continue;

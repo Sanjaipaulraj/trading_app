@@ -4,10 +4,11 @@ part 'get_symbol_setting_model.g.dart';
 
 @JsonSerializable()
 class GetSymbolSettingModel {
+  String userId;
   String symbol;
   String section;
 
-  GetSymbolSettingModel({required this.symbol, required this.section});
+  GetSymbolSettingModel({required this.symbol, required this.section,required this.userId});
 
   factory GetSymbolSettingModel.fromJson(Map<String, dynamic> json) => _$GetSymbolSettingModelFromJson(json);
 
@@ -15,6 +16,6 @@ class GetSymbolSettingModel {
 
   @override
   String toString() {
-    return "GetSymbolSettingModel{Symbol : $symbol,Section: $section}";
+    return "GetSymbolSettingModel{Symbol : $symbol,Section: $section,UserId: $userId}";
   }
 }

@@ -5,8 +5,8 @@ import 'contants.dart';
 
 Future<LocalValuesModel> getLocalValues() async {
   final dio = Dio();
-
-  final response = await dio.post('$url/get-local');
+  final userId = "1";
+  final response = await dio.post('$url/get-local/$userId');
   return LocalValuesModel.fromJson(response.data);
 }
 

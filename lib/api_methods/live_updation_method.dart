@@ -7,7 +7,8 @@ import 'contants.dart';
 
 Future<void> liveUpdation(BuildContext context) async {
   final valProv = Provider.of<ValueProvider>(context, listen: false);
-  String? symbol = valProv.selectedValue;
+  // String? symbol = valProv.selectedValue;
+  String? symbol = valProv.manualSelectedValue;
   if (symbol == null) {
     return;
   }

@@ -183,7 +183,7 @@ class HomeScreenState extends State<HomeScreen> {
                 builder: (context, auto, child) {
                   return TextButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: auto.isAutomaticEnabled
+                      backgroundColor: auto.isAutomaticSectionEnabled
                           ? Color.fromRGBO(44, 187, 104, 1)
                           : Color.fromRGBO(189, 232, 245, 1),
                       foregroundColor: Colors.black,
@@ -274,7 +274,7 @@ class HomeScreenState extends State<HomeScreen> {
                       },
                     ),
                   },
-                  child: auto.isAutomaticEnabled
+                  child: auto.isAutomaticSectionEnabled
                       ? AutomationScreen(symbols: symbols)
                       : SingleChildScrollView(
                           child: Column(
@@ -298,7 +298,7 @@ class HomeScreenState extends State<HomeScreen> {
                                             focusNode: _symbolFocusNode,
                                             suggestions: symbols,
                                             suggestionState: Suggestion.hidden,
-                                            selectedValue: drop.selectedItem,
+                                            selectedValue: drop.manualSelectedItem,
                                             searchInputDecoration: SearchInputDecoration(
                                               hintText: "Symbols",
                                               filled: true,
@@ -339,8 +339,8 @@ class HomeScreenState extends State<HomeScreen> {
 
                                               context.read<ValueProvider>().setSelectedItem(item, context);
                                               // context.read<CheckedBoxProvider>().loadForSymbol(item.value!);
-                                              context.read<CheckedBoxProvider>().loadFromApi(item.value!,'MM1');
-                                              context.read<CheckedBoxProvider>().loadFromApi(item.value!,'MM2');
+                                              context.read<CheckedBoxProvider>().loadFromApi(item.value!,'MM');
+                                              context.read<CheckedBoxProvider>().loadFromApi(item.value!,'AM');
                                             },
                                             onSubmit: (item) {
                                               Provider.of<ValueProvider>(
@@ -358,13 +358,13 @@ class HomeScreenState extends State<HomeScreen> {
                                           height: 35,
                                           width: 90,
                                           child: TextFormField(
-                                            controller: drop.volumeController,
+                                            controller: drop.manualVolumeController,
                                             keyboardType: TextInputType.number,
                                             textAlign: TextAlign.center,
                                             onChanged: (newValue) {
                                               final parsedValue = double.tryParse(newValue);
                                               if (parsedValue != null) {
-                                                drop.setVolume(parsedValue);
+                                                drop.setManualVolume(parsedValue);
                                               }
                                             },
                                             textAlignVertical: TextAlignVertical.center,
@@ -415,7 +415,7 @@ class HomeScreenState extends State<HomeScreen> {
                                           onPressed: () {
                                             final token = Provider.of<MytokenProvider>(listen: false, context).token;
                                             if (token != null) {
-                                              var symbol = context.read<ValueProvider>().selectedValue;
+                                              var symbol = context.read<ValueProvider>().manualSelectedValue;
                                               Actions.invoke(context, CloseIntent(actionType: "POSITION_CLOSE_ID"));
                                               if (symbol == null) {
                                                 toastification.show(

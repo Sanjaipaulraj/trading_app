@@ -108,7 +108,8 @@ class _AutomationScreenState extends State<AutomationScreen> {
                               height: 35,
                               width: 90,
                               child: TextFormField(
-                                controller: drop.am1VolumeController,
+                                // controller: drop.am1VolumeController,
+                                controller: drop.amVolumeController,
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.center,
                                 onChanged: (newValue) {

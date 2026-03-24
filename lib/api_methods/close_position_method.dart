@@ -25,7 +25,8 @@ Future<void> onClosePosition(BuildContext context, String actionType) async {
   }
 
   Dio dio = Dio();
-  final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+  // final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+  final symbol = Provider.of<ValueProvider>(context, listen: false).manualSelectedValue;
   String description = "Manual Close";
   final data = CloseRequestModel(actionType: actionType, symbol: symbol, description: description);
   try {

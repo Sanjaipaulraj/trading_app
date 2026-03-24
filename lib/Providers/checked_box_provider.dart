@@ -95,16 +95,28 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isAM2Checked => _values['AM2Checked']!;
 
   bool get isM1LongAllChecked =>
-      isLongTcChecked && isLongTtChecked && isLongNeoChecked && isLongHwoChecked && isLongConfChecked;
+      isLongTcChecked &&
+      isLongTtChecked &&
+      isLongNeoChecked &&
+      isLongHwoChecked &&
+      isLongConfChecked;
 
   bool get isM1ShortAllChecked =>
-      isShortTcChecked && isShortTtChecked && isShortNeoChecked && isShortHwoChecked && isShortConfChecked;
+      isShortTcChecked &&
+      isShortTtChecked &&
+      isShortNeoChecked &&
+      isShortHwoChecked &&
+      isShortConfChecked;
 
   bool get isM2LongAllChecked =>
-      (isLongDivergenceChecked || isLongRevChecked) && isLongCatcherChecked && isLongOscChecked;
+      (isLongDivergenceChecked || isLongRevChecked) &&
+      isLongCatcherChecked &&
+      isLongOscChecked;
 
   bool get isM2ShortAllChecked =>
-      (isShortDivergenceChecked || isShortRevChecked) && isShortCatcherChecked && isShortOscChecked;
+      (isShortDivergenceChecked || isShortRevChecked) &&
+      isShortCatcherChecked &&
+      isShortOscChecked;
 
   // Future<void> loadForSymbol(String symbol) async {
   //   _isLoading = true;
@@ -150,7 +162,8 @@ class CheckedBoxProvider extends ChangeNotifier {
     _currentSymbol = symbol;
 
     try {
-      final result = await getSymbolSetting(symbol: symbol, section: section);
+      final result = await getSymbolSetting(userId: "1"
+      ,symbol: symbol, section: section);
 
       // ✅ FIX: merge instead of overwrite
       result.forEach((key, value) {
@@ -172,7 +185,12 @@ class CheckedBoxProvider extends ChangeNotifier {
   //   );
   // }
 
-  void changeValue(String? action, String method, String field, BuildContext context) {
+  void changeValue(
+    String? action,
+    String method,
+    String field,
+    BuildContext context,
+  ) {
     _values[field] = !(_values[field] ?? false);
 
     if (field.startsWith('Long')) {
@@ -202,9 +220,18 @@ class CheckedBoxProvider extends ChangeNotifier {
         field == 'MM1TcChangeChecked' ||
         field == 'MM1HwChecked' ||
         field == 'MM1MfChecked') {
-      final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
-      final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
-      var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
+      // final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+      final symbol = Provider.of<ValueProvider>(
+        context,
+        listen: false,
+      ).manualSelectedValue;
+      final crnt = Provider.of<ValueProvider>(
+        context,
+        listen: false,
+      ).currentOpening;
+      var crntMod = crnt.firstWhere(
+        (el) => el.symbol == symbol && el.method == method,
+      );
       updateTradeFlags(crntMod, context);
     } else if (field == 'MM2ReversalPlusChecked' ||
         field == 'MM2ReversalChecked' ||
@@ -212,9 +239,18 @@ class CheckedBoxProvider extends ChangeNotifier {
         field == 'MM2TcChangeChecked' ||
         field == 'MM2HwChecked' ||
         field == 'MM2MfChecked') {
-      final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
-      final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
-      var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
+      // final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+      final symbol = Provider.of<ValueProvider>(
+        context,
+        listen: false,
+      ).manualSelectedValue;
+      final crnt = Provider.of<ValueProvider>(
+        context,
+        listen: false,
+      ).currentOpening;
+      var crntMod = crnt.firstWhere(
+        (el) => el.symbol == symbol && el.method == method,
+      );
       updateTradeFlags(crntMod, context);
     }
     // else if (field == 'AM1Checked' || field == 'AM2Checked') {

@@ -11,8 +11,13 @@ GetSymbolSettingModel _$GetSymbolSettingModelFromJson(
 ) => GetSymbolSettingModel(
   symbol: json['symbol'] as String,
   section: json['section'] as String,
+  userId: json['userId'] as String,
 );
 
 Map<String, dynamic> _$GetSymbolSettingModelToJson(
   GetSymbolSettingModel instance,
-) => <String, dynamic>{'symbol': instance.symbol, 'section': instance.section};
+) => <String, dynamic>{
+  'userId': instance.userId,
+  'symbol': instance.symbol,
+  'section': instance.section,
+};
