@@ -220,7 +220,7 @@ class _ManualMethod1SectionState extends State<ManualMethod1Section> {
           onChanged: (bool? newValue) {
             setState(() {
               // checkedBox.changeValue('MM1', checkboxField, context);
-              checkedBox.changeValue(null, 'MM1', checkboxField, context);
+              checkedBox.changeValue(null, 'MM', checkboxField, context);
             });
           },
           activeColor: method == 'long' ? Colors.green : Colors.red,

@@ -9,12 +9,7 @@ Future<Map<String, bool>> getSymbolSetting({
 }) async {
   final dio = Dio();
 
-  final data = GetSymbolSettingModel(
-    userId: userId,
-    symbol: symbol,
-    section: section,
-  );
-  print(data.toJson());
+  final data = GetSymbolSettingModel(userId: userId, symbol: symbol, section: section);
   final response = await dio.post('$url/get-symbol', data: data.toJson());
   return Map<String, bool>.from(response.data);
 }

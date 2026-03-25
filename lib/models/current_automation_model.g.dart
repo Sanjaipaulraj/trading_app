@@ -13,6 +13,7 @@ CurrentAutomationModel _$CurrentAutomationModelFromJson(
   symbol: json['symbol'] as String,
   volume: json['volume'] as num,
   action: $enumDecode(_$ActionTypeEnumMap, json['action']),
+  isEnabled: json['isEnabled'] as bool,
 );
 
 Map<String, dynamic> _$CurrentAutomationModelToJson(
@@ -21,12 +22,12 @@ Map<String, dynamic> _$CurrentAutomationModelToJson(
   'method': instance.method,
   'symbol': instance.symbol,
   'volume': instance.volume,
+  'isEnabled': instance.isEnabled,
   'action': _$ActionTypeEnumMap[instance.action]!,
 };
 
 const _$ActionTypeEnumMap = {
   ActionType.add: 'add',
   ActionType.disable: 'disable',
-  ActionType.update: 'update',
   ActionType.close: 'close',
 };

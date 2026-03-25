@@ -72,7 +72,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           ),
                     onPressed: () {
                       // checkedbox.changeValue(widget.method, reversalPlus, context);
-                      checkedbox.changeValue(null, widget.method, reversalPlus, context);
+                      // checkedbox.changeValue(null, widget.method, reversalPlus, context);
+                      checkedbox.changeValue(null, "MM", reversalPlus, context);
                     },
                     child: Row(
                       spacing: 3,
@@ -110,7 +111,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           ),
                     onPressed: () {
                       // checkedbox.changeValue(widget.method, reversal, context);
-                      checkedbox.changeValue(null, widget.method, reversal, context);
+                      // checkedbox.changeValue(null, widget.method, reversal, context);
+                      checkedbox.changeValue(null, "MM", reversal, context);
                     },
                     child: Text("Rev", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   ),
@@ -136,7 +138,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           ),
                     onPressed: () {
                       // checkedbox.changeValue(widget.method, signal, context);
-                      checkedbox.changeValue(null, widget.method, signal, context);
+                      // checkedbox.changeValue(null, widget.method, signal, context);
+                      checkedbox.changeValue(null, "MM", signal, context);
                     },
                     child: Row(
                       spacing: 3,
@@ -182,7 +185,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           ),
                     onPressed: () {
                       // checkedbox.changeValue(widget.method, tc, context);
-                      checkedbox.changeValue(null, widget.method, tc, context);
+                      // checkedbox.changeValue(null, widget.method, tc, context);
+                      checkedbox.changeValue(null, "MM", tc, context);
                     },
                     child: Row(
                       spacing: 3,
@@ -229,7 +233,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           ),
                     onPressed: () {
                       // checkedbox.changeValue(widget.method, hw, context);
-                      checkedbox.changeValue(null, widget.method, hw, context);
+                      // checkedbox.changeValue(null, widget.method, hw, context);
+                      checkedbox.changeValue(null, "MM", hw, context);
                     },
                     child: Row(
                       spacing: 3,
@@ -276,7 +281,8 @@ class _AutomaticClosingSectionState extends State<AutomaticClosingSection> {
                           ),
                     onPressed: () {
                       // checkedbox.changeValue(widget.method, mf, context);
-                      checkedbox.changeValue(null, widget.method, mf, context);
+                      // checkedbox.changeValue(null, widget.method, mf, context);
+                      checkedbox.changeValue(null, "MM", mf, context);
                     },
                     child: Row(
                       spacing: 3,

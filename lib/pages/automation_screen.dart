@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:searchfield/searchfield.dart';
 
 import '../Providers/providers.dart';
+import '../api_methods/api_methods.dart';
+import '../models/models.dart';
 
 class AutomationScreen extends StatefulWidget {
   final List<SearchFieldListItem<String>> symbols;
@@ -49,7 +51,7 @@ class _AutomationScreenState extends State<AutomationScreen> {
                         Consumer<ValueProvider>(
                           builder: (context, drop, child) {
                             return SizedBox(
-                              width: 150,
+                              width: 135,
                               height: 35,
                               child: SearchField<String>(
                                 suggestions: widget.symbols,
@@ -92,11 +94,19 @@ class _AutomationScreenState extends State<AutomationScreen> {
                                 onSuggestionTap: (SearchFieldListItem<String> item) {
                                   context.read<ValueProvider>().setAMSelectedItem(item, context);
                                 },
-                                onSubmit: (item) {
+                                onSubmit: (item) async {
                                   Provider.of<ValueProvider>(
                                     context,
                                     listen: false,
                                   ).setAMSelectedItem(SearchFieldListItem(item), context);
+                                  final data = CurrentAutomationModel(
+                                    symbol: drop.amSelectedValue ?? "",
+                                    volume: drop.amVolume,
+                                    isEnabled: true,
+                                    action: ActionType.add,
+                                    method: "AM",
+                                  );
+                                  await automaticTrading(context, data);
                                 },
                               ),
                             );
@@ -106,7 +116,7 @@ class _AutomationScreenState extends State<AutomationScreen> {
                           builder: (context, drop, child) {
                             return SizedBox(
                               height: 35,
-                              width: 90,
+                              width: 65,
                               child: TextFormField(
                                 // controller: drop.am1VolumeController,
                                 controller: drop.amVolumeController,
@@ -115,8 +125,19 @@ class _AutomationScreenState extends State<AutomationScreen> {
                                 onChanged: (newValue) {
                                   final parsedValue = double.tryParse(newValue);
                                   if (parsedValue != null) {
-                                    drop.setAMVolume('AM1', parsedValue);
+                                    // drop.setAMVolume('AM1', parsedValue);
+                                    drop.setAMVolume('AM', parsedValue);
                                   }
+                                },
+                                onFieldSubmitted: (value) async {
+                                  final data = CurrentAutomationModel(
+                                    symbol: drop.amSelectedValue ?? "",
+                                    volume: drop.amVolume,
+                                    isEnabled: true,
+                                    action: ActionType.add,
+                                    method: "AM",
+                                  );
+                                  await automaticTrading(context, data);
                                 },
                                 textAlignVertical: TextAlignVertical.center,
                                 decoration: InputDecoration(
@@ -141,65 +162,145 @@ class _AutomationScreenState extends State<AutomationScreen> {
                             );
                           },
                         ),
-                        TextButton(
-                          style: ElevatedButton.styleFrom(
-                            maximumSize: Size(75, 40),
-                            backgroundColor: Color.fromRGBO(44, 187, 104, 1),
-                            foregroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(5)),
-                          ),
-                          onPressed: () => Provider.of<CheckedBoxProvider>(
-                            context,
-                            listen: false,
-                          ).changeValue('Add', 'AM1', 'AM1Checked', context),
-                          child: Text('Add', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        SizedBox(width: 70),
+                        Consumer<ValueProvider>(
+                          builder: (context, autoLive, child) {
+                            return TextButton(
+                              style: ElevatedButton.styleFrom(
+                                maximumSize: Size(75, 40),
+                                backgroundColor: Color.fromRGBO(44, 187, 104, 1),
+                                foregroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(5)),
+                              ),
+                              // onPressed: () => Provider.of<CheckedBoxProvider>(
+                              //   context,
+                              //   listen: false,
+                              // ).changeValue('Add', 'AM1', 'AM1Checked', context),
+                              onPressed: () async {
+                                final data = CurrentAutomationModel(
+                                  symbol: autoLive.amSelectedValue ?? "",
+                                  volume: autoLive.amVolume,
+                                  isEnabled: true,
+                                  action: ActionType.add,
+                                  method: "AM",
+                                );
+                                await automaticTrading(context, data);
+                                autoLive.addLiveTrade(data);
+                              },
+                              child: Text('Add', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            );
+                          },
                         ),
-                        // Consumer<ValueProvider>(
-                        //   builder: (context,autoLive,child) {
-                        //     return SizedBox(
-                        //       height: 500,
-                        //       child: ListView.builder(
-                        //         itemCount: 1,
-                        //         itemBuilder: (context, index) {
-                        //           return Column(
-                        //             children: [
-                        //               Container(
-                        //                 padding: const EdgeInsets.all(5),
-                        //                 color: Colors.grey,
-                        //                 child: Row(
-                        //                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //                   crossAxisAlignment: CrossAxisAlignment.center,
-                        //                   children: [
-                        //                     Text('Symbol'),
-                        //                     Text('Lot'),
-                        //                     TextButton(onPressed: () {}, child: Text('Close')),
-                        //                     IconButton(onPressed: () {}, icon: Icon(Icons.close)),
-                        //                   ],
-                        //                 ),
-                        //               ),
-                        //             ],
-                        //           );
-                        //         },
-                        //       ),
-                        //     );
-                        //   }
-                        // ),
-                        // Consumer<CheckedBoxProvider>(
-                        //   builder: (context, checkedBox, child) {
-                        //     return Checkbox(
-                        //       value: checkedBox.isAM1Checked,
-                        //       onChanged: (bool? newValue) {
-                        //         setState(() {
-                        //           checkedBox.changeValue("AM1", 'AM1Checked', context);
-                        //         });
-                        //       },
-                        //       activeColor: Colors.green,
-                        //       checkColor: Colors.white,
-                        //     );
-                        //   },
-                        // ),
                       ],
                     ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 5, bottom: 5),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Consumer<ValueProvider>(
+                    builder: (context, autoLive, child) {
+                      if (autoLive.liveAutomaticTrade.isEmpty) {
+                        return Text("No items found");
+                      } else {
+                        return SingleChildScrollView(
+                          child: SizedBox(
+                            height: 450,
+                            child: Consumer<ValueProvider>(
+                              builder: (context, autoLive, child) {
+                                return ListView.builder(
+                                  itemCount: autoLive.liveAutomaticTrade.length,
+                                  itemBuilder: (context, index) {
+                                    return Column(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(5),
+                                          color: Colors.grey,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              // Text('Symbol', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                              SizedBox(
+                                                width: 135,
+                                                height: 35,
+                                                child: Text(
+                                                  autoLive.liveAutomaticTrade[index].symbol,
+                                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                              // Text('Lot'),
+                                              SizedBox(
+                                                width: 65,
+                                                height: 35,
+                                                child: Text(
+                                                  autoLive.liveAutomaticTrade[index].volume.toString(),
+                                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                              TextButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  maximumSize: Size(70, 40),
+                                                  backgroundColor: Color.fromRGBO(96, 70, 238, 1),
+                                                  foregroundColor: Colors.black,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadiusGeometry.circular(5),
+                                                  ),
+                                                ),
+                                                onPressed: () async {
+                                                  final data = CurrentAutomationModel(
+                                                    symbol: autoLive.amSelectedValue ?? "",
+                                                    volume: autoLive.amVolume,
+                                                    isEnabled: true,
+                                                    action: ActionType.close,
+                                                    method: "AM",
+                                                  );
+                                                  await automaticTrading(context, data);
+                                                },
+                                                child: Text(
+                                                  'Close',
+                                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                              IconButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  maximumSize: Size(75, 40),
+                                                  backgroundColor: Color.fromRGBO(240, 29, 29, 1),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadiusGeometry.circular(5),
+                                                  ),
+                                                ),
+                                                onPressed: () async {
+                                                  final data = CurrentAutomationModel(
+                                                    symbol: autoLive.amSelectedValue ?? "",
+                                                    volume: autoLive.amVolume,
+                                                    isEnabled: false,
+                                                    action: ActionType.disable,
+                                                    method: "AM",
+                                                  );
+                                                  await automaticTrading(context, data);
+                                                  autoLive.removeLiveTrade(data.symbol);
+                                                },
+                                                icon: Icon(Icons.close),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),

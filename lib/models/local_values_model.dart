@@ -21,6 +21,7 @@ class LiveAutomaticTradeModel {
 
 @JsonSerializable()
 class LocalValuesModel {
+  String userId;
   String lastActiveSymbol;
   String amLastSymbol;
   num manualVolume;
@@ -28,6 +29,7 @@ class LocalValuesModel {
   List<LiveAutomaticTradeModel> liveAutomaticTrade;
 
   LocalValuesModel({
+    required this.userId,
     required this.lastActiveSymbol,
     required this.amLastSymbol,
     required this.automaticVolume,
@@ -41,6 +43,6 @@ class LocalValuesModel {
 
   @override
   String toString() {
-    return "LocalValuesModel{Last Active Symbol: $lastActiveSymbol,Am Last Active Symbol: $amLastSymbol,Manual Volume : $manualVolume,Automatic Volume: $automaticVolume,LiveAutomaticTrade: $liveAutomaticTrade}";
+    return "LocalValuesModel{User Id: $userId,Last Active Symbol: $lastActiveSymbol,Am Last Active Symbol: $amLastSymbol,Manual Volume : $manualVolume,Automatic Volume: $automaticVolume,LiveAutomaticTrade: $liveAutomaticTrade}";
   }
 }

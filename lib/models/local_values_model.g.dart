@@ -19,6 +19,7 @@ Map<String, dynamic> _$LiveAutomaticTradeModelToJson(
 
 LocalValuesModel _$LocalValuesModelFromJson(Map<String, dynamic> json) =>
     LocalValuesModel(
+      userId: json['userId'] as String,
       lastActiveSymbol: json['lastActiveSymbol'] as String,
       amLastSymbol: json['amLastSymbol'] as String,
       automaticVolume: json['automaticVolume'] as num,
@@ -32,6 +33,7 @@ LocalValuesModel _$LocalValuesModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$LocalValuesModelToJson(LocalValuesModel instance) =>
     <String, dynamic>{
+      'userId': instance.userId,
       'lastActiveSymbol': instance.lastActiveSymbol,
       'amLastSymbol': instance.amLastSymbol,
       'manualVolume': instance.manualVolume,
