@@ -217,15 +217,24 @@ class _AutomationScreenState extends State<AutomationScreen> {
                                   itemCount: autoLive.liveAutomaticTrade.length,
                                   itemBuilder: (context, index) {
                                     return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                          padding: const EdgeInsets.all(5),
-                                          color: Colors.grey,
+                                          padding: const EdgeInsets.only(
+                                            left: 12.0,
+                                            right: 12.0,
+                                            top: 5.0,
+                                            bottom: 5.0,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Color.fromRGBO(99, 187, 209, 1),
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
-                                              // Text('Symbol', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                                               SizedBox(
                                                 width: 135,
                                                 height: 35,
@@ -234,7 +243,6 @@ class _AutomationScreenState extends State<AutomationScreen> {
                                                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                                 ),
                                               ),
-                                              // Text('Lot'),
                                               SizedBox(
                                                 width: 65,
                                                 height: 35,
@@ -246,7 +254,7 @@ class _AutomationScreenState extends State<AutomationScreen> {
                                               TextButton(
                                                 style: ElevatedButton.styleFrom(
                                                   maximumSize: Size(70, 40),
-                                                  backgroundColor: Color.fromRGBO(96, 70, 238, 1),
+                                                  backgroundColor: Color.fromRGBO(97, 82, 179, 1),
                                                   foregroundColor: Colors.black,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius: BorderRadiusGeometry.circular(5),
@@ -270,7 +278,7 @@ class _AutomationScreenState extends State<AutomationScreen> {
                                               IconButton(
                                                 style: ElevatedButton.styleFrom(
                                                   maximumSize: Size(75, 40),
-                                                  backgroundColor: Color.fromRGBO(240, 29, 29, 1),
+                                                  backgroundColor: Color.fromRGBO(212, 55, 55, 1),
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius: BorderRadiusGeometry.circular(5),
                                                   ),
@@ -286,7 +294,7 @@ class _AutomationScreenState extends State<AutomationScreen> {
                                                   await automaticTrading(context, data);
                                                   autoLive.removeLiveTrade(data.symbol);
                                                 },
-                                                icon: Icon(Icons.close),
+                                                icon: Icon(Icons.close, color: Colors.black),
                                               ),
                                             ],
                                           ),
