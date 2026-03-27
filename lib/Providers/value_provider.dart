@@ -4,7 +4,7 @@ import 'package:auditplus_fx/api_methods/local_values.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:searchfield/searchfield.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/models.dart';
 import 'providers.dart';
 
@@ -170,21 +170,17 @@ class ValueProvider extends ChangeNotifier {
 
   void addCurrentOpen(CurrentOpenModel symb) async {
     currentOpening.add(symb);
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     final encoded = jsonEncode(currentOpening.map((e) => e.toJson()).toList());
-    // print(encoded);
-
-    // await prefs.setString('currentOpening', encoded);
+    await prefs.setString('currentOpening', encoded);
   }
 
   Future<void> clearCurrentOpenBySymbol(String symbol) async {
     currentOpening.removeWhere((e) => e.symbol == symbol);
 
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     final encoded = jsonEncode(currentOpening.map((e) => e.toJson()).toList());
-    // print(encoded);
-
-    // await prefs.setString('currentOpening', encoded);
+    await prefs.setString('currentOpening', encoded);
   }
 
   CurrentOpenModel? getOpenBySymbol(String symbol) {

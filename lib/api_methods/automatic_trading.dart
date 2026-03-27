@@ -1,20 +1,14 @@
-// import 'dart:convert';
-
 import 'package:auditplus_fx/models/current_automation_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:auditplus_fx/Providers/providers.dart';
 import 'package:provider/provider.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toastification/toastification.dart';
 
 import 'contants.dart';
 
 Future<void> automaticTrading(BuildContext context, CurrentAutomationModel data) async {
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
-  // SharedPreferences prefs = await SharedPreferences.getInstance();
-  // final encoded = jsonEncode(data.toJson());
-  // await prefs.setString('AutomateCurrentOpening', encoded);
 
   if (token == null) {
     toastification.show(
@@ -30,11 +24,24 @@ Future<void> automaticTrading(BuildContext context, CurrentAutomationModel data)
 
   Dio dio = Dio();
   try {
-    final _ = dio.post(
+    final _ = await dio.post(
       "$url/automatic",
       data: data,
       options: Options(headers: {'Content-Type': 'application/json', 'auth-token': token}),
     );
+  } on DioException catch (e) {
+    final statusCode = e.response?.statusCode;
+    if (statusCode == 409) {
+      toastification.show(
+        backgroundColor: const Color.fromARGB(255, 240, 230, 174),
+        title: Text('${e.response?.data}'),
+        description: Text(e.response!.data),
+        type: ToastificationType.warning,
+        alignment: Alignment.topCenter,
+        dragToClose: true,
+        autoCloseDuration: const Duration(seconds: 2),
+      );
+    }
   } catch (e) {
     toastification.show(
       backgroundColor: const Color.fromRGBO(255, 242, 186, 185),

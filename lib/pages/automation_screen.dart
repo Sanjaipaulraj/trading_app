@@ -253,7 +253,7 @@ class _AutomationScreenState extends State<AutomationScreen> {
                                               ),
                                               TextButton(
                                                 style: ElevatedButton.styleFrom(
-                                                  maximumSize: Size(70, 40),
+                                                  maximumSize: Size(75, 40),
                                                   backgroundColor: Color.fromRGBO(97, 82, 179, 1),
                                                   foregroundColor: Colors.black,
                                                   shape: RoundedRectangleBorder(
@@ -272,7 +272,7 @@ class _AutomationScreenState extends State<AutomationScreen> {
                                                 },
                                                 child: Text(
                                                   'Close',
-                                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                                 ),
                                               ),
                                               IconButton(
