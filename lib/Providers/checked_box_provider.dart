@@ -1,10 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auditplus_fx/Providers/value_provider.dart';
 
 import '../api_methods/api_methods.dart';
+// import '../models/models.dart';
 
 class CheckedBoxProvider extends ChangeNotifier {
   String? _currentSymbol;
@@ -37,21 +36,22 @@ class CheckedBoxProvider extends ChangeNotifier {
     'ShortOscChecked': false,
     'ShortGretTcChecked': false,
     'ShortSigCrTtChecked': false,
-    'M1ReversalPlusChecked': false,
-    'M1ReversalChecked': false,
-    'M1SignalExitChecked': false,
-    'M1TcChangeChecked': false,
-    'M1HwChecked': false,
-    'M2ReversalPlusChecked': false,
-    'M2ReversalChecked': false,
-    'M2SignalExitChecked': false,
-    'M2TcChangeChecked': false,
-    'M2HwChecked': false,
-    'M3ReversalPlusChecked': false,
-    'M3ReversalChecked': false,
-    'M3SignalExitChecked': false,
-    'M3TcChangeChecked': false,
-    'M3HwChecked': false,
+    'MM1ReversalPlusChecked': false,
+    'MM1ReversalChecked': false,
+    'MM1SignalExitChecked': false,
+    'MM1TcChangeChecked': false,
+    'MM1HwChecked': false,
+    'MM1MfChecked': false,
+    'MM2ReversalPlusChecked': false,
+    'MM2ReversalChecked': false,
+    'MM2SignalExitChecked': false,
+    'MM2TcChangeChecked': false,
+    'MM2HwChecked': false,
+    'MM2MfChecked': false,
+    //Auto Booking & Closing
+    // 'AM1Checked': false,
+    // 'AM2Checked': false,
+    'AMChecked': false,
   };
 
   bool get isLongTcChecked => _values['LongTcChecked']!;
@@ -78,21 +78,24 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isShortGretTcChecked => _values['ShortGretTcChecked']!;
   bool get isShortSigCrTtChecked => _values['ShortSigCrTtChecked']!;
 
-  bool get isM1ReversalPlusChecked => _values['M1ReversalPlusChecked']!;
-  bool get isM1ReversalChecked => _values['M1ReversalChecked']!;
-  bool get isM1SignalExitChecked => _values['M1SignalExitChecked']!;
-  bool get isM1TcChangeChecked => _values['M1TcChangeChecked']!;
-  bool get isM1HwChecked => _values['M1HwChecked']!;
-  bool get isM2ReversalPlusChecked => _values['M2ReversalPlusChecked']!;
-  bool get isM2ReversalChecked => _values['M2ReversalChecked']!;
-  bool get isM2SignalExitChecked => _values['M2SignalExitChecked']!;
-  bool get isM2TcChangeChecked => _values['M2TcChangeChecked']!;
-  bool get isM2HwChecked => _values['M2HwChecked']!;
-  bool get isM3ReversalPlusChecked => _values['M3ReversalPlusChecked']!;
-  bool get isM3ReversalChecked => _values['M3ReversalChecked']!;
-  bool get isM3SignalExitChecked => _values['M3SignalExitChecked']!;
-  bool get isM3TcChangeChecked => _values['M3TcChangeChecked']!;
-  bool get isM3HwChecked => _values['M3HwChecked']!;
+  bool get isMM1ReversalPlusChecked => _values['MM1ReversalPlusChecked']!;
+  bool get isMM1ReversalChecked => _values['MM1ReversalChecked']!;
+  bool get isMM1SignalExitChecked => _values['MM1SignalExitChecked']!;
+  bool get isMM1TcChangeChecked => _values['MM1TcChangeChecked']!;
+  bool get isMM1HwChecked => _values['MM1HwChecked']!;
+  bool get isMM1MfChecked => _values['MM1MfChecked']!;
+  bool get isMM2ReversalPlusChecked => _values['MM2ReversalPlusChecked']!;
+  bool get isMM2ReversalChecked => _values['MM2ReversalChecked']!;
+  bool get isMM2SignalExitChecked => _values['MM2SignalExitChecked']!;
+  bool get isMM2TcChangeChecked => _values['MM2TcChangeChecked']!;
+  bool get isMM2HwChecked => _values['MM2HwChecked']!;
+  bool get isMM2MfChecked => _values['MM2MfChecked']!;
+
+  //Auto Booking & Closing
+  // bool get isAM1Checked => _values['AM1Checked']!;
+  // bool get isAM2Checked => _values['AM2Checked']!;
+  // bool get isAM1Checked => _values['AM1Checked']!;
+  bool get isAMChecked => _values['AMChecked']!;
 
   bool get isM1LongAllChecked =>
       isLongTcChecked && isLongTtChecked && isLongNeoChecked && isLongHwoChecked && isLongConfChecked;
@@ -106,36 +109,65 @@ class CheckedBoxProvider extends ChangeNotifier {
   bool get isM2ShortAllChecked =>
       (isShortDivergenceChecked || isShortRevChecked) && isShortCatcherChecked && isShortOscChecked;
 
-  bool get isM3LongAllChecked => isLongGretTcChecked && isLongSigCrTtChecked;
-
-  bool get isM3ShortAllChecked => isShortGretTcChecked && isShortSigCrTtChecked;
-
-  Future<void> loadForSymbol(String symbol) async {
+  // Future<void> loadForSymbol(String symbol) async {
+  //   _isLoading = true;
+  //   notifyListeners();
+  //   _currentSymbol = symbol;
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final data = prefs.getString('checkbox_state:$symbol');
+  //   if (data == null) {
+  //     _values = _emptyValues();
+  //   } else {
+  //     final decoded = Map<String, dynamic>.from(jsonDecode(data));
+  //     _values = decoded.map((k, v) => MapEntry(k, v as bool));
+  //   }
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
+  // Future<void> loadForM3Values(BuildContext context) async {
+  //   _isLoading = true;
+  //   notifyListeners();
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final String? data = prefs.getString('AutomateCurrentOpening');
+  //   if (data != null) {
+  //     final Map<String, dynamic> am1Decoded = jsonDecode(data);
+  //     if (!context.mounted) return;
+  //     final prov = Provider.of<ValueProvider>(context, listen: false);
+  //     prov.lastAMOpen = CurrentAutomationModel.fromJson(am1Decoded);
+  //     prov.amSelectedValue = prov.lastAMOpen!.symbol;
+  //     prov.amSelectedItem = SearchFieldListItem(
+  //       prov.amSelectedValue!,
+  //       item: prov.amSelectedValue,
+  //     );
+  //     prov.am1VolumeController.text = prov.lastAMOpen!.volume.toString();
+  //     // _values['AM1Checked'] = prov.lastAMOpen!.isChecked;
+  //     _values['AM1Checked'] = prov.lastAMOpen!.isEnabled;
+  //   }
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
+  Future<void> loadFromApi(String symbol, String section) async {
     _isLoading = true;
     notifyListeners();
 
     _currentSymbol = symbol;
-    final prefs = await SharedPreferences.getInstance();
 
-    final data = prefs.getString('checkbox_state:$symbol');
-    if (data == null) {
+    try {
+      final result = await getSymbolSetting(userId: "1", symbol: symbol, section: section);
+
+      // ✅ Then apply API values
+      result.forEach((key, value) {
+        _values[key] = value;
+      });
+    } catch (e) {
       _values = _emptyValues();
-    } else {
-      final decoded = Map<String, dynamic>.from(jsonDecode(data));
-      _values = decoded.map((k, v) => MapEntry(k, v as bool));
     }
 
     _isLoading = false;
     notifyListeners();
   }
 
-  Future<void> _persist() async {
-    if (_currentSymbol == null) return;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('checkbox_state:$_currentSymbol', jsonEncode(_values));
-  }
-
-  void changeValue(String method, String field, BuildContext context) {
+  void changeValue(String? action, String method, String field, BuildContext context) {
     _values[field] = !(_values[field] ?? false);
 
     if (field.startsWith('Long')) {
@@ -144,37 +176,72 @@ class CheckedBoxProvider extends ChangeNotifier {
     if (field.startsWith('Short')) {
       _values[field.replaceFirst('Short', 'Long')] = false;
     }
-
-    _persist();
+    if (method == 'AM') {
+      _values[field] = _values[field]!;
+    }
+    // if (method == 'AM2') {
+    //   _values[field] = _values[field]!;
+    // }
+    if (_currentSymbol == null) return;
+    symbolSetting(
+      userId: "1",
+      symbol: _currentSymbol!,
+      section: method, // MM1 / MM2
+      checkedValues: _values,
+    );
     notifyListeners();
-    if (field == 'M1ReversalPlusChecked' ||
-        field == 'M1ReversalChecked' ||
-        field == 'M1SignalExitChecked' ||
-        field == 'M1TcChangeChecked' ||
-        field == 'M1HwChecked') {
-      final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+    if (field == 'MM1ReversalPlusChecked' ||
+        field == 'MM1ReversalChecked' ||
+        field == 'MM1SignalExitChecked' ||
+        field == 'MM1TcChangeChecked' ||
+        field == 'MM1HwChecked' ||
+        field == 'MM1MfChecked') {
+      // final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+      final symbol = Provider.of<ValueProvider>(context, listen: false).manualSelectedValue;
       final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
       var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
       updateTradeFlags(crntMod, context);
-    } else if (field == 'M2ReversalPlusChecked' ||
-        field == 'M2ReversalChecked' ||
-        field == 'M2SignalExitChecked' ||
-        field == 'M2TcChangeChecked' ||
-        field == 'M2HwChecked') {
-      final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+    } else if (field == 'MM2ReversalPlusChecked' ||
+        field == 'MM2ReversalChecked' ||
+        field == 'MM2SignalExitChecked' ||
+        field == 'MM2TcChangeChecked' ||
+        field == 'MM2HwChecked' ||
+        field == 'MM2MfChecked') {
+      // final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+      final symbol = Provider.of<ValueProvider>(context, listen: false).manualSelectedValue;
       final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
       var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
       updateTradeFlags(crntMod, context);
-    } else if (field == 'M3ReversalPlusChecked' ||
-        field == 'M3ReversalChecked' ||
-        field == 'M3SignalExitChecked' ||
-        field == 'M3TcChangeChecked' ||
-        field == 'M3HwChecked') {
-      final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
-      final crnt = Provider.of<ValueProvider>(context, listen: false).currentOpening;
-      var crntMod = crnt.firstWhere((el) => el.symbol == symbol && el.method == method);
-      updateTradeFlags(crntMod, context);
-    } else {
+    }
+    // else if (field == 'AM1Checked' || field == 'AM2Checked') {
+    //   final valProv = Provider.of<ValueProvider>(context, listen: false);
+    //   final symbol = valProv.amSelectedValue;
+    //   print(field);
+    //   if (field == 'AM1Checked') {
+    //     final volume = valProv.am1Volume;
+    //     // final data = CurrentAutomationModel(method: method, symbol: symbol!, volume: volume, isChecked: isAM1Checked);
+    //     final data = CurrentAutomationModel(
+    //       method: method,
+    //       symbol: symbol!,
+    //       volume: volume,
+    //       isEnabled: isAM1Checked,
+    //       action: action!,
+    //     );
+    //     automaticTrading(context, data);
+    //   } else {
+    //     final volume = valProv.am2Volume;
+    //     // final data = CurrentAutomationModel(method: method, symbol: symbol!, volume: volume, isChecked: isAM2Checked);
+    //     final data = CurrentAutomationModel(
+    //       method: method,
+    //       symbol: symbol!,
+    //       volume: volume,
+    //       isEnabled: isAM2Checked,
+    //       action: action!,
+    //     );
+    //     automaticTrading(context, data);
+    //   }
+    // }
+    else {
       return;
     }
   }

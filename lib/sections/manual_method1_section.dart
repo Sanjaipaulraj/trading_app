@@ -6,28 +6,29 @@ import 'package:auditplus_fx/Providers/token_provider.dart';
 import 'package:auditplus_fx/intent.dart';
 import 'package:auditplus_fx/sections/automatic_closing_section.dart';
 
-class Method3Section extends StatefulWidget {
-  const Method3Section({super.key});
+class ManualMethod1Section extends StatefulWidget {
+  const ManualMethod1Section({super.key});
 
   @override
-  State<Method3Section> createState() => _Method3SectionState();
+  State<ManualMethod1Section> createState() => _ManualMethod1SectionState();
 }
 
-class _Method3SectionState extends State<Method3Section> {
+class _ManualMethod1SectionState extends State<ManualMethod1Section> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 5, bottom: 5),
+    return Container(
+      constraints: BoxConstraints(maxWidth: double.infinity),
+      color: Color.fromRGBO(189, 232, 245, 1),
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 5, top: 10),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                "Method 3",
-                style: TextStyle(color: Color.fromRGBO(4, 46, 124, 1), fontSize: 16, fontWeight: FontWeight.w600),
+                "Method 1",
+                style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
               ),
               Consumer2<MytokenProvider, CheckedBoxProvider>(
                 builder: (context, myToken, checkedBox, child) {
@@ -37,7 +38,7 @@ class _Method3SectionState extends State<Method3Section> {
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(100, 32),
+                          minimumSize: Size(100, 40),
                           maximumSize: Size(100, 50),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           shape: RoundedRectangleBorder(
@@ -46,16 +47,16 @@ class _Method3SectionState extends State<Method3Section> {
                           ),
                           elevation: 8.0,
                           foregroundColor: Colors.black,
-                          backgroundColor: checkedBox.isM3LongAllChecked ? Colors.lightGreen : Colors.grey,
-                          textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          backgroundColor: checkedBox.isM1LongAllChecked ? Colors.lightGreen : Colors.grey,
+                          textStyle: TextStyle(inherit: true, fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                        onPressed: checkedBox.isM3LongAllChecked
+                        onPressed: checkedBox.isM1LongAllChecked
                             ? () {
                                 final token = Provider.of<MytokenProvider>(context, listen: false).token;
                                 if (token != null) {
                                   Actions.invoke(
                                     context,
-                                    const LongIntent(method: 'method3', actionType: "ORDER_TYPE_BUY"),
+                                    const LongIntent(method: 'MM1', actionType: "ORDER_TYPE_BUY"),
                                   );
                                 } else {
                                   toastification.show(
@@ -74,10 +75,10 @@ class _Method3SectionState extends State<Method3Section> {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(100, 32),
+                          minimumSize: Size(100, 40),
                           maximumSize: Size(100, 50),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          backgroundColor: checkedBox.isM3ShortAllChecked ? Colors.red : Colors.grey,
+                          backgroundColor: checkedBox.isM1ShortAllChecked ? Colors.red : Colors.grey,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
                             side: BorderSide(color: Colors.black, width: 2),
@@ -86,13 +87,13 @@ class _Method3SectionState extends State<Method3Section> {
                           foregroundColor: Colors.black,
                           textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                        onPressed: checkedBox.isM3ShortAllChecked
+                        onPressed: checkedBox.isM1ShortAllChecked
                             ? () {
                                 final token = Provider.of<MytokenProvider>(context, listen: false).token;
                                 if (token != null) {
                                   Actions.invoke(
                                     context,
-                                    const ShortIntent(method: 'method3', actionType: "ORDER_TYPE_SELL"),
+                                    const ShortIntent(method: 'MM1', actionType: "ORDER_TYPE_SELL"),
                                   );
                                 } else {
                                   toastification.show(
@@ -116,6 +117,7 @@ class _Method3SectionState extends State<Method3Section> {
             ],
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Column(
@@ -124,19 +126,43 @@ class _Method3SectionState extends State<Method3Section> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
                     child: Text(
-                      'TC',
+                      'Catcher',
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
                     child: Text(
-                      'Sig.Cr.TT',
+                      'Tracer',
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                    child: Text(
+                      'NEO Cloud',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                    child: Text(
+                      'Confirmation',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                    child: Text(
+                      'OSC',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
@@ -148,8 +174,11 @@ class _Method3SectionState extends State<Method3Section> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      _buildCheckboxColumn('long', 'LongGretTcChecked', checkedBox),
-                      _buildCheckboxRow('long', 'LongSigCrTtChecked', checkedBox),
+                      _buildCheckboxRow('long', 'LongTcChecked', checkedBox),
+                      _buildCheckboxRow('long', 'LongTtChecked', checkedBox),
+                      _buildCheckboxRow('long', 'LongNeoChecked', checkedBox),
+                      _buildCheckboxRow('long', 'LongConfChecked', checkedBox),
+                      _buildCheckboxRow('long', 'LongHwoChecked', checkedBox),
                     ],
                   );
                 },
@@ -161,15 +190,18 @@ class _Method3SectionState extends State<Method3Section> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      _buildCheckboxColumn('short', 'ShortGretTcChecked', checkedBox),
-                      _buildCheckboxRow('short', 'ShortSigCrTtChecked', checkedBox),
+                      _buildCheckboxRow('short', 'ShortTcChecked', checkedBox),
+                      _buildCheckboxRow('short', 'ShortTtChecked', checkedBox),
+                      _buildCheckboxRow('short', 'ShortNeoChecked', checkedBox),
+                      _buildCheckboxRow('short', 'ShortConfChecked', checkedBox),
+                      _buildCheckboxRow('short', 'ShortHwoChecked', checkedBox),
                     ],
                   );
                 },
               ),
             ],
           ),
-          AutomaticClosingSection(method: 'method3'),
+          AutomaticClosingSection(method: 'MM1'),
         ],
       ),
     );
@@ -187,51 +219,41 @@ class _Method3SectionState extends State<Method3Section> {
           value: _getCheckboxValue(checkboxField, checkedBox),
           onChanged: (bool? newValue) {
             setState(() {
-              checkedBox.changeValue('method3', checkboxField, context);
+              // checkedBox.changeValue('MM1', checkboxField, context);
+              checkedBox.changeValue(null, 'MM', checkboxField, context);
             });
           },
           activeColor: method == 'long' ? Colors.green : Colors.red,
           checkColor: Colors.white,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          visualDensity: VisualDensity.comfortable,
+          // visualDensity: const VisualDensity(horizontal: -1, vertical: -1),
         ),
-      ],
-    );
-  }
-
-  Widget _buildCheckboxColumn(String method, String checkboxField, CheckedBoxProvider checkedBox) {
-    return Column(
-      children: [
-        Checkbox(
-          value: _getCheckboxValue(checkboxField, checkedBox),
-          onChanged: (bool? newValue) {
-            setState(() {
-              checkedBox.changeValue('method3', checkboxField, context);
-            });
-          },
-          activeColor: Colors.green,
-          checkColor: Colors.white,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          visualDensity: VisualDensity.compact,
-        ),
-        if (method == 'long')
-          Text("> TT", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))
-        else
-          Text("< TT", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
       ],
     );
   }
 
   bool _getCheckboxValue(String checkboxField, CheckedBoxProvider checkedBox) {
     switch (checkboxField) {
-      case 'LongGretTcChecked':
-        return checkedBox.isLongGretTcChecked;
-      case 'LongSigCrTtChecked':
-        return checkedBox.isLongSigCrTtChecked;
-      case 'ShortGretTcChecked':
-        return checkedBox.isShortGretTcChecked;
-      case 'ShortSigCrTtChecked':
-        return checkedBox.isShortSigCrTtChecked;
+      case 'LongTcChecked':
+        return checkedBox.isLongTcChecked;
+      case 'LongTtChecked':
+        return checkedBox.isLongTtChecked;
+      case 'LongNeoChecked':
+        return checkedBox.isLongNeoChecked;
+      case 'LongHwoChecked':
+        return checkedBox.isLongHwoChecked;
+      case 'LongConfChecked':
+        return checkedBox.isLongConfChecked;
+      case 'ShortTcChecked':
+        return checkedBox.isShortTcChecked;
+      case 'ShortTtChecked':
+        return checkedBox.isShortTtChecked;
+      case 'ShortNeoChecked':
+        return checkedBox.isShortNeoChecked;
+      case 'ShortHwoChecked':
+        return checkedBox.isShortHwoChecked;
+      case 'ShortConfChecked':
+        return checkedBox.isShortConfChecked;
       default:
         return false;
     }

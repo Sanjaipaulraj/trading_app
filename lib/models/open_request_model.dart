@@ -14,6 +14,7 @@ class OpenRequestModel {
   bool signalExit;
   bool tcChange;
   bool hyperWave;
+  bool moneyFlow;
 
   OpenRequestModel({
     required this.actionType,
@@ -26,6 +27,7 @@ class OpenRequestModel {
     required this.signalExit,
     required this.tcChange,
     required this.hyperWave,
+    required this.moneyFlow,
   });
 
   factory OpenRequestModel.fromJson(Map<String, dynamic> json) => _$OpenRequestModelFromJson(json);
@@ -34,6 +36,6 @@ class OpenRequestModel {
 
   @override
   String toString() {
-    return "OpenRequestModel{Action type: $actionType,Symbol : $symbol,Volume: $volume,Take profit: $takeProfit,Reversal Plus: $reversalPlus,Reversal: $reversal,Signal Exit: $signalExit,Tc Change: $tcChange}";
+    return "OpenRequestModel{Action type: $actionType,Symbol : $symbol,Volume: $volume,Take profit: $takeProfit,Reversal Plus: $reversalPlus,Reversal: $reversal,Signal Exit: $signalExit,Tc Change: $tcChange,Hyper Wave: $hyperWave,Money Flow: $moneyFlow}";
   }
 }

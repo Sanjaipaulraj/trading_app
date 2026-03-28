@@ -6,9 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
-import 'package:auditplus_fx/Providers/token_provider.dart';
-import 'package:auditplus_fx/Providers/value_provider.dart';
-
+import 'package:auditplus_fx/Providers/providers.dart';
 import '../models/models.dart';
 import 'contants.dart';
 
@@ -27,7 +25,8 @@ Future<void> onClosePosition(BuildContext context, String actionType) async {
   }
 
   Dio dio = Dio();
-  final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+  // final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+  final symbol = Provider.of<ValueProvider>(context, listen: false).manualSelectedValue;
   String description = "Manual Close";
   final data = CloseRequestModel(actionType: actionType, symbol: symbol, description: description);
   try {

@@ -6,20 +6,18 @@ import 'package:auditplus_fx/Providers/token_provider.dart';
 import 'package:auditplus_fx/intent.dart';
 import 'package:auditplus_fx/sections/automatic_closing_section.dart';
 
-class Method1Section extends StatefulWidget {
-  const Method1Section({super.key});
+class ManualMethod2Section extends StatefulWidget {
+  const ManualMethod2Section({super.key});
 
   @override
-  State<Method1Section> createState() => _Method1SectionState();
+  State<ManualMethod2Section> createState() => _ManualMethod2SectionState();
 }
 
-class _Method1SectionState extends State<Method1Section> {
+class _ManualMethod2SectionState extends State<ManualMethod2Section> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints(maxWidth: double.infinity),
-      color: Color.fromRGBO(189, 232, 245, 1),
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 5, top: 10),
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 10, bottom: 5),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -27,7 +25,7 @@ class _Method1SectionState extends State<Method1Section> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                "Method 1",
+                "Method 2",
                 style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
               ),
               Consumer2<MytokenProvider, CheckedBoxProvider>(
@@ -47,16 +45,16 @@ class _Method1SectionState extends State<Method1Section> {
                           ),
                           elevation: 8.0,
                           foregroundColor: Colors.black,
-                          backgroundColor: checkedBox.isM1LongAllChecked ? Colors.lightGreen : Colors.grey,
+                          backgroundColor: checkedBox.isM2LongAllChecked ? Colors.lightGreen : Colors.grey,
                           textStyle: TextStyle(inherit: true, fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                        onPressed: checkedBox.isM1LongAllChecked
+                        onPressed: checkedBox.isM2LongAllChecked
                             ? () {
                                 final token = Provider.of<MytokenProvider>(context, listen: false).token;
                                 if (token != null) {
                                   Actions.invoke(
                                     context,
-                                    const LongIntent(method: 'method1', actionType: "ORDER_TYPE_BUY"),
+                                    const LongIntent(method: 'MM2', actionType: "ORDER_TYPE_BUY"),
                                   );
                                 } else {
                                   toastification.show(
@@ -78,7 +76,7 @@ class _Method1SectionState extends State<Method1Section> {
                           minimumSize: Size(100, 40),
                           maximumSize: Size(100, 50),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          backgroundColor: checkedBox.isM1ShortAllChecked ? Colors.red : Colors.grey,
+                          backgroundColor: checkedBox.isM2ShortAllChecked ? Colors.red : Colors.grey,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
                             side: BorderSide(color: Colors.black, width: 2),
@@ -87,13 +85,13 @@ class _Method1SectionState extends State<Method1Section> {
                           foregroundColor: Colors.black,
                           textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                        onPressed: checkedBox.isM1ShortAllChecked
+                        onPressed: checkedBox.isM2ShortAllChecked
                             ? () {
                                 final token = Provider.of<MytokenProvider>(context, listen: false).token;
                                 if (token != null) {
                                   Actions.invoke(
                                     context,
-                                    const ShortIntent(method: 'method1', actionType: "ORDER_TYPE_SELL"),
+                                    const ShortIntent(method: 'MM2', actionType: "ORDER_TYPE_SELL"),
                                   );
                                 } else {
                                   toastification.show(
@@ -117,8 +115,8 @@ class _Method1SectionState extends State<Method1Section> {
             ],
           ),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -126,7 +124,31 @@ class _Method1SectionState extends State<Method1Section> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Text(
+                      'Divergence',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    child: Text(
+                      '(OR)',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 5),
+                    child: Text(
+                      'Reversal Plus',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
                     child: Text(
                       'Catcher',
                       textAlign: TextAlign.end,
@@ -134,31 +156,7 @@ class _Method1SectionState extends State<Method1Section> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-                    child: Text(
-                      'Tracer',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-                    child: Text(
-                      'NEO Cloud',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-                    child: Text(
-                      'Confirmation',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 6),
                     child: Text(
                       'OSC',
                       textAlign: TextAlign.end,
@@ -174,11 +172,10 @@ class _Method1SectionState extends State<Method1Section> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      _buildCheckboxRow('long', 'LongTcChecked', checkedBox),
-                      _buildCheckboxRow('long', 'LongTtChecked', checkedBox),
-                      _buildCheckboxRow('long', 'LongNeoChecked', checkedBox),
-                      _buildCheckboxRow('long', 'LongConfChecked', checkedBox),
-                      _buildCheckboxRow('long', 'LongHwoChecked', checkedBox),
+                      _buildCheckboxRow('long', 'LongDivergenceChecked', checkedBox),
+                      _buildCheckboxRow('long', 'LongRevChecked', checkedBox),
+                      _buildCheckboxRow('long', 'LongCatcherChecked', checkedBox),
+                      _buildCheckboxRow('long', 'LongOscChecked', checkedBox),
                     ],
                   );
                 },
@@ -190,18 +187,17 @@ class _Method1SectionState extends State<Method1Section> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      _buildCheckboxRow('short', 'ShortTcChecked', checkedBox),
-                      _buildCheckboxRow('short', 'ShortTtChecked', checkedBox),
-                      _buildCheckboxRow('short', 'ShortNeoChecked', checkedBox),
-                      _buildCheckboxRow('short', 'ShortConfChecked', checkedBox),
-                      _buildCheckboxRow('short', 'ShortHwoChecked', checkedBox),
+                      _buildCheckboxRow('short', 'ShortDivergenceChecked', checkedBox),
+                      _buildCheckboxRow('short', 'ShortRevChecked', checkedBox),
+                      _buildCheckboxRow('short', 'ShortCatcherChecked', checkedBox),
+                      _buildCheckboxRow('short', 'ShortOscChecked', checkedBox),
                     ],
                   );
                 },
               ),
             ],
           ),
-          AutomaticClosingSection(method: 'method1'),
+          AutomaticClosingSection(method: 'MM2'),
         ],
       ),
     );
@@ -219,7 +215,8 @@ class _Method1SectionState extends State<Method1Section> {
           value: _getCheckboxValue(checkboxField, checkedBox),
           onChanged: (bool? newValue) {
             setState(() {
-              checkedBox.changeValue('method1', checkboxField, context);
+              // checkedBox.changeValue('MM2', checkboxField, context);
+              checkedBox.changeValue(null, 'MM', checkboxField, context);
             });
           },
           activeColor: method == 'long' ? Colors.green : Colors.red,
@@ -233,26 +230,22 @@ class _Method1SectionState extends State<Method1Section> {
 
   bool _getCheckboxValue(String checkboxField, CheckedBoxProvider checkedBox) {
     switch (checkboxField) {
-      case 'LongTcChecked':
-        return checkedBox.isLongTcChecked;
-      case 'LongTtChecked':
-        return checkedBox.isLongTtChecked;
-      case 'LongNeoChecked':
-        return checkedBox.isLongNeoChecked;
-      case 'LongHwoChecked':
-        return checkedBox.isLongHwoChecked;
-      case 'LongConfChecked':
-        return checkedBox.isLongConfChecked;
-      case 'ShortTcChecked':
-        return checkedBox.isShortTcChecked;
-      case 'ShortTtChecked':
-        return checkedBox.isShortTtChecked;
-      case 'ShortNeoChecked':
-        return checkedBox.isShortNeoChecked;
-      case 'ShortHwoChecked':
-        return checkedBox.isShortHwoChecked;
-      case 'ShortConfChecked':
-        return checkedBox.isShortConfChecked;
+      case 'LongDivergenceChecked':
+        return checkedBox.isLongDivergenceChecked;
+      case 'LongRevChecked':
+        return checkedBox.isLongRevChecked;
+      case 'LongCatcherChecked':
+        return checkedBox.isLongCatcherChecked;
+      case 'LongOscChecked':
+        return checkedBox.isLongOscChecked;
+      case 'ShortDivergenceChecked':
+        return checkedBox.isShortDivergenceChecked;
+      case 'ShortRevChecked':
+        return checkedBox.isShortRevChecked;
+      case 'ShortCatcherChecked':
+        return checkedBox.isShortCatcherChecked;
+      case 'ShortOscChecked':
+        return checkedBox.isShortOscChecked;
       default:
         return false;
     }

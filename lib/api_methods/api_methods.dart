@@ -6,3 +6,7 @@ export 'update_flag_method.dart';
 export 'fetch_live_symbol.dart';
 export 'today_trade_history.dart';
 export 'live_updation_method.dart';
+export 'automatic_trading.dart';
+export 'symbol_settings.dart';
+export 'get_symbol_setting.dart';
+export 'local_values.dart';

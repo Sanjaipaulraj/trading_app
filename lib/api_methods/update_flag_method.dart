@@ -1,15 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:auditplus_fx/Providers/checked_box_provider.dart';
-import 'package:auditplus_fx/Providers/token_provider.dart';
-import 'package:auditplus_fx/Providers/value_provider.dart';
+import 'package:auditplus_fx/Providers/providers.dart';
 import '../models/models.dart';
 import 'contants.dart';
 
 Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async {
   final token = Provider.of<MytokenProvider>(context, listen: false).token;
-  final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+  // final symbol = Provider.of<ValueProvider>(context, listen: false).selectedValue;
+  final symbol = Provider.of<ValueProvider>(context, listen: false).manualSelectedValue;
 
   if (symbol == null) return;
 
@@ -24,25 +23,22 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
   late bool signal;
   late bool tc;
   late bool hw;
+  late bool mf;
 
-  if (mod.method == 'method1') {
-    reversalPlus = checked.isM1ReversalPlusChecked;
-    reversal = checked.isM1ReversalChecked;
-    signal = checked.isM1SignalExitChecked;
-    tc = checked.isM1TcChangeChecked;
-    hw = checked.isM1HwChecked;
-  } else if (mod.method == 'method2') {
-    reversalPlus = checked.isM2ReversalPlusChecked;
-    reversal = checked.isM2ReversalChecked;
-    signal = checked.isM2SignalExitChecked;
-    tc = checked.isM2TcChangeChecked;
-    hw = checked.isM2HwChecked;
-  } else if (mod.method == 'method3') {
-    reversalPlus = checked.isM3ReversalPlusChecked;
-    reversal = checked.isM3ReversalChecked;
-    signal = checked.isM3SignalExitChecked;
-    tc = checked.isM3TcChangeChecked;
-    hw = checked.isM3HwChecked;
+  if (mod.method == 'MM1') {
+    reversalPlus = checked.isMM1ReversalPlusChecked;
+    reversal = checked.isMM1ReversalChecked;
+    signal = checked.isMM1SignalExitChecked;
+    tc = checked.isMM1TcChangeChecked;
+    hw = checked.isMM1HwChecked;
+    mf = checked.isMM1MfChecked;
+  } else if (mod.method == 'MM2') {
+    reversalPlus = checked.isMM2ReversalPlusChecked;
+    reversal = checked.isMM2ReversalChecked;
+    signal = checked.isMM2SignalExitChecked;
+    tc = checked.isMM2TcChangeChecked;
+    hw = checked.isMM2HwChecked;
+    mf = checked.isMM2MfChecked;
   }
 
   final data = {
@@ -53,6 +49,7 @@ Future<void> updateTradeFlags(CurrentOpenModel mod, BuildContext context) async 
     'signalExit': signal,
     'tcChange': tc,
     'hyperWave': hw,
+    'moneyFlow': mf,
   };
 
   final dio = Dio(
